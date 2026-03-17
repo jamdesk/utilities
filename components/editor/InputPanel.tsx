@@ -71,19 +71,38 @@ export function InputPanel({ value, onChange, onLoadSample, ariaLabel = 'MDX inp
   )
 
   const handleLoadFromUrl = useCallback(async () => {
-    if (!url.trim()) return
+    const trimmed = url.trim()
+    if (!trimmed) return
+
+    // Only allow https:// URLs to prevent SSRF probing of local/internal networks
+    try {
+      const parsed = new URL(trimmed)
+      if (parsed.protocol !== 'https:') {
+        setUrlError('Only HTTPS URLs are supported')
+        return
+      }
+      const host = parsed.hostname.toLowerCase()
+      if (host === 'localhost' || host === '127.0.0.1' || host.startsWith('192.168.') || host.startsWith('10.') || host.endsWith('.local')) {
+        setUrlError('Cannot fetch from local or internal addresses')
+        return
+      }
+    } catch {
+      setUrlError('Invalid URL')
+      return
+    }
+
     setUrlLoading(true)
     setUrlError('')
 
     try {
-      const res = await fetch(url.trim())
-      if (!res.ok) throw new Error(`HTTP ${res.status}`)
+      const res = await fetch(trimmed)
+      if (!res.ok) throw new Error(`Request failed (${res.status})`)
       const text = await res.text()
       onChange(text)
       setShowUrlInput(false)
       setUrl('')
-    } catch (err) {
-      setUrlError(err instanceof Error ? err.message : 'Failed to fetch URL')
+    } catch {
+      setUrlError('Failed to fetch URL')
     } finally {
       setUrlLoading(false)
     }

@@ -1,6 +1,17 @@
 import type { Root, RootContent, PhrasingContent } from 'mdast'
 import { ComponentStub } from './ComponentStub'
 
+/** Block javascript: and data: URIs to prevent XSS in rendered previews */
+function sanitizeUrl(url: string): string {
+  try {
+    const parsed = new URL(url, 'https://example.com')
+    if (!['http:', 'https:', 'mailto:'].includes(parsed.protocol)) return '#'
+  } catch {
+    // relative URL — allow
+  }
+  return url
+}
+
 interface MdxJsxAttribute {
   type: 'mdxJsxAttribute'
   name: string
@@ -116,7 +127,7 @@ function AstNode({ node }: { node: RootContent | PhrasingContent }) {
     case 'link':
       return (
         <a
-          href={node.url}
+          href={sanitizeUrl(node.url)}
           className="text-[#a78bfa] underline decoration-[#a78bfa]/50 hover:decoration-[#a78bfa]"
           target="_blank"
           rel="noopener noreferrer"

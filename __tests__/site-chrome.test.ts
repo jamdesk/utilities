@@ -20,8 +20,17 @@ describe('fetchSiteChrome', () => {
     expect(mockFetch).not.toHaveBeenCalled()
   })
 
+  it('returns null for non-jamdesk origin', async () => {
+    vi.stubEnv('NEXT_PUBLIC_SITE_CHROME_URL', 'https://evil.com/chrome')
+
+    const { fetchSiteChrome } = await import('../lib/site-chrome')
+    const result = await fetchSiteChrome()
+    expect(result).toBeNull()
+    expect(mockFetch).not.toHaveBeenCalled()
+  })
+
   it('parses valid response correctly', async () => {
-    vi.stubEnv('NEXT_PUBLIC_SITE_CHROME_URL', 'https://example.com/chrome')
+    vi.stubEnv('NEXT_PUBLIC_SITE_CHROME_URL', 'https://www.jamdesk.com/api/site-chrome')
 
     const chromeData = {
       header: '<header>Test Header</header>',
@@ -41,7 +50,7 @@ describe('fetchSiteChrome', () => {
   })
 
   it('returns null on HTTP error', async () => {
-    vi.stubEnv('NEXT_PUBLIC_SITE_CHROME_URL', 'https://example.com/chrome')
+    vi.stubEnv('NEXT_PUBLIC_SITE_CHROME_URL', 'https://www.jamdesk.com/api/site-chrome')
 
     mockFetch.mockResolvedValueOnce({
       ok: false,
@@ -54,7 +63,7 @@ describe('fetchSiteChrome', () => {
   })
 
   it('returns null on network error', async () => {
-    vi.stubEnv('NEXT_PUBLIC_SITE_CHROME_URL', 'https://example.com/chrome')
+    vi.stubEnv('NEXT_PUBLIC_SITE_CHROME_URL', 'https://www.jamdesk.com/api/site-chrome')
 
     mockFetch.mockRejectedValueOnce(new Error('Network error'))
 
