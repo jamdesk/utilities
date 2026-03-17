@@ -3,7 +3,9 @@ import Script from 'next/script'
 import { inter, jetbrainsMono } from '@/lib/fonts'
 import { DefaultHeader } from '@/components/shell/DefaultHeader'
 import { DefaultFooter } from '@/components/shell/DefaultFooter'
+import { SiteChromeHeader, SiteChromeFooter } from '@/components/shell/SiteChrome'
 import { CommandPalette } from '@/components/command-palette/CommandPalette'
+import { fetchSiteChrome } from '@/lib/site-chrome'
 import './globals.css'
 
 export const metadata: Metadata = {
@@ -15,11 +17,13 @@ export const metadata: Metadata = {
     'Free, open-source MDX tools. Format, validate, preview, and convert MDX files — all client-side.',
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  const siteChrome = await fetchSiteChrome()
+
   return (
     <html
       lang="en"
@@ -36,9 +40,17 @@ export default function RootLayout({
       </head>
       <body className="flex min-h-screen flex-col bg-[#13111a] text-[#e0e0e4] antialiased">
         <CommandPalette />
-        <DefaultHeader />
+        {siteChrome ? (
+          <SiteChromeHeader header={siteChrome.header} css={siteChrome.css} />
+        ) : (
+          <DefaultHeader />
+        )}
         <main className="flex-1">{children}</main>
-        <DefaultFooter />
+        {siteChrome ? (
+          <SiteChromeFooter footer={siteChrome.footer} consent={siteChrome.consent} />
+        ) : (
+          <DefaultFooter />
+        )}
       </body>
     </html>
   )
