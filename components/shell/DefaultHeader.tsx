@@ -73,12 +73,12 @@ export function DefaultHeader() {
       <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4 sm:px-6 md:h-[72px]">
         {/* Logo + brand */}
         <a
-          href="/utilities"
+          href="https://www.jamdesk.com"
           className="flex items-center gap-2.5 transition-opacity hover:opacity-80"
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src="/utilities/logo-light.png"
+            src="https://www.jamdesk.com/logo-light.png"
             alt="Jamdesk"
             className="h-8 w-auto"
             width={120}
