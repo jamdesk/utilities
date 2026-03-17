@@ -82,7 +82,7 @@ async function generateOgImage(
           flexDirection: 'column',
           justifyContent: 'center',
           alignItems: 'flex-start',
-          backgroundColor: '#13111a',
+          backgroundColor: '#faf8f5',
           padding: '80px',
           position: 'relative',
         },
@@ -105,7 +105,7 @@ async function generateOgImage(
               style: {
                 fontSize: '64px',
                 fontWeight: 700,
-                color: '#e0e0e4',
+                color: '#1b3139',
                 marginBottom: '16px',
                 lineHeight: 1.1,
               },
@@ -118,7 +118,7 @@ async function generateOgImage(
             props: {
               style: {
                 fontSize: '28px',
-                color: '#6b6b78',
+                color: '#5a6f77',
                 marginBottom: '32px',
               },
               children: tool.description,
@@ -130,7 +130,7 @@ async function generateOgImage(
             props: {
               style: {
                 fontSize: '20px',
-                color: '#4a4858',
+                color: '#8fa8b3',
               },
               children: 'Free \u00B7 Open Source \u00B7 Client-side',
             },
@@ -145,7 +145,7 @@ async function generateOgImage(
                 left: '0',
                 right: '0',
                 height: '6px',
-                backgroundColor: '#7c3aed',
+                backgroundColor: '#ff3621',
               },
             },
           },
@@ -158,7 +158,7 @@ async function generateOgImage(
                 bottom: '32px',
                 right: '80px',
                 fontSize: '24px',
-                color: '#4a4858',
+                color: '#8fa8b3',
                 fontWeight: 600,
               },
               children: 'Jamdesk Utilities',
@@ -205,7 +205,7 @@ async function generateHubImage(fontData: ArrayBuffer) {
           flexDirection: 'column',
           justifyContent: 'center',
           alignItems: 'center',
-          backgroundColor: '#13111a',
+          backgroundColor: '#faf8f5',
           padding: '80px',
           position: 'relative',
           textAlign: 'center',
@@ -217,7 +217,7 @@ async function generateHubImage(fontData: ArrayBuffer) {
               style: {
                 fontSize: '64px',
                 fontWeight: 700,
-                color: '#e0e0e4',
+                color: '#1b3139',
                 marginBottom: '16px',
                 lineHeight: 1.1,
               },
@@ -229,7 +229,7 @@ async function generateHubImage(fontData: ArrayBuffer) {
             props: {
               style: {
                 fontSize: '28px',
-                color: '#6b6b78',
+                color: '#5a6f77',
                 marginBottom: '32px',
               },
               children: 'Free, open source tools for MDX',
@@ -240,7 +240,7 @@ async function generateHubImage(fontData: ArrayBuffer) {
             props: {
               style: {
                 fontSize: '20px',
-                color: '#4a4858',
+                color: '#8fa8b3',
               },
               children: 'Format \u00B7 Validate \u00B7 Preview \u00B7 Convert',
             },
@@ -254,7 +254,7 @@ async function generateHubImage(fontData: ArrayBuffer) {
                 left: '0',
                 right: '0',
                 height: '6px',
-                backgroundColor: '#7c3aed',
+                backgroundColor: '#ff3621',
               },
             },
           },
@@ -266,7 +266,7 @@ async function generateHubImage(fontData: ArrayBuffer) {
                 bottom: '32px',
                 right: '80px',
                 fontSize: '24px',
-                color: '#4a4858',
+                color: '#8fa8b3',
                 fontWeight: 600,
               },
               children: 'Jamdesk',

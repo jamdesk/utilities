@@ -13,18 +13,18 @@ export function FaqSection({ items }: FaqSectionProps) {
       {items.map((item) => (
         <details
           key={item.question}
-          className="group rounded-lg border border-[#2a2640] bg-[#1a1725]"
+          className="group rounded-lg border border-[#e8e4df] bg-white"
         >
-          <summary className="flex cursor-pointer items-center justify-between px-5 py-4 text-[#e0e0e4] transition-colors hover:text-[#a78bfa] [&::-webkit-details-marker]:hidden">
+          <summary className="flex cursor-pointer items-center justify-between px-5 py-4 text-[#1b3139] transition-colors hover:text-[#ff3621] [&::-webkit-details-marker]:hidden">
             <span className="pr-4 font-medium">{item.question}</span>
             <span
-              className="shrink-0 text-[#6b6b78] transition-transform group-open:rotate-45"
+              className="shrink-0 text-[#5a6f77] transition-transform group-open:rotate-45"
               aria-hidden="true"
             >
               +
             </span>
           </summary>
-          <div className="border-t border-[#2a2640] px-5 py-4 text-sm leading-relaxed text-[#6b6b78]">
+          <div className="border-t border-[#e8e4df] px-5 py-4 text-sm leading-relaxed text-[#5a6f77]">
             {item.answer}
           </div>
         </details>

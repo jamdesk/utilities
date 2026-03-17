@@ -46,17 +46,17 @@ export class EngineErrorBoundary extends React.Component<
       if (isLoadError) {
         // Full-page fallback for engine load failures
         return (
-          <div className="flex h-full min-h-[300px] flex-col items-center justify-center gap-4 rounded-lg border border-border bg-surface p-8 text-center">
-            <div className="text-lg font-medium text-foreground">
+          <div className="flex h-full min-h-[300px] flex-col items-center justify-center gap-4 rounded-lg border border-[#e8e4df] bg-white p-8 text-center">
+            <div className="text-lg font-medium text-[#1b3139]">
               Failed to load {this.props.toolName}
             </div>
-            <p className="max-w-md text-sm text-muted-foreground">
+            <p className="max-w-md text-sm text-[#5a6f77]">
               Check your connection and try again.
             </p>
             <button
               type="button"
               onClick={this.handleRetry}
-              className="min-h-[44px] rounded-md bg-accent-purple px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-accent-purple/80"
+              className="min-h-[44px] rounded-md bg-[#ff3621] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#eb1600]"
             >
               Retry
             </button>
@@ -70,13 +70,13 @@ export class EngineErrorBoundary extends React.Component<
           <div className="mb-1 text-sm font-medium text-destructive">
             Something went wrong in {this.props.toolName}
           </div>
-          <p className="mb-3 text-sm text-muted-foreground">
+          <p className="mb-3 text-sm text-[#5a6f77]">
             {this.state.error?.message || 'An unexpected error occurred.'}
           </p>
           <button
             type="button"
             onClick={this.handleRetry}
-            className="min-h-[44px] rounded-md border border-border px-3 py-1.5 text-sm text-foreground transition-colors hover:bg-surface"
+            className="min-h-[44px] rounded-md border border-[#e8e4df] px-3 py-1.5 text-sm text-[#1b3139] transition-colors hover:bg-[#f3f0eb]"
           >
             Try again
           </button>

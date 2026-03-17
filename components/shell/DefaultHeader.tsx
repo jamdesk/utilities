@@ -2,32 +2,6 @@
 
 import { useState } from 'react'
 
-function JamdeskLogo() {
-  return (
-    <svg
-      width="28"
-      height="28"
-      viewBox="0 0 28 28"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      aria-hidden="true"
-    >
-      <rect width="28" height="28" rx="6" fill="#7c3aed" />
-      <text
-        x="14"
-        y="20"
-        textAnchor="middle"
-        fill="white"
-        fontSize="16"
-        fontWeight="700"
-        fontFamily="system-ui, sans-serif"
-      >
-        J
-      </text>
-    </svg>
-  )
-}
-
 function GitHubIcon() {
   return (
     <svg
@@ -95,15 +69,20 @@ export function DefaultHeader() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   return (
-    <header className="sticky top-0 z-50 border-b border-[#2a2640] bg-[#13111a]/95 backdrop-blur-sm">
-      <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4 sm:px-6">
+    <header className="sticky top-0 z-50 border-b border-[#e8e4df] bg-white/95 backdrop-blur-sm">
+      <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4 sm:px-6 md:h-[72px]">
         {/* Logo + brand */}
         <a
           href="/utilities"
           className="flex items-center gap-2.5 transition-opacity hover:opacity-80"
         >
-          <JamdeskLogo />
-          <span className="text-sm font-semibold text-[#e0e0e4]">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/logo-light.png"
+            alt="Jamdesk"
+            className="h-8 w-auto"
+          />
+          <span className="text-xs font-medium text-[#5a6f77]">
             Utilities
           </span>
         </a>
@@ -114,7 +93,7 @@ export function DefaultHeader() {
             <a
               key={link.href}
               href={link.href}
-              className="rounded-md px-3 py-1.5 text-sm text-[#6b6b78] transition-colors hover:text-[#e0e0e4]"
+              className="rounded-md px-3 py-1.5 text-sm text-[#5a6f77] transition-colors hover:text-[#1b3139]"
               {...(link.external
                 ? { target: '_blank', rel: 'noopener noreferrer' }
                 : {})}
@@ -131,7 +110,7 @@ export function DefaultHeader() {
         {/* Mobile hamburger */}
         <button
           type="button"
-          className="min-h-[44px] min-w-[44px] rounded-md p-2.5 text-[#6b6b78] transition-colors hover:text-[#e0e0e4] sm:hidden"
+          className="min-h-[44px] min-w-[44px] rounded-md p-2.5 text-[#5a6f77] transition-colors hover:text-[#1b3139] sm:hidden"
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
           aria-expanded={mobileMenuOpen}
@@ -142,12 +121,12 @@ export function DefaultHeader() {
 
       {/* Mobile menu */}
       {mobileMenuOpen && (
-        <nav className="border-t border-[#2a2640] bg-[#13111a] px-4 py-3 sm:hidden">
+        <nav className="border-t border-[#e8e4df] bg-white px-4 py-3 sm:hidden">
           {NAV_LINKS.map((link) => (
             <a
               key={link.href}
               href={link.href}
-              className="flex min-h-[44px] items-center gap-2 rounded-md px-3 py-2 text-sm text-[#6b6b78] transition-colors hover:text-[#e0e0e4]"
+              className="flex min-h-[44px] items-center gap-2 rounded-md px-3 py-2 text-sm text-[#5a6f77] transition-colors hover:text-[#1b3139]"
               onClick={() => setMobileMenuOpen(false)}
               {...(link.external
                 ? { target: '_blank', rel: 'noopener noreferrer' }

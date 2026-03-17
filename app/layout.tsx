@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import Script from 'next/script'
-import { inter, jetbrainsMono } from '@/lib/fonts'
+import { inter, dmSans, jetbrainsMono } from '@/lib/fonts'
 import { DefaultHeader } from '@/components/shell/DefaultHeader'
 import { DefaultFooter } from '@/components/shell/DefaultFooter'
 import { SiteChromeHeader, SiteChromeFooter } from '@/components/shell/SiteChrome'
@@ -27,8 +27,7 @@ export default async function RootLayout({
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${jetbrainsMono.variable}`}
-      style={{ colorScheme: 'dark' }}
+      className={`${inter.variable} ${dmSans.variable} ${jetbrainsMono.variable}`}
     >
       <head>
         <Script
@@ -38,7 +37,7 @@ export default async function RootLayout({
           strategy="afterInteractive"
         />
       </head>
-      <body className="flex min-h-screen flex-col bg-[#13111a] text-[#e0e0e4] antialiased">
+      <body className="flex min-h-screen flex-col bg-[#faf8f5] text-[#1b3139] antialiased">
         <CommandPalette />
         {siteChrome ? (
           <>

@@ -10,7 +10,7 @@ interface MobileTabToggleProps {
 export function MobileTabToggle({ activeTab, onTabChange }: MobileTabToggleProps) {
   return (
     <div className="block sm:hidden" role="tablist" aria-label="Editor panels">
-      <div className="flex border-b border-border">
+      <div className="flex border-b border-[#e8e4df]">
         <button
           type="button"
           role="tab"
@@ -20,8 +20,8 @@ export function MobileTabToggle({ activeTab, onTabChange }: MobileTabToggleProps
           onClick={() => onTabChange('input')}
           className={`min-h-[44px] flex-1 px-4 py-2.5 text-sm font-medium transition-colors ${
             activeTab === 'input'
-              ? 'border-b-2 border-accent-purple text-foreground'
-              : 'text-muted-foreground hover:text-foreground'
+              ? 'border-b-2 border-[#ff3621] text-[#1b3139]'
+              : 'text-[#5a6f77] hover:text-[#1b3139]'
           }`}
         >
           Input
@@ -35,8 +35,8 @@ export function MobileTabToggle({ activeTab, onTabChange }: MobileTabToggleProps
           onClick={() => onTabChange('output')}
           className={`min-h-[44px] flex-1 px-4 py-2.5 text-sm font-medium transition-colors ${
             activeTab === 'output'
-              ? 'border-b-2 border-accent-purple text-foreground'
-              : 'text-muted-foreground hover:text-foreground'
+              ? 'border-b-2 border-[#ff3621] text-[#1b3139]'
+              : 'text-[#5a6f77] hover:text-[#1b3139]'
           }`}
         >
           Output

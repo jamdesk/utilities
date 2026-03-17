@@ -26,7 +26,7 @@ interface ToolEditorProps {
 
 export function ToolEditor({ slug }: ToolEditorProps) {
   return (
-    <div className="flex min-h-[400px] flex-col overflow-hidden rounded-xl border border-[#2a2640] bg-[#1a1725]">
+    <div className="flex min-h-[400px] flex-col overflow-hidden rounded-xl border border-[#e8e4df] bg-white shadow-[0_2px_16px_rgba(0,0,0,0.06)]">
       {slug === 'mdx-formatter' && <MdxFormatter />}
       {slug === 'mdx-validator' && <MdxValidator />}
       {slug === 'mdx-viewer' && <MdxViewer />}

@@ -71,32 +71,32 @@ export default function Home() {
       <JsonLdScript type="collection" tools={tools} />
 
       {/* Hero */}
-      <section className="mx-auto max-w-4xl px-6 pb-8 pt-16 text-center">
-        <h1 className="mb-4 text-4xl font-bold tracking-tight text-[#e0e0e4] sm:text-5xl">
+      <section className="mx-auto max-w-7xl px-6 pb-8 pt-16">
+        <h1 className="mb-4 font-[family-name:var(--font-dm-sans)] text-4xl font-bold tracking-tight text-[#1b3139] sm:text-5xl">
           MDX Utilities
         </h1>
-        <p className="mb-6 text-lg text-[#6b6b78]">
+        <p className="mb-6 text-lg text-[#5a6f77]">
           Free, open source tools for MDX
         </p>
-        <span className="inline-block rounded-full border border-[#2a2640] bg-[#1a1725] px-4 py-1.5 text-xs text-[#6b6b78]">
+        <span className="inline-block rounded-full border border-[#e8e4df] bg-white px-4 py-1.5 text-xs text-[#5a6f77]">
           Client-side &middot; No ads &middot; Open source
         </span>
       </section>
 
       {/* Tool grid */}
-      <section className="mx-auto max-w-4xl px-6 pb-16">
+      <section className="mx-auto max-w-7xl px-6 pb-16">
         <div className="grid gap-6 sm:grid-cols-2">
           {tools.map((tool) => (
             <Link
               key={tool.slug}
               href={`/${tool.slug}`}
-              className="group rounded-xl border border-[#2a2640] bg-[#1a1725] p-6 transition-all hover:border-[#7c3aed]/50 hover:shadow-[0_0_24px_-6px_rgba(124,58,237,0.15)]"
+              className="group rounded-xl border border-[#e8e4df] bg-white p-6 shadow-[0_2px_16px_rgba(0,0,0,0.06)] transition-all hover:border-[#ff3621]/30 hover:shadow-[0_8px_32px_rgba(0,0,0,0.1)]"
             >
               <span className="mb-3 block text-2xl">{tool.icon}</span>
-              <h2 className="mb-1 text-lg font-semibold text-[#e0e0e4] transition-colors group-hover:text-[#a78bfa]">
+              <h2 className="mb-1 text-lg font-semibold text-[#1b3139] transition-colors group-hover:text-[#ff3621]">
                 {tool.name}
               </h2>
-              <p className="text-sm text-[#6b6b78]">{tool.description}</p>
+              <p className="text-sm text-[#5a6f77]">{tool.description}</p>
             </Link>
           ))}
         </div>
@@ -104,10 +104,10 @@ export default function Home() {
 
       {/* What is MDX? */}
       <section className="mx-auto max-w-3xl px-6 pb-12">
-        <h2 className="mb-4 text-2xl font-bold text-[#e0e0e4]">
+        <h2 className="mb-4 font-[family-name:var(--font-dm-sans)] text-2xl font-bold text-[#1b3139]">
           What is MDX?
         </h2>
-        <p className="leading-relaxed text-[#6b6b78]">
+        <p className="leading-relaxed text-[#5a6f77]">
           MDX extends standard Markdown by letting you embed JSX components
           directly in your content. Write headings, lists, and paragraphs in
           Markdown, then drop in interactive React components wherever you need
@@ -122,10 +122,10 @@ export default function Home() {
 
       {/* Why use MDX for documentation? */}
       <section className="mx-auto max-w-3xl px-6 pb-12">
-        <h2 className="mb-4 text-2xl font-bold text-[#e0e0e4]">
+        <h2 className="mb-4 font-[family-name:var(--font-dm-sans)] text-2xl font-bold text-[#1b3139]">
           Why use MDX for documentation?
         </h2>
-        <p className="leading-relaxed text-[#6b6b78]">
+        <p className="leading-relaxed text-[#5a6f77]">
           Documentation written in MDX stays readable as source files while
           producing rich, interactive output. Authors write in Markdown they
           already know, and engineers define reusable components for API
@@ -142,7 +142,7 @@ export default function Home() {
 
       {/* FAQ */}
       <section className="mx-auto max-w-3xl px-6 pb-16">
-        <h2 className="mb-6 text-2xl font-bold text-[#e0e0e4]">
+        <h2 className="mb-6 font-[family-name:var(--font-dm-sans)] text-2xl font-bold text-[#1b3139]">
           Frequently Asked Questions
         </h2>
         <FaqSection items={FAQ_ITEMS} />

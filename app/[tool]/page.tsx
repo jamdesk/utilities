@@ -23,19 +23,19 @@ export default async function ToolPage({
 
   return (
     <>
-      {/* Hero */}
-      <section className="mx-auto max-w-4xl px-6 pb-8 pt-12">
-        <span className="mb-4 inline-block rounded-full border border-[#2a2640] bg-[#1a1725] px-4 py-1.5 text-xs text-[#6b6b78]">
+      {/* Hero — left-aligned, same max-width as editor */}
+      <section className="mx-auto max-w-7xl px-6 pb-8 pt-12">
+        <span className="mb-4 inline-block rounded-full border border-[#e8e4df] bg-white px-4 py-1.5 text-xs text-[#5a6f77]">
           Free &middot; Open Source &middot; Client-side
         </span>
-        <h1 className="mb-3 text-3xl font-bold tracking-tight text-[#e0e0e4] sm:text-4xl">
+        <h1 className="mb-3 font-[family-name:var(--font-dm-sans)] text-3xl font-bold tracking-tight text-[#1b3139] sm:text-4xl">
           {tool.name}
         </h1>
-        <p className="text-lg text-[#6b6b78]">{tool.description}</p>
+        <p className="text-lg text-[#5a6f77]">{tool.description}</p>
       </section>
 
-      {/* Editor */}
-      <section className="mx-auto max-w-5xl px-6 pb-12">
+      {/* Editor — wider container */}
+      <section className="mx-auto max-w-7xl px-6 pb-12">
         <ToolEditor slug={slug} />
       </section>
 
@@ -51,10 +51,10 @@ export default async function ToolPage({
       {/* How-to section */}
       {seoContent && (
         <section className="mx-auto max-w-3xl px-6 pb-12">
-          <h2 className="mb-4 text-2xl font-bold text-[#e0e0e4]">
+          <h2 className="mb-4 font-[family-name:var(--font-dm-sans)] text-2xl font-bold text-[#1b3139]">
             {seoContent.howToTitle}
           </h2>
-          <p className="leading-relaxed text-[#6b6b78]">
+          <p className="leading-relaxed text-[#5a6f77]">
             {seoContent.howToContent}
           </p>
         </section>
@@ -63,7 +63,7 @@ export default async function ToolPage({
       {/* FAQ */}
       {seoContent && seoContent.faq.length > 0 && (
         <section className="mx-auto max-w-3xl px-6 pb-12">
-          <h2 className="mb-6 text-2xl font-bold text-[#e0e0e4]">
+          <h2 className="mb-6 font-[family-name:var(--font-dm-sans)] text-2xl font-bold text-[#1b3139]">
             Frequently Asked Questions
           </h2>
           <FaqSection items={seoContent.faq} />
@@ -72,7 +72,7 @@ export default async function ToolPage({
 
       {/* Related tools */}
       <section className="mx-auto max-w-4xl px-6 pb-16">
-        <h2 className="mb-6 text-2xl font-bold text-[#e0e0e4]">
+        <h2 className="mb-6 font-[family-name:var(--font-dm-sans)] text-2xl font-bold text-[#1b3139]">
           Related Tools
         </h2>
         <div className="grid gap-4 sm:grid-cols-3">
@@ -80,13 +80,13 @@ export default async function ToolPage({
             <Link
               key={t.slug}
               href={`/${t.slug}`}
-              className="group rounded-lg border border-[#2a2640] bg-[#1a1725] p-5 transition-all hover:border-[#7c3aed]/50 hover:shadow-[0_0_24px_-6px_rgba(124,58,237,0.15)]"
+              className="group rounded-lg border border-[#e8e4df] bg-white p-5 shadow-[0_2px_16px_rgba(0,0,0,0.06)] transition-all hover:border-[#ff3621]/30 hover:shadow-[0_8px_32px_rgba(0,0,0,0.1)]"
             >
               <span className="mb-2 block text-xl">{t.icon}</span>
-              <h3 className="mb-1 text-sm font-semibold text-[#e0e0e4] transition-colors group-hover:text-[#a78bfa]">
+              <h3 className="mb-1 text-sm font-semibold text-[#1b3139] transition-colors group-hover:text-[#ff3621]">
                 {t.name}
               </h3>
-              <p className="text-xs text-[#6b6b78]">{t.description}</p>
+              <p className="text-xs text-[#5a6f77]">{t.description}</p>
             </Link>
           ))}
         </div>

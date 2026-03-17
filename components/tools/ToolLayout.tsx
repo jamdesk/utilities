@@ -22,7 +22,7 @@ export function ToolLayout({ toolName, toolbar, inputPanel, outputPanel }: ToolL
           id="input-panel"
           role="tabpanel"
           aria-labelledby="input-tab"
-          className={`border-r border-border ${activeTab === 'output' ? 'hidden sm:flex' : 'flex'} flex-col`}
+          className={`border-r border-[#e8e4df] ${activeTab === 'output' ? 'hidden sm:flex' : 'flex'} flex-col`}
         >
           {inputPanel}
         </div>
