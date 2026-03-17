@@ -132,14 +132,14 @@ function ValidationOutput({
             <button
               type="button"
               onClick={onCopy}
-              className="rounded-md px-2.5 py-1.5 text-sm text-[#6b6b78] transition-colors hover:bg-[#1a1725] hover:text-[#e0e0e4]"
+              className="min-h-[44px] items-center rounded-md px-2.5 py-1.5 text-sm text-[#6b6b78] transition-colors hover:bg-[#1a1725] hover:text-[#e0e0e4]"
             >
               Copy
             </button>
             <button
               type="button"
               onClick={onDownload}
-              className="rounded-md px-2.5 py-1.5 text-sm text-[#6b6b78] transition-colors hover:bg-[#1a1725] hover:text-[#e0e0e4]"
+              className="min-h-[44px] items-center rounded-md px-2.5 py-1.5 text-sm text-[#6b6b78] transition-colors hover:bg-[#1a1725] hover:text-[#e0e0e4]"
             >
               Download
             </button>

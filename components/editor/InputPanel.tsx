@@ -122,7 +122,7 @@ export function InputPanel({ value, onChange, onLoadSample, ariaLabel = 'MDX inp
           <button
             type="button"
             onClick={() => fileInputRef.current?.click()}
-            className="rounded-md px-1.5 py-1 text-xs text-[#6b6b78] transition-colors hover:bg-[#1a1725] hover:text-[#e0e0e4] sm:px-2.5 sm:py-1.5 sm:text-sm"
+            className="min-h-[44px] items-center rounded-md px-1.5 py-1 text-xs text-[#6b6b78] transition-colors hover:bg-[#1a1725] hover:text-[#e0e0e4] sm:px-2.5 sm:py-1.5 sm:text-sm"
           >
             Upload
           </button>
@@ -130,7 +130,7 @@ export function InputPanel({ value, onChange, onLoadSample, ariaLabel = 'MDX inp
             <button
               type="button"
               onClick={onLoadSample}
-              className="rounded-md px-1.5 py-1 text-xs text-[#6b6b78] transition-colors hover:bg-[#1a1725] hover:text-[#e0e0e4] sm:px-2.5 sm:py-1.5 sm:text-sm"
+              className="min-h-[44px] items-center rounded-md px-1.5 py-1 text-xs text-[#6b6b78] transition-colors hover:bg-[#1a1725] hover:text-[#e0e0e4] sm:px-2.5 sm:py-1.5 sm:text-sm"
             >
               Sample
             </button>
@@ -170,7 +170,7 @@ export function InputPanel({ value, onChange, onLoadSample, ariaLabel = 'MDX inp
             disabled={urlLoading || !url.trim()}
             className="min-h-[44px] rounded-md bg-primary px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-accent-light disabled:opacity-50"
           >
-            {urlLoading ? 'Loading...' : 'Fetch'}
+            {urlLoading ? 'Loading\u2026' : 'Fetch'}
           </button>
           {urlError && (
             <span className="text-sm text-destructive">{urlError}</span>

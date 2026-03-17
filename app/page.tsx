@@ -73,7 +73,7 @@ export default function Home() {
 
       {/* Hero */}
       <section className="mx-auto max-w-7xl px-6 pb-8 pt-16">
-        <h1 className="mb-4 font-heading text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
+        <h1 className="mb-4 font-heading text-4xl font-bold tracking-tight text-foreground [text-wrap:balance] sm:text-5xl">
           MDX Utilities
         </h1>
         <p className="mb-6 text-lg text-muted-foreground">
@@ -94,7 +94,7 @@ export default function Home() {
               className="group rounded-xl border border-border bg-card p-6 shadow-[0_2px_16px_rgba(0,0,0,0.06)] transition-all hover:border-primary/30 hover:shadow-[0_8px_32px_rgba(0,0,0,0.1)]"
             >
               <span className="mb-3 block text-2xl">{tool.icon}</span>
-              <h2 className="mb-1 text-lg font-semibold text-foreground transition-colors group-hover:text-primary">
+              <h2 className="mb-1 text-lg font-semibold text-foreground [text-wrap:balance] transition-colors group-hover:text-primary">
                 {tool.name}
               </h2>
               <p className="text-sm text-muted-foreground">{tool.description}</p>
@@ -105,7 +105,7 @@ export default function Home() {
 
       {/* What is MDX? */}
       <section className="mx-auto max-w-3xl px-6 pb-12">
-        <h2 className="mb-4 font-heading text-2xl font-bold text-foreground">
+        <h2 className="mb-4 font-heading text-2xl font-bold text-foreground [text-wrap:balance]">
           What is MDX?
         </h2>
         <p className="leading-relaxed text-muted-foreground">
@@ -123,7 +123,7 @@ export default function Home() {
 
       {/* Why use MDX for documentation? */}
       <section className="mx-auto max-w-3xl px-6 pb-12">
-        <h2 className="mb-4 font-heading text-2xl font-bold text-foreground">
+        <h2 className="mb-4 font-heading text-2xl font-bold text-foreground [text-wrap:balance]">
           Why use MDX for documentation?
         </h2>
         <p className="leading-relaxed text-muted-foreground">
@@ -143,7 +143,7 @@ export default function Home() {
 
       {/* FAQ */}
       <section className="mx-auto max-w-3xl px-6 pb-16">
-        <h2 className="mb-6 font-heading text-2xl font-bold text-foreground">
+        <h2 className="mb-6 font-heading text-2xl font-bold text-foreground [text-wrap:balance]">
           Frequently Asked Questions
         </h2>
         <FaqSection items={FAQ_ITEMS} />

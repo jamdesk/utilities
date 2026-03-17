@@ -32,7 +32,7 @@ export function CommandPalette() {
   if (!open) return null
 
   return (
-    <div className="fixed inset-0 z-[100]" role="dialog" aria-modal="true" aria-label="Command palette">
+    <div className="fixed inset-0 z-[100] overscroll-contain" role="dialog" aria-modal="true" aria-label="Command palette">
       {/* Overlay */}
       <div
         className="fixed inset-0 bg-black/50 backdrop-blur-sm"
@@ -54,7 +54,7 @@ export function CommandPalette() {
         >
           <Command.Input
             placeholder="Search tools..."
-            className="w-full border-b border-border bg-transparent px-4 py-3 text-base text-foreground placeholder:text-text-muted focus-visible:outline-none"
+            className="w-full border-b border-border bg-transparent px-4 py-3 text-base text-foreground placeholder:text-text-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-inset"
             autoFocus
           />
           <Command.List className="max-h-[300px] overflow-y-auto overscroll-contain p-2 sm:max-h-[320px]">

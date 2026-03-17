@@ -18,7 +18,7 @@ export function MobileTabToggle({ activeTab, onTabChange }: MobileTabToggleProps
           aria-controls="input-panel"
           id="input-tab"
           onClick={() => onTabChange('input')}
-          className={`flex-1 px-3 py-2 text-xs font-medium transition-colors focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-1 sm:px-4 sm:py-2.5 sm:text-sm ${
+          className={`min-h-[44px] flex-1 px-3 py-2 text-xs font-medium transition-colors focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-1 sm:px-4 sm:py-2.5 sm:text-sm ${
             activeTab === 'input'
               ? 'border-b-2 border-primary text-foreground'
               : 'text-muted-foreground hover:text-foreground'
@@ -33,7 +33,7 @@ export function MobileTabToggle({ activeTab, onTabChange }: MobileTabToggleProps
           aria-controls="output-panel"
           id="output-tab"
           onClick={() => onTabChange('output')}
-          className={`flex-1 px-3 py-2 text-xs font-medium transition-colors focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-1 sm:px-4 sm:py-2.5 sm:text-sm ${
+          className={`min-h-[44px] flex-1 px-3 py-2 text-xs font-medium transition-colors focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-1 sm:px-4 sm:py-2.5 sm:text-sm ${
             activeTab === 'output'
               ? 'border-b-2 border-primary text-foreground'
               : 'text-muted-foreground hover:text-foreground'

@@ -26,7 +26,7 @@ export function EditorToolbar({ options = [], status }: EditorToolbarProps) {
             role="switch"
             aria-checked={option.value}
             onClick={() => option.onChange(!option.value)}
-            className={`shrink-0 rounded-full px-2 py-1 text-xs font-medium transition-colors sm:px-3 sm:py-1.5 sm:text-sm ${
+            className={`min-h-[44px] shrink-0 items-center rounded-full px-2 text-xs font-medium transition-colors focus-visible:ring-2 focus-visible:ring-primary sm:px-3 sm:text-sm ${
               option.value
                 ? 'bg-primary text-primary-foreground'
                 : 'bg-secondary text-muted-foreground hover:bg-surface-deep hover:text-foreground'

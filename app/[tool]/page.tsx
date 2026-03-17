@@ -28,7 +28,7 @@ export default async function ToolPage({
         <span className="mb-2 inline-block rounded-full border border-border bg-card px-3 py-1 text-[10px] sm:mb-4 sm:px-4 sm:py-1.5 sm:text-xs text-muted-foreground">
           Free &middot; Open Source &middot; Client-side
         </span>
-        <h1 className="mb-1 font-heading text-xl font-bold tracking-tight text-foreground sm:mb-3 sm:text-4xl">
+        <h1 className="mb-1 font-heading text-xl font-bold tracking-tight text-foreground [text-wrap:balance] sm:mb-3 sm:text-4xl">
           {tool.name}
         </h1>
         <p className="text-sm text-muted-foreground sm:text-lg">{tool.description}</p>
@@ -80,7 +80,7 @@ export default async function ToolPage({
             <Link
               key={t.slug}
               href={`/${t.slug}`}
-              className="group rounded-lg border border-border bg-card p-5 shadow-[0_2px_16px_rgba(0,0,0,0.06)] transition-all hover:border-primary/30 hover:shadow-[0_8px_32px_rgba(0,0,0,0.1)]"
+              className="group rounded-lg border border-border bg-card p-5 shadow-[0_2px_16px_rgba(0,0,0,0.06)] transition-[border-color,box-shadow] hover:border-primary/30 hover:shadow-[0_8px_32px_rgba(0,0,0,0.1)]"
             >
               <span className="mb-2 block text-xl">{t.icon}</span>
               <h3 className="mb-1 text-sm font-semibold text-foreground transition-colors group-hover:text-primary">
