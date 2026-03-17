@@ -24,18 +24,18 @@ export default async function ToolPage({
   return (
     <>
       {/* Hero — left-aligned, same max-width as editor */}
-      <section className="mx-auto max-w-7xl px-6 pb-8 pt-12">
-        <span className="mb-4 inline-block rounded-full border border-border bg-card px-4 py-1.5 text-xs text-muted-foreground">
+      <section className="mx-auto max-w-7xl px-4 pb-4 pt-6 sm:px-6 sm:pb-8 sm:pt-12">
+        <span className="mb-2 inline-block rounded-full border border-border bg-card px-3 py-1 text-[10px] sm:mb-4 sm:px-4 sm:py-1.5 sm:text-xs text-muted-foreground">
           Free &middot; Open Source &middot; Client-side
         </span>
-        <h1 className="mb-3 font-heading text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+        <h1 className="mb-1 font-heading text-xl font-bold tracking-tight text-foreground sm:mb-3 sm:text-4xl">
           {tool.name}
         </h1>
-        <p className="text-lg text-muted-foreground">{tool.description}</p>
+        <p className="text-sm text-muted-foreground sm:text-lg">{tool.description}</p>
       </section>
 
-      {/* Editor — wider container */}
-      <section className="mx-auto max-w-7xl px-6 pb-12">
+      {/* Editor — wider container, tighter padding on mobile */}
+      <section className="mx-auto max-w-7xl px-2 pb-8 sm:px-6 sm:pb-12">
         <ToolEditor slug={slug} />
       </section>
 

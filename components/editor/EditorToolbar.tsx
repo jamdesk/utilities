@@ -16,9 +16,9 @@ interface EditorToolbarProps {
 
 export function EditorToolbar({ options = [], status }: EditorToolbarProps) {
   return (
-    <div className="flex items-center justify-between gap-3 border-b border-border px-3 py-2">
-      {/* Option chips — scrollable on mobile */}
-      <div className="flex items-center gap-1.5 overflow-x-auto" role="group" aria-label="Editor options">
+    <div className="flex items-center justify-between gap-2 border-b border-border px-2 py-1.5 sm:px-3 sm:py-2">
+      {/* Option chips — scrollable on mobile, smaller text on small screens */}
+      <div className="flex items-center gap-1 overflow-x-auto sm:gap-1.5" role="group" aria-label="Editor options">
         {options.map((option) => (
           <button
             key={option.label}
@@ -26,7 +26,7 @@ export function EditorToolbar({ options = [], status }: EditorToolbarProps) {
             role="switch"
             aria-checked={option.value}
             onClick={() => option.onChange(!option.value)}
-            className={`min-h-[44px] shrink-0 rounded-full px-3 py-1.5 text-sm font-medium transition-colors ${
+            className={`shrink-0 rounded-full px-2 py-1 text-xs font-medium transition-colors sm:px-3 sm:py-1.5 sm:text-sm ${
               option.value
                 ? 'bg-primary text-primary-foreground'
                 : 'bg-secondary text-muted-foreground hover:bg-surface-deep hover:text-foreground'

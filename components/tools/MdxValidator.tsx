@@ -123,7 +123,7 @@ function ValidationOutput({
   return (
     <div className="flex h-full flex-col" aria-live="polite">
       {/* Header — dark to match editor body */}
-      <div className="flex h-11 items-center justify-between bg-[#0f0d17] px-3">
+      <div className="flex h-9 items-center justify-between bg-[#0f0d17] px-2 sm:h-11 sm:px-3">
         <span className="text-sm font-medium text-[#e0e0e4]">
           {result.valid ? 'Validation Result' : `${result.errors.length} ${result.errors.length === 1 ? 'Issue' : 'Issues'}`}
         </span>

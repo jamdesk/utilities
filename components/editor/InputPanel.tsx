@@ -116,13 +116,13 @@ export function InputPanel({ value, onChange, onLoadSample, ariaLabel = 'MDX inp
       onDrop={handleDrop}
     >
       {/* Header — dark to match editor body */}
-      <div className="flex h-11 items-center justify-between bg-[#0f0d17] px-3">
-        <span className="text-sm font-medium text-[#e0e0e4]">Input</span>
-        <div className="flex items-center gap-1.5">
+      <div className="flex h-9 items-center justify-between bg-[#0f0d17] px-2 sm:h-11 sm:px-3">
+        <span className="text-xs font-medium text-[#e0e0e4] sm:text-sm">Input</span>
+        <div className="flex items-center gap-0.5 sm:gap-1.5">
           <button
             type="button"
             onClick={() => fileInputRef.current?.click()}
-            className="rounded-md px-2.5 py-1.5 text-sm text-[#6b6b78] transition-colors hover:bg-[#1a1725] hover:text-[#e0e0e4]"
+            className="rounded-md px-1.5 py-1 text-xs text-[#6b6b78] transition-colors hover:bg-[#1a1725] hover:text-[#e0e0e4] sm:px-2.5 sm:py-1.5 sm:text-sm"
           >
             Upload
           </button>
@@ -130,15 +130,15 @@ export function InputPanel({ value, onChange, onLoadSample, ariaLabel = 'MDX inp
             <button
               type="button"
               onClick={onLoadSample}
-              className="rounded-md px-2.5 py-1.5 text-sm text-[#6b6b78] transition-colors hover:bg-[#1a1725] hover:text-[#e0e0e4]"
+              className="rounded-md px-1.5 py-1 text-xs text-[#6b6b78] transition-colors hover:bg-[#1a1725] hover:text-[#e0e0e4] sm:px-2.5 sm:py-1.5 sm:text-sm"
             >
-              Load Sample
+              Sample
             </button>
           )}
           <button
             type="button"
             onClick={() => setShowUrlInput((prev) => !prev)}
-            className="rounded-md px-2.5 py-1.5 text-sm text-[#6b6b78] transition-colors hover:bg-[#1a1725] hover:text-[#e0e0e4]"
+            className="hidden rounded-md px-2.5 py-1.5 text-sm text-[#6b6b78] transition-colors hover:bg-[#1a1725] hover:text-[#e0e0e4] sm:block"
             aria-expanded={showUrlInput}
           >
             Open from URL
