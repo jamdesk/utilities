@@ -17,6 +17,7 @@ const importEngine = () => import('@/lib/mdx-engine')
 export function MdxValidator() {
   const { input, handleInputChange, handleLoadSample } = useToolInput(validatorSample, 'MDX Validator')
   const [result, setResult] = useState<ValidationResult | null>(null)
+  const [strictMode, setStrictMode] = useState(false)
   const getEngine = useLazyModule(importEngine)
 
   useEffect(() => {
@@ -33,12 +34,25 @@ export function MdxValidator() {
     return () => { cancelled = true }
   }, [input, getEngine])
 
+  // Filter errors based on strict mode
+  const filteredResult = result
+    ? {
+        ...result,
+        errors: strictMode
+          ? result.errors
+          : result.errors.filter((e) => e.severity === 'error'),
+        valid: strictMode
+          ? result.valid
+          : result.errors.filter((e) => e.severity === 'error').length === 0,
+      }
+    : null
+
   const formatErrors = useCallback(() => {
-    if (!result || result.errors.length === 0) return ''
-    return result.errors
+    if (!filteredResult || filteredResult.errors.length === 0) return ''
+    return filteredResult.errors
       .map((e) => `${e.line}:${e.column} [${e.severity}] ${e.message}`)
       .join('\n')
-  }, [result])
+  }, [filteredResult])
 
   const handleCopyErrors = useCallback(async () => {
     const text = formatErrors()
@@ -54,14 +68,22 @@ export function MdxValidator() {
     trackEvent('Download', { tool: 'MDX Validator' })
   }, [formatErrors])
 
-  const status = result
-    ? { valid: result.valid, errorCount: result.errors.length }
+  const status = filteredResult
+    ? { valid: filteredResult.valid, errorCount: filteredResult.errors.length }
     : undefined
+
+  const toolbarOptions = [
+    {
+      label: 'Strict mode',
+      value: strictMode,
+      onChange: setStrictMode,
+    },
+  ]
 
   return (
     <ToolLayout
       toolName="MDX Validator"
-      toolbar={<EditorToolbar status={status} />}
+      toolbar={<EditorToolbar options={toolbarOptions} status={status} />}
       inputPanel={
         <InputPanel
           value={input}
@@ -72,7 +94,7 @@ export function MdxValidator() {
       }
       outputPanel={
         <ValidationOutput
-          result={result}
+          result={filteredResult}
           onCopy={handleCopyErrors}
           onDownload={handleDownloadErrors}
         />

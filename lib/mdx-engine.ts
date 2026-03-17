@@ -75,10 +75,40 @@ export async function validateMdx(input: string): Promise<ValidationResult> {
  * Strip MDX-specific syntax (JSX components, imports, exports) and return
  * plain markdown. JSX wrappers with children are unwrapped (children kept),
  * self-closing components are removed entirely.
+ *
+ * Options:
+ * - `stripFrontmatter`: Also remove the YAML frontmatter block.
  */
-export async function stripMdxToMarkdown(input: string): Promise<string> {
+export async function stripMdxToMarkdown(
+  input: string,
+  options?: { stripFrontmatter?: boolean }
+): Promise<string> {
+  if (options?.stripFrontmatter) {
+    const processor = unified()
+      .use(remarkParse)
+      .use(remarkMdx)
+      .use(remarkFrontmatter)
+      .use(remarkStripMdx)
+      .use(remarkStripFrontmatter)
+      .use(remarkStringify)
+    const file = await processor.process(input)
+    return String(file)
+  }
   const file = await stripProcessor.process(input)
   return String(file)
+}
+
+/**
+ * Remark plugin that strips YAML frontmatter nodes from the AST.
+ */
+function remarkStripFrontmatter() {
+  return (tree: Root) => {
+    visit(tree, 'yaml', (node, index, parent) => {
+      if (!parent || typeof index !== 'number') return
+      parent.children.splice(index, 1)
+      return [SKIP, index]
+    })
+  }
 }
 
 /**

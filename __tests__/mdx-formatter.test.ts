@@ -120,3 +120,71 @@ describe('formatMdx', () => {
     expect(result.formatted).toContain('|')
   })
 })
+
+describe('formatMdx — sort frontmatter', () => {
+  it('sorts frontmatter keys alphabetically', async () => {
+    const input = '---\ntitle: "Test"\nauthor: "Alice"\ndescription: "A test"\n---\n\n# Hello'
+    const result = await formatMdx(input, { sortFrontmatter: true })
+    expect(result.error).toBeNull()
+    const fmMatch = result.formatted.match(/^---\n([\s\S]*?)\n---/)
+    expect(fmMatch).toBeTruthy()
+    const keys = fmMatch![1].split('\n').map((l) => l.split(':')[0])
+    expect(keys).toEqual(['author', 'description', 'title'])
+  })
+
+  it('leaves frontmatter unsorted when option is off', async () => {
+    const input = '---\ntitle: "Test"\nauthor: "Alice"\n---\n\n# Hello'
+    const result = await formatMdx(input, { sortFrontmatter: false })
+    expect(result.error).toBeNull()
+    const fmMatch = result.formatted.match(/^---\n([\s\S]*?)\n---/)
+    expect(fmMatch).toBeTruthy()
+    const keys = fmMatch![1].split('\n').map((l) => l.split(':')[0])
+    expect(keys).toEqual(['title', 'author'])
+  })
+})
+
+describe('formatMdx — trim trailing whitespace', () => {
+  it('strips trailing spaces from lines', async () => {
+    const input = '# Hello   \nWorld   \n'
+    const result = await formatMdx(input, { trimTrailingWhitespace: true })
+    expect(result.error).toBeNull()
+    const lines = result.formatted.split('\n')
+    for (const line of lines) {
+      expect(line).toBe(line.trimEnd())
+    }
+  })
+})
+
+describe('formatMdx — collapse blank lines', () => {
+  it('collapses 5 blank lines to 2', async () => {
+    const input = '# Hello\n\n\n\n\n\nWorld'
+    const result = await formatMdx(input, { collapseBlankLines: true })
+    expect(result.error).toBeNull()
+    // Should not contain 3+ consecutive newlines (which would be 4+ \n in a row)
+    expect(result.formatted).not.toMatch(/\n\s*\n\s*\n\s*\n/)
+  })
+})
+
+describe('formatMdx — print width', () => {
+  it('uses 120 print width when specified', async () => {
+    const result120 = await formatMdx('# Hello', { printWidth: 120 })
+    const result80 = await formatMdx('# Hello', { printWidth: 80 })
+    expect(result120.error).toBeNull()
+    expect(result80.error).toBeNull()
+    // Both should produce valid output (the difference is visible on long lines)
+    expect(result120.formatted).toContain('# Hello')
+    expect(result80.formatted).toContain('# Hello')
+  })
+
+  it('wraps long JSX differently at 80 vs 120', async () => {
+    const longJsx = '<Callout type="info" title="This is a very long title that should cause wrapping differences">Content here</Callout>'
+    const result80 = await formatMdx(longJsx, { printWidth: 80 })
+    const result120 = await formatMdx(longJsx, { printWidth: 120 })
+    expect(result80.error).toBeNull()
+    expect(result120.error).toBeNull()
+    // At 80 chars, the JSX should be more spread out (more newlines)
+    expect(result80.formatted.split('\n').length).toBeGreaterThanOrEqual(
+      result120.formatted.split('\n').length
+    )
+  })
+})

@@ -82,19 +82,68 @@ function normalizeMarkdownIndentation(input: string): string {
   return result.join('\n')
 }
 
+export interface FormatOptions {
+  tabWidth?: number
+  sortFrontmatter?: boolean
+  trimTrailingWhitespace?: boolean
+  collapseBlankLines?: boolean
+  printWidth?: number
+}
+
+/**
+ * Sort YAML frontmatter keys alphabetically.
+ * Detects the `---` delimited block at the start of the file, parses key-value
+ * lines, sorts by key, and reassembles.
+ */
+function sortFrontmatterKeys(input: string): string {
+  const match = input.match(/^(---\r?\n)([\s\S]*?\r?\n)(---(?:\r?\n|$))/)
+  if (!match) return input
+
+  const [fullMatch, openFence, body, closeFence] = match
+  const lines = body.split('\n').filter((l) => l.trim() !== '')
+  // Simple key: value lines — don't reorder multiline values or nested YAML
+  const sortable = lines.every((l) => /^\S+:/.test(l))
+  if (!sortable) return input
+
+  const sorted = [...lines].sort((a, b) => {
+    const keyA = a.split(':')[0].toLowerCase()
+    const keyB = b.split(':')[0].toLowerCase()
+    return keyA.localeCompare(keyB)
+  })
+
+  return input.replace(fullMatch, openFence + sorted.join('\n') + '\n' + closeFence)
+}
+
+/**
+ * Trim trailing whitespace from every line.
+ */
+function trimTrailingWhitespaceLines(input: string): string {
+  return input.split('\n').map((line) => line.trimEnd()).join('\n')
+}
+
+/**
+ * Collapse 3+ consecutive blank lines down to 2.
+ */
+function collapseConsecutiveBlankLines(input: string): string {
+  return input.replace(/(\n\s*){3,}\n/g, '\n\n\n')
+}
+
 export async function formatMdx(
   input: string,
-  options?: { tabWidth?: number }
+  options?: FormatOptions
 ): Promise<FormatResult> {
   try {
     if (!input.trim()) {
       return { formatted: '', error: null }
     }
 
-    // Normalize markdown indentation before Prettier (which only formats JSX/imports)
-    const normalized = normalizeMarkdownIndentation(input)
+    // Pre-process: sort frontmatter if requested
+    let processed = options?.sortFrontmatter ? sortFrontmatterKeys(input) : input
 
-    const formatted = await format(normalized, {
+    // Normalize markdown indentation before Prettier (which only formats JSX/imports)
+    const normalized = normalizeMarkdownIndentation(processed)
+
+    let formatted = await format(normalized, {
       parser: 'mdx',
       plugins: [
         prettierPluginBabel,
@@ -103,8 +152,20 @@ export async function formatMdx(
         prettierPluginHtml,
       ],
       tabWidth: options?.tabWidth ?? 2,
+      printWidth: options?.printWidth ?? 80,
       proseWrap: 'preserve',
     })
+
+    // Post-process: trim trailing whitespace
+    if (options?.trimTrailingWhitespace) {
+      formatted = trimTrailingWhitespaceLines(formatted)
+    }
+
+    // Post-process: collapse blank lines
+    if (options?.collapseBlankLines) {
+      formatted = collapseConsecutiveBlankLines(formatted)
+    }
+
     return { formatted, error: null }
   } catch (err) {
     return {

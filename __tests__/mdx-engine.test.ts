@@ -161,3 +161,28 @@ describe('stripMdxToMarkdown — export declarations', () => {
     expect(result).toContain('# Hello')
   })
 })
+
+describe('stripMdxToMarkdown — stripFrontmatter option', () => {
+  it('removes frontmatter when stripFrontmatter is true', async () => {
+    const input = '---\ntitle: "Test"\ndescription: "A test"\n---\n\n# Hello\n\nWorld'
+    const result = await stripMdxToMarkdown(input, { stripFrontmatter: true })
+    expect(result).not.toContain('---')
+    expect(result).not.toContain('title:')
+    expect(result).toContain('# Hello')
+    expect(result).toContain('World')
+  })
+
+  it('preserves frontmatter when stripFrontmatter is false', async () => {
+    const input = '---\ntitle: "Test"\n---\n\n# Hello'
+    const result = await stripMdxToMarkdown(input, { stripFrontmatter: false })
+    expect(result).toContain('title: "Test"')
+    expect(result).toContain('# Hello')
+  })
+
+  it('preserves frontmatter when no options given', async () => {
+    const input = '---\ntitle: "Test"\n---\n\n# Hello'
+    const result = await stripMdxToMarkdown(input)
+    expect(result).toContain('title: "Test"')
+    expect(result).toContain('# Hello')
+  })
+})

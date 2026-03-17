@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { InputPanel } from '@/components/editor/InputPanel'
 import { OutputPanel } from '@/components/editor/OutputPanel'
+import { EditorToolbar } from '@/components/editor/EditorToolbar'
 import { ToolLayout } from '@/components/tools/ToolLayout'
 import { useToolInput } from '@/lib/use-tool-input'
 import { useLazyModule } from '@/lib/use-lazy-module'
@@ -13,6 +14,7 @@ const importEngine = () => import('@/lib/mdx-engine')
 export function MdxToMarkdown() {
   const { input, handleInputChange, handleLoadSample } = useToolInput(mdxToMarkdownSample, 'MDX to Markdown')
   const [output, setOutput] = useState('')
+  const [stripFrontmatter, setStripFrontmatter] = useState(false)
   const getEngine = useLazyModule(importEngine)
 
   useEffect(() => {
@@ -22,7 +24,7 @@ export function MdxToMarkdown() {
       return
     }
     getEngine().then((engine) =>
-      engine.stripMdxToMarkdown(input)
+      engine.stripMdxToMarkdown(input, { stripFrontmatter })
     ).then((result) => {
       if (!cancelled) setOutput(result)
     }).catch((err) => {
@@ -33,11 +35,20 @@ export function MdxToMarkdown() {
       }
     })
     return () => { cancelled = true }
-  }, [input, getEngine])
+  }, [input, stripFrontmatter, getEngine])
+
+  const toolbarOptions = [
+    {
+      label: 'Strip frontmatter',
+      value: stripFrontmatter,
+      onChange: setStripFrontmatter,
+    },
+  ]
 
   return (
     <ToolLayout
       toolName="MDX to Markdown"
+      toolbar={<EditorToolbar options={toolbarOptions} />}
       inputPanel={
         <InputPanel
           value={input}
