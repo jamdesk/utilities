@@ -27,6 +27,7 @@ export default function RootLayout({
     >
       <head>
         <meta name="theme-color" content="#faf8f5" />
+        <link rel="icon" href="https://www.jamdesk.com/favicon.ico" sizes="any" />
         <Script
           defer
           data-domain="jamdesk.com"
