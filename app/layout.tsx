@@ -41,7 +41,11 @@ export default async function RootLayout({
       <body className="flex min-h-screen flex-col bg-[#13111a] text-[#e0e0e4] antialiased">
         <CommandPalette />
         {siteChrome ? (
-          <SiteChromeHeader header={siteChrome.header} css={siteChrome.css} />
+          <>
+            <SiteChromeHeader header={siteChrome.header} css={siteChrome.css} />
+            {/* Spacer for fixed-position site chrome nav */}
+            <div className="h-14 md:h-16" />
+          </>
         ) : (
           <DefaultHeader />
         )}

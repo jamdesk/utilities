@@ -44,6 +44,7 @@ export default async function ToolPage({
         <ConversionCta
           text={tool.ctaText}
           description={tool.ctaDescription}
+          toolSlug={tool.slug}
         />
       </section>
 

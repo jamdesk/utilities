@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { tools, getToolBySlug } from '@/lib/tools'
+import { toolSeoContent } from '@/lib/tool-seo-content'
 import { JsonLdScript } from '@/components/seo/JsonLdScript'
 
 export const dynamicParams = false
@@ -61,7 +62,14 @@ export default async function ToolLayout({
 
   return (
     <>
-      {tool && <JsonLdScript type="tool" tools={tools} tool={tool} />}
+      {tool && (
+        <JsonLdScript
+          type="tool"
+          tools={tools}
+          tool={tool}
+          howTo={toolSeoContent[tool.slug] ? { title: toolSeoContent[tool.slug].howToTitle, content: toolSeoContent[tool.slug].howToContent } : undefined}
+        />
+      )}
       {children}
     </>
   )
