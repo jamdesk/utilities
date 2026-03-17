@@ -156,7 +156,15 @@ function CodeEditorInner({
       highlightActiveLine(),
       drawSelection(),
       bracketMatching(),
-      markdown({ codeLanguages: (info) => (info === 'jsx' || info === 'tsx' || info === 'js' || info === 'ts') ? javascript({ jsx: true, typescript: info === 'tsx' || info === 'ts' }).language : null }),
+      markdown({
+        codeLanguages: (info: string) => {
+          if (info === 'jsx' || info === 'tsx' || info === 'js' || info === 'ts') {
+            const lang = javascript({ jsx: true, typescript: info === 'tsx' || info === 'ts' })
+            return lang.language
+          }
+          return null
+        },
+      }),
       EditorView.updateListener.of(handleUpdate),
     ]
 

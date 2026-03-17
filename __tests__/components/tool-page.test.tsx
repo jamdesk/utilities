@@ -1,6 +1,6 @@
 import { describe, it, expect, afterEach } from 'vitest'
 import { render, screen, cleanup } from '@testing-library/react'
-import { tools, getToolBySlug } from '../../lib/tools'
+import { tools } from '../../lib/tools'
 import { toolSeoContent } from '../../lib/tool-seo-content'
 
 afterEach(() => {

@@ -1,5 +1,4 @@
 import { describe, it, expect, afterEach, vi } from 'vitest'
-import type { ReactNode } from 'react'
 import { render, screen, cleanup, fireEvent } from '@testing-library/react'
 
 afterEach(() => {
@@ -25,7 +24,7 @@ describe('EngineErrorBoundary', async () => {
     // Suppress console.error from React and our boundary
     const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
 
-    function Thrower(): ReactNode {
+    function Thrower(): React.ReactNode {
       throw new Error('Something broke')
     }
 
@@ -47,7 +46,7 @@ describe('EngineErrorBoundary', async () => {
   it('shows load-failure fallback for chunk errors', () => {
     const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
 
-    function Thrower(): ReactNode {
+    function Thrower(): React.ReactNode {
       throw new Error('Loading chunk failed')
     }
 
@@ -71,7 +70,7 @@ describe('EngineErrorBoundary', async () => {
     const onRetry = vi.fn()
 
     let shouldThrow = true
-    function MaybeThrow(): ReactNode {
+    function MaybeThrow() {
       if (shouldThrow) {
         throw new Error('test error')
       }

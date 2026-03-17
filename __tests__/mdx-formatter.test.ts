@@ -76,4 +76,30 @@ describe('formatMdx', () => {
     const result = await formatMdx(input)
     expect(result.formatted.endsWith('\n')).toBe(true)
   })
+
+  it('handles very large input (1000+ lines)', async () => {
+    const lines = Array.from({ length: 1200 }, (_, i) => `Line ${i + 1}: some content here.`)
+    const input = '---\ntitle: "Large Document"\n---\n\n' + lines.join('\n\n')
+    const result = await formatMdx(input)
+    expect(result.error).toBeNull()
+    expect(result.formatted.length).toBeGreaterThan(0)
+    expect(result.formatted).toContain('Line 1:')
+    expect(result.formatted).toContain('Line 1200:')
+  })
+
+  it('formats MDX with GFM tables', async () => {
+    const input = `# Table Example
+
+| Column A | Column B | Column C |
+|----------|----------|----------|
+| Cell 1   | Cell 2   | Cell 3   |
+| Cell 4   | Cell 5   | Cell 6   |
+`
+    const result = await formatMdx(input)
+    expect(result.error).toBeNull()
+    expect(result.formatted).toContain('Column A')
+    expect(result.formatted).toContain('Cell 1')
+    // Table structure should be preserved
+    expect(result.formatted).toContain('|')
+  })
 })

@@ -101,3 +101,63 @@ describe('parseMdxToAst', () => {
     expect(ast.type).toBe('root')
   })
 })
+
+describe('validateMdx — GFM tables', () => {
+  it('validates MDX with GFM tables', async () => {
+    const input = `# Table Test
+
+| Header A | Header B |
+|----------|----------|
+| Cell 1   | Cell 2   |
+`
+    const result = await validateMdx(input)
+    expect(result.valid).toBe(true)
+  })
+
+  it('validates MDX with GFM table inside JSX', async () => {
+    const input = `<Callout>
+
+| Col A | Col B |
+|-------|-------|
+| A1    | B1    |
+
+</Callout>`
+    const result = await validateMdx(input)
+    expect(result.valid).toBe(true)
+  })
+})
+
+describe('stripMdxToMarkdown — inline JSX expressions', () => {
+  it('strips inline JSX expressions like {variable}', async () => {
+    const input = 'Hello {name}, welcome!'
+    const result = await stripMdxToMarkdown(input)
+    expect(result).toContain('Hello')
+    expect(result).toContain('welcome!')
+    expect(result).not.toContain('{name}')
+  })
+
+  it('strips block-level JSX expressions', async () => {
+    const input = '# Title\n\n{/* This is a comment */}\n\nParagraph'
+    const result = await stripMdxToMarkdown(input)
+    expect(result).toContain('# Title')
+    expect(result).toContain('Paragraph')
+    expect(result).not.toContain('{/*')
+  })
+})
+
+describe('stripMdxToMarkdown — export declarations', () => {
+  it('strips named exports', async () => {
+    const input = 'export const meta = { title: "Test" }\n\nexport const config = { sidebar: true }\n\n# Hello'
+    const result = await stripMdxToMarkdown(input)
+    expect(result).not.toContain('export const meta')
+    expect(result).not.toContain('export const config')
+    expect(result).toContain('# Hello')
+  })
+
+  it('strips default exports', async () => {
+    const input = 'export default function Layout({ children }) { return children }\n\n# Hello'
+    const result = await stripMdxToMarkdown(input)
+    expect(result).not.toContain('export default')
+    expect(result).toContain('# Hello')
+  })
+})
