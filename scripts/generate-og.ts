@@ -322,6 +322,7 @@ async function main() {
 }
 
 main().catch((err) => {
-  console.error('OG image generation failed:', err)
-  process.exit(1)
+  console.warn('OG image generation skipped:', err.message ?? err)
+  console.warn('This is non-fatal — OG images can be generated locally with: npx tsx scripts/generate-og.ts')
+  // Exit 0 so Vercel builds succeed even without system fonts
 })
