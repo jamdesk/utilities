@@ -140,8 +140,9 @@ export function InputPanel({ value, onChange, onLoadSample, ariaLabel = 'MDX inp
             onKeyDown={(e) => {
               if (e.key === 'Enter') handleLoadFromUrl()
             }}
-            placeholder="https://raw.githubusercontent.com/..."
-            className="min-h-[44px] flex-1 rounded-md border border-border bg-card px-3 py-2 text-base text-foreground placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-primary"
+            placeholder={"https://raw.githubusercontent.com/\u2026"}
+            name="mdx-url"
+            className="min-h-[44px] flex-1 rounded-md border border-border bg-card px-3 py-2 text-base text-foreground placeholder:text-text-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
             aria-label="URL to fetch MDX content from"
           />
           <button

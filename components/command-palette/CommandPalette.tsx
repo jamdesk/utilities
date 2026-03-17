@@ -54,10 +54,10 @@ export function CommandPalette() {
         >
           <Command.Input
             placeholder="Search tools..."
-            className="w-full border-b border-border bg-transparent px-4 py-3 text-base text-foreground placeholder:text-text-muted focus:outline-none"
+            className="w-full border-b border-border bg-transparent px-4 py-3 text-base text-foreground placeholder:text-text-muted focus-visible:outline-none"
             autoFocus
           />
-          <Command.List className="max-h-[300px] overflow-y-auto p-2 sm:max-h-[320px]">
+          <Command.List className="max-h-[300px] overflow-y-auto overscroll-contain p-2 sm:max-h-[320px]">
             <Command.Empty className="px-4 py-8 text-center text-sm text-muted-foreground">
               No tools found.
             </Command.Empty>

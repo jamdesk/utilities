@@ -30,6 +30,7 @@ export default async function RootLayout({
       className={`${inter.variable} ${dmSans.variable} ${jetbrainsMono.variable}`}
     >
       <head>
+        <meta name="theme-color" content="#faf8f5" />
         <Script
           defer
           data-domain="jamdesk.com"
@@ -38,6 +39,7 @@ export default async function RootLayout({
         />
       </head>
       <body className="flex min-h-screen flex-col bg-background text-foreground antialiased">
+        <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[200] focus:rounded-md focus:bg-primary focus:px-4 focus:py-2 focus:text-white">Skip to content</a>
         <CommandPalette />
         {siteChrome ? (
           <>
@@ -48,7 +50,7 @@ export default async function RootLayout({
         ) : (
           <DefaultHeader />
         )}
-        <main className="flex-1">{children}</main>
+        <main id="main-content" className="flex-1">{children}</main>
         {siteChrome ? (
           <SiteChromeFooter footer={siteChrome.footer} consent={siteChrome.consent} />
         ) : (

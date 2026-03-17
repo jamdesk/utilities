@@ -93,7 +93,7 @@ function ValidationOutput({
   if (!result) {
     return (
       <div className="flex h-full items-center justify-center text-sm text-muted-foreground">
-        Validating...
+        Validating{'\u2026'}
       </div>
     )
   }

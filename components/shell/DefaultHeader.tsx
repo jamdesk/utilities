@@ -81,6 +81,9 @@ export function DefaultHeader() {
             src="/utilities/logo-light.png"
             alt="Jamdesk"
             className="h-8 w-auto"
+            width={120}
+            height={32}
+            fetchPriority="high"
           />
           <span className="text-xs font-medium text-muted-foreground">
             Utilities
@@ -97,9 +100,12 @@ export function DefaultHeader() {
               {...(link.external
                 ? { target: '_blank', rel: 'noopener noreferrer' }
                 : {})}
+              {...(link.label === 'GitHub'
+                ? { 'aria-label': 'GitHub repository' }
+                : {})}
             >
               {link.label === 'GitHub' ? (
-                <span aria-label="GitHub repository"><GitHubIcon /></span>
+                <span><GitHubIcon /></span>
               ) : (
                 link.label
               )}

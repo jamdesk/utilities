@@ -218,9 +218,6 @@ function CodeEditorInner({
       ref={containerRef}
       className="h-full overflow-hidden rounded-md border border-border"
       aria-label={ariaLabel}
-      role="textbox"
-      aria-multiline="true"
-      aria-readonly={readOnly || undefined}
     />
   )
 }
@@ -230,7 +227,7 @@ const CodeEditorDynamic = dynamic(() => Promise.resolve(CodeEditorInner), {
   ssr: false,
   loading: () => (
     <div className="flex h-full items-center justify-center rounded-md border border-border bg-surface">
-      <span className="text-sm text-muted-foreground">Loading editor...</span>
+      <span className="text-sm text-muted-foreground">Loading editor{'\u2026'}</span>
     </div>
   ),
 })
