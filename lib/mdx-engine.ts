@@ -18,6 +18,53 @@ export interface ValidationResult {
   errors: ValidationError[]
 }
 
+/**
+ * Remark plugin that strips YAML frontmatter nodes from the AST.
+ */
+function remarkStripFrontmatter() {
+  return (tree: Root) => {
+    visit(tree, 'yaml', (_node, index, parent) => {
+      if (!parent || typeof index !== 'number') return
+      parent.children.splice(index, 1)
+      return [SKIP, index]
+    })
+  }
+}
+
+/**
+ * Remark plugin that strips MDX-specific nodes from the AST:
+ * - Removes mdxjsEsm (import/export declarations)
+ * - Removes mdxFlowExpression and mdxTextExpression
+ * - Unwraps mdxJsxFlowElement/mdxJsxTextElement with children
+ * - Removes self-closing JSX elements (no children)
+ */
+function remarkStripMdx() {
+  return (tree: Root) => {
+    visit(tree, (node, index, parent) => {
+      if (!parent || typeof index !== 'number') return
+
+      switch (node.type) {
+        case 'mdxjsEsm':
+        case 'mdxFlowExpression':
+        case 'mdxTextExpression':
+          parent.children.splice(index, 1)
+          return [SKIP, index]
+
+        case 'mdxJsxFlowElement':
+        case 'mdxJsxTextElement': {
+          const jsxNode = node as unknown as { children: RootContent[] }
+          if (jsxNode.children?.length > 0) {
+            parent.children.splice(index, 1, ...(jsxNode.children as typeof parent.children))
+          } else {
+            parent.children.splice(index, 1)
+          }
+          return [SKIP, index]
+        }
+      }
+    })
+  }
+}
+
 // Cached pipelines — unified processors are frozen after first use,
 // but parse() and process() handle that correctly.
 const baseProcessor = unified().use(remarkParse).use(remarkMdx).use(remarkFrontmatter)
@@ -96,53 +143,6 @@ export async function stripMdxToMarkdown(
   }
   const file = await stripProcessor.process(input)
   return String(file)
-}
-
-/**
- * Remark plugin that strips YAML frontmatter nodes from the AST.
- */
-function remarkStripFrontmatter() {
-  return (tree: Root) => {
-    visit(tree, 'yaml', (node, index, parent) => {
-      if (!parent || typeof index !== 'number') return
-      parent.children.splice(index, 1)
-      return [SKIP, index]
-    })
-  }
-}
-
-/**
- * Remark plugin that strips MDX-specific nodes from the AST:
- * - Removes mdxjsEsm (import/export declarations)
- * - Removes mdxFlowExpression and mdxTextExpression
- * - Unwraps mdxJsxFlowElement/mdxJsxTextElement with children
- * - Removes self-closing JSX elements (no children)
- */
-function remarkStripMdx() {
-  return (tree: Root) => {
-    visit(tree, (node, index, parent) => {
-      if (!parent || typeof index !== 'number') return
-
-      switch (node.type) {
-        case 'mdxjsEsm':
-        case 'mdxFlowExpression':
-        case 'mdxTextExpression':
-          parent.children.splice(index, 1)
-          return [SKIP, index]
-
-        case 'mdxJsxFlowElement':
-        case 'mdxJsxTextElement': {
-          const jsxNode = node as unknown as { children: RootContent[] }
-          if (jsxNode.children?.length > 0) {
-            parent.children.splice(index, 1, ...(jsxNode.children as typeof parent.children))
-          } else {
-            parent.children.splice(index, 1)
-          }
-          return [SKIP, index]
-        }
-      }
-    })
-  }
 }
 
 /** Extract line and column from a VFileMessage-like error */
