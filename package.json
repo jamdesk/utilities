@@ -1,6 +1,26 @@
 {
   "name": "jamdesk-utilities",
-  "version": "0.1.0",
+  "version": "1.0.0",
+  "description": "Free, open-source MDX tools — format, validate, preview, and convert MDX files in the browser",
+  "homepage": "https://www.jamdesk.com/utilities",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jamdesk/utilities.git"
+  },
+  "license": "Apache-2.0",
+  "author": "Jamdesk, Inc.",
+  "keywords": [
+    "mdx",
+    "mdx-formatter",
+    "mdx-validator",
+    "mdx-viewer",
+    "mdx-to-markdown",
+    "markdown",
+    "prettier",
+    "remark",
+    "documentation",
+    "developer-tools"
+  ],
   "private": true,
   "scripts": {
     "dev": "next dev",
