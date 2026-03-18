@@ -36,6 +36,9 @@ yarn-error.log*
 # OG images are committed (needed for Vercel builds without system fonts)
 # Regenerate locally with: npx tsx scripts/generate-og.ts
 
+# superpowers
+.superpowers/
+
 # vercel
 .vercel
 
