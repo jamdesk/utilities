@@ -1,5 +1,9 @@
 # Jamdesk Utilities
 
+[![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](./LICENSE)
+[![Next.js 16](https://img.shields.io/badge/Next.js-16-black?logo=next.js)](https://nextjs.org)
+[![Website](https://img.shields.io/badge/jamdesk.com%2Futilities-live-brightgreen)](https://www.jamdesk.com/utilities)
+
 Free, open-source MDX tools that run entirely in your browser. No server, no uploads, no accounts. Paste your MDX, get results.
 
 **[jamdesk.com/utilities](https://www.jamdesk.com/utilities)**
