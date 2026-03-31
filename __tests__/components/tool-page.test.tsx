@@ -87,6 +87,31 @@ describe('ConversionCta', async () => {
   })
 })
 
+describe('JsonLdScript', async () => {
+  const { JsonLdScript } = await import('../../components/seo/JsonLdScript')
+
+  it('renders breadcrumb JSON-LD script for tool pages', () => {
+    const tool = tools[0]
+    render(
+      <JsonLdScript
+        type="tool"
+        tools={tools}
+        tool={tool}
+        howTo={{ title: 'Test', content: 'Test content' }}
+      />
+    )
+    const scripts = document.querySelectorAll('script[type="application/ld+json"]')
+    const schemas = Array.from(scripts).map((s) => JSON.parse(s.textContent!))
+    const breadcrumb = schemas.find((s) => s['@type'] === 'BreadcrumbList')
+    expect(breadcrumb).toBeDefined()
+    expect(breadcrumb.itemListElement).toHaveLength(3)
+    expect(breadcrumb.itemListElement[0].item).toBe('https://www.jamdesk.com')
+    expect(breadcrumb.itemListElement[1].item).toBe(
+      'https://www.jamdesk.com/utilities'
+    )
+  })
+})
+
 describe('FaqSection', async () => {
   const { FaqSection } = await import('../../components/seo/FaqSection')
 

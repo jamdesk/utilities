@@ -79,6 +79,33 @@ function buildHowToSchema(tool: Tool, howTo: { title: string; content: string })
   }
 }
 
+function buildBreadcrumbSchema(tool: Tool) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Jamdesk',
+        item: 'https://www.jamdesk.com',
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: 'Utilities',
+        item: 'https://www.jamdesk.com/utilities',
+      },
+      {
+        '@type': 'ListItem',
+        position: 3,
+        name: tool.name,
+        item: `https://www.jamdesk.com/utilities/${tool.slug}`,
+      },
+    ],
+  }
+}
+
 /**
  * Renders structured data for search engines.
  * Content is safe — built from our own static tool registry, not user input.
@@ -87,7 +114,11 @@ export function JsonLdScript(props: JsonLdScriptProps) {
   const schemas =
     props.type === 'collection'
       ? [buildCollectionSchema(props.tools)]
-      : [buildToolSchema(props.tool), ...(props.howTo ? [buildHowToSchema(props.tool, props.howTo)] : [])]
+      : [
+          buildToolSchema(props.tool),
+          buildBreadcrumbSchema(props.tool),
+          ...(props.howTo ? [buildHowToSchema(props.tool, props.howTo)] : []),
+        ]
 
   return (
     <>
