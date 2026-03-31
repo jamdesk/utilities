@@ -8,9 +8,10 @@ interface InputPanelProps {
   onChange: (value: string) => void
   onLoadSample?: () => void
   ariaLabel?: string
+  acceptExtensions?: string[]
 }
 
-export function InputPanel({ value, onChange, onLoadSample, ariaLabel = 'MDX input editor' }: InputPanelProps) {
+export function InputPanel({ value, onChange, onLoadSample, ariaLabel = 'MDX input editor', acceptExtensions }: InputPanelProps) {
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [isDragging, setIsDragging] = useState(false)
   const [showUrlInput, setShowUrlInput] = useState(false)
@@ -51,11 +52,12 @@ export function InputPanel({ value, onChange, onLoadSample, ariaLabel = 'MDX inp
       setIsDragging(false)
 
       const file = e.dataTransfer.files[0]
-      if (file && (file.name.endsWith('.mdx') || file.name.endsWith('.md'))) {
+      const extensions = acceptExtensions ?? ['.mdx', '.md']
+      if (file && extensions.some((ext) => file.name.endsWith(ext))) {
         handleFile(file)
       }
     },
-    [handleFile]
+    [handleFile, acceptExtensions]
   )
 
   const handleFileInput = useCallback(
@@ -182,7 +184,7 @@ export function InputPanel({ value, onChange, onLoadSample, ariaLabel = 'MDX inp
       <input
         ref={fileInputRef}
         type="file"
-        accept=".mdx,.md"
+        accept={acceptExtensions?.join(',') ?? '.mdx,.md'}
         onChange={handleFileInput}
         className="hidden"
         aria-hidden="true"
@@ -193,7 +195,7 @@ export function InputPanel({ value, onChange, onLoadSample, ariaLabel = 'MDX inp
         {isDragging && (
           <div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center rounded-md border-2 border-dashed border-primary bg-[#ff3621]/10">
             <span className="text-sm font-medium text-primary">
-              Drop .mdx or .md file
+              Drop {acceptExtensions?.join('/') ?? '.mdx/.md'} file
             </span>
           </div>
         )}

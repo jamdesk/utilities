@@ -70,6 +70,7 @@ export function YamlValidator() {
           onChange={handleInputChange}
           onLoadSample={handleLoadSample}
           ariaLabel="YAML input editor"
+          acceptExtensions={['.yaml', '.yml']}
         />
       }
       outputPanel={

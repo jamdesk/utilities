@@ -10,8 +10,8 @@ export function GET() {
     )
     .join('\n\n')
 
-  const body = `# Jamdesk Utilities
-> Free, open-source MDX tools at ${baseUrl}
+  const body = `# Jamdesk Developer Utilities
+> Free, open-source developer tools for MDX, Markdown, YAML, and JSON at ${baseUrl}
 
 ## Tools
 

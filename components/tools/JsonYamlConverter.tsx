@@ -54,6 +54,7 @@ export function JsonYamlConverter() {
           onChange={handleInputChange}
           onLoadSample={handleLoadSample}
           ariaLabel={yamlToJsonMode ? 'YAML input editor' : 'JSON input editor'}
+          acceptExtensions={['.json', '.yaml', '.yml']}
         />
       }
       outputPanel={

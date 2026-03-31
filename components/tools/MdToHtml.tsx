@@ -61,6 +61,7 @@ export function MdToHtml() {
           onChange={handleInputChange}
           onLoadSample={handleLoadSample}
           ariaLabel="Markdown input editor"
+          acceptExtensions={['.md', '.mdx']}
         />
       }
       outputPanel={

@@ -50,6 +50,16 @@ function buildToolSchema(tool: Tool) {
 }
 
 function buildHowToSchema(tool: Tool, howTo: { title: string; content: string }) {
+  const inputDescription = tool.slug.startsWith('mdx')
+    ? 'Paste your MDX content into the input editor, or upload an .mdx file'
+    : tool.slug === 'yaml-validator'
+      ? 'Paste your YAML content into the input editor'
+      : tool.slug === 'json-yaml-converter'
+        ? 'Paste your JSON or YAML content into the input editor'
+        : tool.slug === 'markdown-table-generator'
+          ? 'Paste your CSV or TSV data into the input editor'
+          : 'Paste your content into the input editor, or upload a file'
+
   return {
     '@context': 'https://schema.org',
     '@type': 'HowTo',
@@ -63,13 +73,13 @@ function buildHowToSchema(tool: Tool, howTo: { title: string; content: string })
       },
       {
         '@type': 'HowToStep',
-        name: 'Paste your MDX',
-        text: 'Paste your MDX content into the input editor, or upload an .mdx file',
+        name: 'Add your content',
+        text: inputDescription,
       },
       {
         '@type': 'HowToStep',
         name: 'Get results',
-        text: 'The tool processes your MDX instantly. Copy or download the output.',
+        text: 'The tool processes your content instantly. Copy or download the output.',
       },
     ],
     tool: {

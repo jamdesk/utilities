@@ -52,6 +52,7 @@ export function TableGenerator() {
           onChange={handleInputChange}
           onLoadSample={handleLoadSample}
           ariaLabel="CSV or TSV input editor"
+          acceptExtensions={['.csv', '.tsv', '.txt']}
         />
       }
       outputPanel={

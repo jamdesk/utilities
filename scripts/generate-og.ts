@@ -37,6 +37,30 @@ const tools = [
     description: 'Strip JSX, get clean Markdown',
     icon: '\u2193',
   },
+  {
+    slug: 'markdown-to-html',
+    name: 'Markdown to HTML',
+    description: 'Convert Markdown to clean HTML',
+    icon: '\uD83D\uDD04', // 🔄
+  },
+  {
+    slug: 'yaml-validator',
+    name: 'YAML Validator',
+    description: 'Validate YAML syntax and find errors',
+    icon: '\uD83D\uDCCB', // 📋
+  },
+  {
+    slug: 'json-yaml-converter',
+    name: 'JSON \u21C4 YAML',
+    description: 'Convert between JSON and YAML',
+    icon: '\u21C4', // ⇄
+  },
+  {
+    slug: 'markdown-table-generator',
+    name: 'Markdown Table Generator',
+    description: 'Convert CSV or TSV to Markdown tables',
+    icon: '\uD83D\uDCCA', // 📊
+  },
 ]
 
 const outDir = join(process.cwd(), 'public', 'og')
@@ -221,7 +245,7 @@ async function generateHubImage(fontData: ArrayBuffer) {
                 marginBottom: '16px',
                 lineHeight: 1.1,
               },
-              children: 'MDX Utilities',
+              children: 'Developer Utilities',
             },
           },
           {
@@ -232,7 +256,7 @@ async function generateHubImage(fontData: ArrayBuffer) {
                 color: '#5a6f77',
                 marginBottom: '32px',
               },
-              children: 'Free, open source tools for MDX',
+              children: 'Free, open source documentation tools',
             },
           },
           {
