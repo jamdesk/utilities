@@ -6,17 +6,18 @@ import { FaqSection } from '@/components/seo/FaqSection'
 
 export const metadata: Metadata = {
   title: {
-    absolute: 'MDX Utilities — Free, Open Source Tools for MDX | Jamdesk',
+    absolute:
+      'MDX & Developer Utilities — Free, Open Source Documentation Tools | Jamdesk',
   },
   description:
-    'Free, open-source MDX tools. Format, validate, preview, and convert MDX files. All processing happens client-side — your data never leaves your browser.',
+    'Free, open-source developer tools for MDX, Markdown, YAML, and JSON. Format, validate, convert, and preview — all client-side, no data leaves your browser.',
   alternates: {
     canonical: 'https://www.jamdesk.com/utilities',
   },
   openGraph: {
-    title: 'MDX Utilities — Free, Open Source Tools for MDX | Jamdesk',
+    title: 'MDX & Developer Utilities — Free, Open Source Documentation Tools | Jamdesk',
     description:
-      'Free, open-source MDX tools. Format, validate, preview, and convert MDX files — all client-side.',
+      'Free, open-source developer tools for MDX, Markdown, YAML, and JSON. Format, validate, convert, and preview — all client-side.',
     url: 'https://www.jamdesk.com/utilities',
     siteName: 'Jamdesk',
     type: 'website',
@@ -25,15 +26,15 @@ export const metadata: Metadata = {
         url: 'https://www.jamdesk.com/utilities/og/hub.png',
         width: 1200,
         height: 630,
-        alt: 'MDX Utilities by Jamdesk',
+        alt: 'Developer Utilities by Jamdesk',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'MDX Utilities — Free, Open Source Tools for MDX | Jamdesk',
+    title: 'MDX & Developer Utilities — Free, Open Source Documentation Tools | Jamdesk',
     description:
-      'Free, open-source MDX tools. Format, validate, preview, and convert MDX files — all client-side.',
+      'Free, open-source developer tools for MDX, Markdown, YAML, and JSON. Format, validate, convert, and preview — all client-side.',
     images: ['https://www.jamdesk.com/utilities/og/hub.png'],
   },
 }
@@ -74,10 +75,10 @@ export default function Home() {
       {/* Hero */}
       <section className="mx-auto max-w-7xl px-6 pb-8 pt-16">
         <h1 className="mb-4 font-heading text-4xl font-bold tracking-tight text-foreground [text-wrap:balance] sm:text-5xl">
-          MDX Utilities
+          Developer Utilities
         </h1>
         <p className="mb-6 text-lg text-muted-foreground">
-          Free, open source tools for MDX
+          Free, open source tools for documentation
         </p>
         <span className="inline-block rounded-full border border-border bg-card px-4 py-1.5 text-xs text-muted-foreground">
           Client-side &middot; No ads &middot; Open source

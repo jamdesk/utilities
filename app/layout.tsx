@@ -9,10 +9,10 @@ import './globals.css'
 export const metadata: Metadata = {
   title: {
     template: '%s | Jamdesk Utilities',
-    default: 'MDX Utilities — Free Online Tools | Jamdesk',
+    default: 'Developer Utilities — Free Online Tools | Jamdesk',
   },
   description:
-    'Free, open-source MDX tools. Format, validate, preview, and convert MDX files — all client-side.',
+    'Free, open-source developer tools for MDX, Markdown, YAML, and JSON. All processing client-side.',
 }
 
 export default function RootLayout({
