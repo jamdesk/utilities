@@ -24,6 +24,15 @@ export function DefaultFooter() {
           </a>
           <span className="text-footer-separator" aria-hidden="true">|</span>
           <a
+            href="https://jamdesk.com/docs"
+            className="text-footer-text transition-colors hover:text-white"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Docs
+          </a>
+          <span className="text-footer-separator" aria-hidden="true">|</span>
+          <a
             href="https://github.com/jamdesk/jamdesk-utilities"
             className="text-footer-text transition-colors hover:text-white"
             target="_blank"

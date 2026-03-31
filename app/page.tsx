@@ -118,6 +118,15 @@ export default function Home() {
           The format has become the standard for documentation sites, design
           systems, and content-heavy applications where authors want the
           simplicity of Markdown with the flexibility of components.
+          {' '}
+          <a
+            href="https://jamdesk.com/docs/content/mdx-components"
+            className="text-primary hover:underline"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            See how Jamdesk uses MDX components
+          </a>.
         </p>
       </section>
 
@@ -138,6 +147,15 @@ export default function Home() {
           for docs find that content stays closer to the codebase, updates ship
           faster, and the gap between writing and publishing narrows
           significantly.
+          {' '}
+          <a
+            href="https://jamdesk.com/docs/getting-started"
+            className="text-primary hover:underline"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Get started with Jamdesk
+          </a>.
         </p>
       </section>
 
