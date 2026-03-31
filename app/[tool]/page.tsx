@@ -60,6 +60,22 @@ export default async function ToolPage({
         </section>
       )}
 
+      {/* Detail sections */}
+      {seoContent?.detailSections && seoContent.detailSections.length > 0 && (
+        <section className="mx-auto max-w-3xl px-6 pb-12">
+          {seoContent.detailSections.map((section, i) => (
+            <div key={i} className={i > 0 ? 'mt-8' : ''}>
+              <h3 className="mb-3 font-heading text-xl font-semibold text-foreground">
+                {section.heading}
+              </h3>
+              <p className="leading-relaxed text-muted-foreground">
+                {section.content}
+              </p>
+            </div>
+          ))}
+        </section>
+      )}
+
       {/* FAQ */}
       {seoContent && seoContent.faq.length > 0 && (
         <section className="mx-auto max-w-3xl px-6 pb-12">
