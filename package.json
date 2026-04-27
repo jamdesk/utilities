@@ -5,7 +5,7 @@
   "homepage": "https://www.jamdesk.com/utilities",
   "repository": {
     "type": "git",
-    "url": "https://github.com/jamdesk/jamdesk-utilities.git"
+    "url": "https://github.com/jamdesk/utilities.git"
   },
   "license": "Apache-2.0",
   "author": "Jamdesk, Inc.",

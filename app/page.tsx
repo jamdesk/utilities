@@ -65,7 +65,7 @@ const FAQ_ITEMS = [
   {
     question: 'Are the tools open source?',
     answer:
-      'Yes. MDX Utilities is open source under the Apache 2.0 license. You can view the source code, report issues, and contribute at github.com/jamdesk/jamdesk-utilities.',
+      'Yes. MDX Utilities is open source under the Apache 2.0 license. You can view the source code, report issues, and contribute at github.com/jamdesk/utilities.',
   },
 ]
 
