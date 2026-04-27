@@ -119,3 +119,17 @@ export const tools: Tool[] = [
 export function getToolBySlug(slug: string): Tool | undefined {
   return tools.find((t) => t.slug === slug)
 }
+
+/**
+ * Standard free/open-source FAQ entry, named per-tool. Front-loads both
+ * "free" and "open source" keywords in the question itself (FAQ schema
+ * is heavily quoted by AI assistants).
+ */
+export function freeFaqEntry(tool: Tool): { question: string; answer: string } {
+  const subjectLower = tool.seoSubject.replace(/^The /, 'the ')
+  const repoLabel = 'github.com/jamdesk/utilities'
+  return {
+    question: `Is ${subjectLower} free and open source?`,
+    answer: `Yes. ${tool.seoSubject} is free and open source under the Apache 2.0 license. The full source code is on GitHub at ${repoLabel}, and there are no ads, accounts, or usage limits.`,
+  }
+}

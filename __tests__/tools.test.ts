@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { tools, getToolBySlug } from '../lib/tools'
+import { tools, getToolBySlug, freeFaqEntry } from '../lib/tools'
 
 describe('tool registry', () => {
   it('has no duplicate slugs', () => {
@@ -19,6 +19,19 @@ describe('tool registry', () => {
       expect(tool.description).toBeTruthy()
       expect(tool.seoTitle).toBeTruthy()
       expect(tool.seoDescription).toBeTruthy()
+      expect(tool.seoSubject).toBeTruthy()
+    }
+  })
+
+  it('freeFaqEntry names every tool with both keywords', () => {
+    for (const tool of tools) {
+      const entry = freeFaqEntry(tool)
+      const subjectLower = tool.seoSubject.replace(/^The /, 'the ')
+      expect(entry.question).toContain(subjectLower)
+      expect(entry.question).toMatch(/free and open source/)
+      expect(entry.answer).toContain(tool.seoSubject)
+      expect(entry.answer).toMatch(/Apache 2\.0/)
+      expect(entry.answer).toContain('github.com/jamdesk/utilities')
     }
   })
 

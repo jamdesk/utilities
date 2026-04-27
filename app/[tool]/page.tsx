@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { tools, getToolBySlug } from '@/lib/tools'
+import { tools, getToolBySlug, freeFaqEntry } from '@/lib/tools'
 import { toolSeoContent } from '@/lib/tool-seo-content'
 import { FaqSection } from '@/components/seo/FaqSection'
 import { ConversionCta } from '@/components/seo/ConversionCta'
@@ -88,13 +88,13 @@ export default async function ToolPage({
         </section>
       )}
 
-      {/* FAQ */}
-      {seoContent && seoContent.faq.length > 0 && (
+      {/* FAQ — appends a tool-specific free/open-source entry */}
+      {seoContent && (
         <section className="mx-auto max-w-3xl px-6 pb-12">
           <h2 className="mb-6 font-heading text-2xl font-bold text-foreground">
             Frequently Asked Questions
           </h2>
-          <FaqSection items={seoContent.faq} />
+          <FaqSection items={[...seoContent.faq, freeFaqEntry(tool)]} />
         </section>
       )}
 

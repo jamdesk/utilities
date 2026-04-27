@@ -30,7 +30,7 @@ function buildCollectionSchema(tools: Tool[]) {
     hasPart: tools.map((tool) => ({
       '@type': 'WebApplication',
       name: tool.name,
-      description: tool.description,
+      description: tool.seoDescription,
       url: `https://www.jamdesk.com/utilities/${tool.slug}`,
       applicationCategory: 'DeveloperApplication',
       isAccessibleForFree: true,
