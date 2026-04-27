@@ -67,7 +67,6 @@ export default async function ToolLayout({
       {tool && (
         <JsonLdScript
           type="tool"
-          tools={tools}
           tool={tool}
           howTo={seoContent ? { title: seoContent.howToTitle, content: seoContent.howToContent } : undefined}
         />

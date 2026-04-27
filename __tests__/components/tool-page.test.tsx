@@ -2,6 +2,9 @@ import { describe, it, expect, afterEach } from 'vitest'
 import { render, screen, cleanup } from '@testing-library/react'
 import { tools } from '../../lib/tools'
 import { toolSeoContent } from '../../lib/tool-seo-content'
+import { REPO_URL, LICENSE_URL, ORG_URL } from '../../lib/site'
+import { JsonLdScript } from '../../components/seo/JsonLdScript'
+import { OpenSourceNote } from '../../components/seo/OpenSourceNote'
 
 afterEach(() => {
   cleanup()
@@ -88,15 +91,12 @@ describe('ConversionCta', async () => {
   })
 })
 
-describe('JsonLdScript', async () => {
-  const { JsonLdScript } = await import('../../components/seo/JsonLdScript')
-
+describe('JsonLdScript', () => {
   it('renders breadcrumb JSON-LD script for tool pages', () => {
     const tool = tools[0]
     render(
       <JsonLdScript
         type="tool"
-        tools={tools}
         tool={tool}
         howTo={{ title: 'Test', content: 'Test content' }}
       />
@@ -110,6 +110,30 @@ describe('JsonLdScript', async () => {
     expect(breadcrumb.itemListElement[1].item).toBe(
       'https://www.jamdesk.com/utilities'
     )
+  })
+
+  it('emits license, creator, and sameAs on tool WebApplication schema', () => {
+    render(<JsonLdScript type="tool" tool={tools[0]} />)
+    const scripts = document.querySelectorAll('script[type="application/ld+json"]')
+    const schemas = Array.from(scripts).map((s) => JSON.parse(s.textContent!))
+    const app = schemas.find((s) => s['@type'] === 'WebApplication')
+    expect(app).toBeDefined()
+    expect(app.license).toBe(LICENSE_URL)
+    expect(app.sameAs).toEqual([REPO_URL])
+    expect(app.creator['@type']).toBe('Organization')
+    expect(app.creator.name).toBe('Jamdesk')
+  })
+})
+
+describe('OpenSourceNote', () => {
+  it('links to the canonical repo, license, and org URLs', () => {
+    render(<OpenSourceNote />)
+    const hrefs = Array.from(screen.getAllByRole('link')).map((a) =>
+      a.getAttribute('href')
+    )
+    expect(hrefs).toContain(REPO_URL)
+    expect(hrefs).toContain(LICENSE_URL)
+    expect(hrefs).toContain(ORG_URL)
   })
 })
 

@@ -4,7 +4,9 @@ import { tools, getToolBySlug } from '@/lib/tools'
 import { toolSeoContent } from '@/lib/tool-seo-content'
 import { FaqSection } from '@/components/seo/FaqSection'
 import { ConversionCta } from '@/components/seo/ConversionCta'
+import { OpenSourceNote } from '@/components/seo/OpenSourceNote'
 import { ToolEditor } from '@/components/tools/ToolEditor'
+import { REPO_URL } from '@/lib/site'
 
 export default async function ToolPage({
   params,
@@ -26,7 +28,17 @@ export default async function ToolPage({
       {/* Hero — left-aligned, same max-width as editor */}
       <section className="mx-auto max-w-7xl px-4 pb-4 pt-6 sm:px-6 sm:pb-8 sm:pt-12">
         <span className="mb-2 inline-block rounded-full border border-border bg-card px-3 py-1 text-[10px] sm:mb-4 sm:px-4 sm:py-1.5 sm:text-xs text-muted-foreground">
-          Free &middot; Open Source &middot; Client-side
+          Free &middot;{' '}
+          <a
+            href={REPO_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline-offset-2 transition-colors hover:text-foreground hover:underline"
+            aria-label="Open source — view repository on GitHub (Apache 2.0)"
+          >
+            Open source
+          </a>
+          {' '}&middot; Client-side
         </span>
         <h1 className="mb-1 font-heading text-xl font-bold tracking-tight text-foreground [text-wrap:balance] sm:mb-3 sm:text-4xl">
           {tool.name}
@@ -85,6 +97,11 @@ export default async function ToolPage({
           <FaqSection items={seoContent.faq} />
         </section>
       )}
+
+      {/* Open source / client-side note */}
+      <section className="mx-auto max-w-3xl px-6 pb-12">
+        <OpenSourceNote heading="About this tool" />
+      </section>
 
       {/* Related tools */}
       <section className="mx-auto max-w-4xl px-6 pb-16">

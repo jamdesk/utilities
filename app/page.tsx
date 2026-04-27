@@ -3,6 +3,8 @@ import Link from 'next/link'
 import { tools } from '@/lib/tools'
 import { JsonLdScript } from '@/components/seo/JsonLdScript'
 import { FaqSection } from '@/components/seo/FaqSection'
+import { OpenSourceNote } from '@/components/seo/OpenSourceNote'
+import { REPO_URL } from '@/lib/site'
 
 export const metadata: Metadata = {
   title: {
@@ -81,7 +83,16 @@ export default function Home() {
           Free, open source tools for documentation
         </p>
         <span className="inline-block rounded-full border border-border bg-card px-4 py-1.5 text-xs text-muted-foreground">
-          Client-side &middot; No ads &middot; Open source
+          Client-side &middot; No ads &middot;{' '}
+          <a
+            href={REPO_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline-offset-2 transition-colors hover:text-foreground hover:underline"
+            aria-label="Open source — view repository on GitHub (Apache 2.0)"
+          >
+            Open source
+          </a>
         </span>
       </section>
 
@@ -121,7 +132,7 @@ export default function Home() {
           simplicity of Markdown with the flexibility of components.
           {' '}
           <a
-            href="https://jamdesk.com/docs/content/react-components"
+            href="https://www.jamdesk.com/docs/content/react-components"
             className="text-primary hover:underline"
             target="_blank"
             rel="noopener noreferrer"
@@ -150,7 +161,7 @@ export default function Home() {
           significantly.
           {' '}
           <a
-            href="https://jamdesk.com/docs/quickstart"
+            href="https://www.jamdesk.com/docs/quickstart"
             className="text-primary hover:underline"
             target="_blank"
             rel="noopener noreferrer"
@@ -158,6 +169,11 @@ export default function Home() {
             Get started with Jamdesk
           </a>.
         </p>
+      </section>
+
+      {/* Open source / client-side note */}
+      <section className="mx-auto max-w-3xl px-6 pb-12">
+        <OpenSourceNote heading="Free, open source, and client-side" />
       </section>
 
       {/* FAQ */}

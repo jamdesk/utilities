@@ -1,6 +1,7 @@
 import { describe, it, expect, afterEach } from 'vitest'
 import { render, screen, cleanup } from '@testing-library/react'
 import { tools } from '../../lib/tools'
+import { REPO_URL } from '../../lib/site'
 import Home from '../../app/page'
 
 afterEach(() => {
@@ -82,5 +83,17 @@ describe('hub page', () => {
   it('renders the badge', () => {
     render(<Home />)
     expect(screen.getByText(/Client-side/)).toBeDefined()
+  })
+
+  it('links Open source to the canonical repo URL', () => {
+    render(<Home />)
+    const links = screen
+      .getAllByRole('link')
+      .filter((a) => a.getAttribute('href') === REPO_URL)
+    expect(links.length).toBeGreaterThan(0)
+    for (const link of links) {
+      expect(link.getAttribute('target')).toBe('_blank')
+      expect(link.getAttribute('rel')).toBe('noopener noreferrer')
+    }
   })
 })

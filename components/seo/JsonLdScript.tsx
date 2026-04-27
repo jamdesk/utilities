@@ -1,8 +1,15 @@
 import type { Tool } from '@/lib/tools'
+import { REPO_URL, LICENSE_URL, ORG_NAME, ORG_URL } from '@/lib/site'
 
 type JsonLdScriptProps =
   | { type: 'collection'; tools: Tool[] }
-  | { type: 'tool'; tools: Tool[]; tool: Tool; howTo?: { title: string; content: string } }
+  | { type: 'tool'; tool: Tool; howTo?: { title: string; content: string } }
+
+const CREATOR = {
+  '@type': 'Organization',
+  name: ORG_NAME,
+  url: ORG_URL,
+}
 
 function buildCollectionSchema(tools: Tool[]) {
   return {
@@ -12,6 +19,9 @@ function buildCollectionSchema(tools: Tool[]) {
     description:
       'Free, open-source MDX tools. Format, validate, preview, and convert MDX files — all client-side.',
     url: 'https://www.jamdesk.com/utilities',
+    license: LICENSE_URL,
+    creator: CREATOR,
+    sameAs: [REPO_URL],
     isPartOf: {
       '@type': 'WebSite',
       name: 'Jamdesk',
@@ -26,6 +36,9 @@ function buildCollectionSchema(tools: Tool[]) {
       isAccessibleForFree: true,
       browserRequirements: 'Requires JavaScript',
       operatingSystem: 'Any',
+      license: LICENSE_URL,
+      creator: CREATOR,
+      sameAs: [REPO_URL],
     })),
   }
 }
@@ -41,6 +54,9 @@ function buildToolSchema(tool: Tool) {
     isAccessibleForFree: true,
     browserRequirements: 'Requires JavaScript',
     operatingSystem: 'Any',
+    license: LICENSE_URL,
+    creator: CREATOR,
+    sameAs: [REPO_URL],
     offers: {
       '@type': 'Offer',
       price: '0',

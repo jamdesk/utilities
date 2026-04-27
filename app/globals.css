@@ -126,4 +126,11 @@
   html {
     @apply font-sans;
   }
+  /* Tailwind v4 dropped the default pointer cursor on buttons; restore v3 behavior.
+     Guards both native :disabled and aria-disabled (Base UI's focusableWhenDisabled). */
+  button:not(:disabled):not([aria-disabled="true"]),
+  [role="button"]:not(:disabled):not([aria-disabled="true"]),
+  summary {
+    cursor: pointer;
+  }
 }
