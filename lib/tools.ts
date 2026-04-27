@@ -5,6 +5,8 @@ export interface Tool {
   icon: string
   seoTitle: string
   seoDescription: string
+  /** Subject phrase used in body prose, e.g. "The MDX Viewer" — hand-tuned so grammar reads naturally with "is free and open source, and runs entirely…". */
+  seoSubject: string
   ctaText: string
   ctaDescription: string
 }
@@ -18,6 +20,7 @@ export const tools: Tool[] = [
     seoTitle: 'MDX Formatter — Free Online MDX Beautifier | Jamdesk',
     seoDescription:
       'Format and beautify MDX files online. Free, open source, client-side. Handles frontmatter, JSX components, and markdown.',
+    seoSubject: 'The MDX Formatter',
     ctaText: 'Deploy formatted MDX as live docs',
     ctaDescription: 'Jamdesk formats your MDX automatically when you deploy.',
   },
@@ -29,6 +32,7 @@ export const tools: Tool[] = [
     seoTitle: 'MDX Validator — Free Online MDX Syntax Checker | Jamdesk',
     seoDescription:
       'Validate MDX files online. Catch syntax errors, unclosed JSX tags, and invalid frontmatter. Free, open source, client-side.',
+    seoSubject: 'The MDX Validator',
     ctaText: 'Validate MDX on every deploy',
     ctaDescription:
       'Jamdesk validates your MDX automatically — no broken docs.',
@@ -41,6 +45,7 @@ export const tools: Tool[] = [
     seoTitle: 'MDX Viewer — Free Online MDX Preview | Jamdesk',
     seoDescription:
       'Preview rendered MDX output online with live updating. See how your MDX looks with component stubs. Free, open source, client-side.',
+    seoSubject: 'The MDX Viewer',
     ctaText: 'See this on a real docs site',
     ctaDescription:
       'Jamdesk renders your MDX as beautiful documentation.',
@@ -53,6 +58,7 @@ export const tools: Tool[] = [
     seoTitle: 'MDX to Markdown Converter — Free Online Tool | Jamdesk',
     seoDescription:
       'Convert MDX to clean Markdown. Strip JSX components, imports, and exports. Free, open source, client-side.',
+    seoSubject: 'The MDX to Markdown converter',
     ctaText: 'Jamdesk supports MDX natively',
     ctaDescription: 'No conversion needed — Jamdesk renders MDX as-is.',
   },
@@ -64,6 +70,7 @@ export const tools: Tool[] = [
     seoTitle: 'Markdown to HTML Converter — Free Online Tool | Jamdesk',
     seoDescription:
       'Convert Markdown to clean HTML online. Handles headings, lists, code blocks, links, and images. Free, open source, client-side.',
+    seoSubject: 'The Markdown to HTML converter',
     ctaText: 'Publish Markdown as live documentation',
     ctaDescription:
       'Jamdesk turns your Markdown and MDX into beautiful docs sites automatically.',
@@ -76,6 +83,7 @@ export const tools: Tool[] = [
     seoTitle: 'YAML Validator — Free Online YAML Syntax Checker | Jamdesk',
     seoDescription:
       'Validate YAML online. Catch syntax errors, duplicate keys, and indentation issues. Shows parsed output as JSON. Free, open source, client-side.',
+    seoSubject: 'The YAML Validator',
     ctaText: 'YAML frontmatter powers your docs',
     ctaDescription:
       'Jamdesk validates frontmatter automatically when you deploy documentation.',
@@ -88,6 +96,7 @@ export const tools: Tool[] = [
     seoTitle: 'JSON to YAML / YAML to JSON Converter — Free Online | Jamdesk',
     seoDescription:
       'Convert JSON to YAML and YAML to JSON online. Bidirectional conversion with error detection. Free, open source, client-side.',
+    seoSubject: 'The JSON ↔ YAML converter',
     ctaText: 'Config files power your docs',
     ctaDescription:
       'Jamdesk handles JSON and YAML configuration natively.',
@@ -100,6 +109,7 @@ export const tools: Tool[] = [
     seoTitle: 'Markdown Table Generator — Free Online CSV to Table | Jamdesk',
     seoDescription:
       'Generate Markdown tables from CSV or TSV data. Paste spreadsheet data, get a formatted Markdown table. Free, open source, client-side.',
+    seoSubject: 'The Markdown Table Generator',
     ctaText: 'Tables look great in Jamdesk docs',
     ctaDescription:
       'Jamdesk renders Markdown tables with responsive styling and dark mode support.',

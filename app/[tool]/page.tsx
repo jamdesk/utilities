@@ -100,7 +100,7 @@ export default async function ToolPage({
 
       {/* Open source / client-side note */}
       <section className="mx-auto max-w-3xl px-6 pb-12">
-        <OpenSourceNote heading="About this tool" />
+        <OpenSourceNote tool={tool} />
       </section>
 
       {/* Related tools */}

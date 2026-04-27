@@ -135,7 +135,20 @@ describe('OpenSourceNote', () => {
     expect(hrefs).toContain(LICENSE_URL)
     expect(hrefs).toContain(ORG_URL)
   })
+
+  it('names the tool in the body when a tool is provided', () => {
+    for (const tool of tools) {
+      cleanup()
+      render(<OpenSourceNote tool={tool} />)
+      expect(tool.seoSubject).toBeTruthy()
+      expect(screen.getByText(new RegExp(`${escapeRegex(tool.seoSubject)} is free and open source`))).toBeDefined()
+    }
+  })
 })
+
+function escapeRegex(s: string): string {
+  return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+}
 
 describe('FaqSection', async () => {
   const { FaqSection } = await import('../../components/seo/FaqSection')
