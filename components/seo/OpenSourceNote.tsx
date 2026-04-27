@@ -11,10 +11,10 @@ export function OpenSourceNote({ heading = 'About these tools' }: OpenSourceNote
         {heading}
       </h2>
       <p className="leading-relaxed text-muted-foreground">
-        {ORG_NAME} Utilities run entirely in your browser. Your input is never
-        uploaded, stored, or logged — you can verify this by opening the network
-        tab in your browser developer tools while the tool runs. The full source
-        code is on{' '}
+        {ORG_NAME} Utilities are free and open source, and run entirely in your
+        browser. Your input is never uploaded, stored, or logged — you can verify
+        this by opening the network tab in your browser developer tools while the
+        tool runs. The full source code is on{' '}
         <a
           href={REPO_URL}
           className="text-primary hover:underline"
