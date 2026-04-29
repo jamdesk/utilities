@@ -69,13 +69,15 @@ describe('MDX Cheatsheet page', () => {
     expect(html).toMatch(/Updated\s*<time/)
   })
 
-  it('covers Markdown basics: lists, links, inline formatting, blockquotes', () => {
-    // Spot-check a handful of new entries (gap fixes from the rewrite).
+  it('covers the gap-fix entries (Markdown basics, MDX gotchas, GFM extras)', () => {
     const labels = cheatsheetEntries.map((e) => e.label)
     expect(labels).toContain('Lists')
     expect(labels).toContain('Links and images')
     expect(labels).toContain('Inline formatting')
     expect(labels).toContain('Blockquotes')
+    expect(labels).toContain('Footnotes')
+    expect(labels).toContain('GFM extras')
+    expect(labels).toContain('Escaping curly braces')
     expect(labels).toContain('Markdown inside components (the gotcha)')
   })
 })

@@ -63,6 +63,19 @@ export const cheatsheetGroups: CheatsheetGroup[] = [
         toolSlug: 'markdown-table-generator',
         toolLabel: 'Generate tables from CSV',
       },
+      {
+        label: 'Footnotes',
+        description:
+          'GFM addition. Reference with `[^id]` in the text, define with `[^id]:` at the bottom of the file.',
+        snippet:
+          'A claim that needs a citation.[^1]\n\n[^1]: Source: <https://example.com>.',
+      },
+      {
+        label: 'GFM extras',
+        description:
+          'GitHub Flavored Markdown adds two everyday extensions: strikethrough with `~~`, and task list checkboxes inside list items.',
+        snippet: '~~outdated~~\n\n- [x] Done\n- [ ] To do',
+      },
     ],
   },
   {
@@ -83,6 +96,13 @@ export const cheatsheetGroups: CheatsheetGroup[] = [
           'A single curly brace runs JavaScript. Works in body text and inside JSX attributes.',
         snippet:
           'Year: {new Date().getFullYear()}\n\n<a href={`/posts/${slug}`}>Read more</a>',
+      },
+      {
+        label: 'Escaping curly braces',
+        description:
+          'Body text with a literal `{` or `}` triggers the JSX parser and breaks the build. Wrap them in code spans, or escape with a backslash.',
+        snippet:
+          'Use \\{ and \\} for literal braces.\n\nOr put them in `code`: { literal }',
       },
       {
         label: 'Imports',
