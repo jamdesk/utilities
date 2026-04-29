@@ -165,6 +165,6 @@ export const cheatsheetFaqs: { question: string; answer: string }[] = [
   {
     question: 'Why do I need a cheatsheet if MDX is just Markdown plus JSX?',
     answer:
-      "Roughly, yes. Friction lives at the edges. Frontmatter parsing depends on a remark plugin, JSX adjacent to Markdown doesn't render the way you'd expect, and code-block meta strings vary by toolchain. This page exists because those edges cost an hour the first time you hit them.",
+      "Roughly, yes. Frontmatter parsing depends on a remark plugin, JSX adjacent to Markdown doesn't render the way you'd expect, and code-block meta strings vary by toolchain. This page exists because those edges cost an hour the first time you hit them.",
   },
 ]

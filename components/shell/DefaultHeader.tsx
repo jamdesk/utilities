@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { REPO_URL } from '@/lib/site'
 
 function GitHubIcon() {
   return (
@@ -58,8 +59,9 @@ function CloseIcon() {
 
 const NAV_LINKS = [
   { href: '/utilities', label: 'Tools' },
+  { href: '/utilities/mdx-cheatsheet', label: 'Cheatsheet' },
   {
-    href: 'https://github.com/jamdesk/jamdesk-utilities',
+    href: REPO_URL,
     label: 'GitHub',
     external: true,
   },
