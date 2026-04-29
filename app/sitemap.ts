@@ -11,6 +11,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: 'weekly',
       priority: 1.0,
     },
+    {
+      url: `${baseUrl}/mdx-cheatsheet`,
+      lastModified,
+      changeFrequency: 'monthly',
+      priority: 0.9,
+    },
     ...tools.map((tool) => ({
       url: `${baseUrl}/${tool.slug}`,
       lastModified,
