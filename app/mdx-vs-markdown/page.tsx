@@ -26,53 +26,53 @@ export default function MdxVsMarkdownPage() {
         <h2 className="mb-4 font-heading text-2xl font-bold text-foreground">
           At a glance
         </h2>
-        <div className="overflow-x-auto rounded-lg border border-border bg-card [&_td]:px-4 [&_td]:py-3 [&_tr]:border-b [&_tr]:border-border last:[&_tr]:border-0">
+        <div className="overflow-x-auto rounded-lg border border-border bg-card [&_td]:px-4 [&_td]:py-3 [&_th[scope=row]]:px-4 [&_th[scope=row]]:py-3 [&_th[scope=row]]:font-normal [&_tr]:border-b [&_tr]:border-border last:[&_tr]:border-0">
           <table className="w-full text-left text-sm">
             <thead className="bg-muted/50">
               <tr>
-                <th className="px-4 py-3 font-semibold">Feature</th>
-                <th className="px-4 py-3 font-semibold">Markdown</th>
-                <th className="px-4 py-3 font-semibold">MDX</th>
+                <th scope="col" className="px-4 py-3 font-semibold">Feature</th>
+                <th scope="col" className="px-4 py-3 font-semibold">Markdown</th>
+                <th scope="col" className="px-4 py-3 font-semibold">MDX</th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td>JSX components</td>
+                <th scope="row">JSX components</th>
                 <td>No</td>
                 <td>Yes</td>
               </tr>
               <tr>
-                <td>Imports / exports</td>
+                <th scope="row">Imports / exports</th>
                 <td>No</td>
                 <td>Yes</td>
               </tr>
               <tr>
-                <td>JS expressions</td>
+                <th scope="row">JS expressions</th>
                 <td>No</td>
                 <td>Yes</td>
               </tr>
               <tr>
-                <td>YAML frontmatter</td>
+                <th scope="row">YAML frontmatter</th>
                 <td>Yes (with parser)</td>
                 <td>Yes</td>
               </tr>
               <tr>
-                <td>Standard Markdown syntax</td>
+                <th scope="row">Standard Markdown syntax</th>
                 <td>Yes</td>
                 <td>Yes</td>
               </tr>
               <tr>
-                <td>GitHub renders directly</td>
+                <th scope="row">GitHub renders directly</th>
                 <td>Yes</td>
                 <td>No (renders as text)</td>
               </tr>
               <tr>
-                <td>Build step required</td>
+                <th scope="row">Build step required</th>
                 <td>No</td>
                 <td>Yes</td>
               </tr>
               <tr>
-                <td>Best for</td>
+                <th scope="row">Best for</th>
                 <td>Static content, READMEs</td>
                 <td>Interactive docs, blogs, content sites</td>
               </tr>

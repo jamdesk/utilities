@@ -36,4 +36,23 @@ describe('MDX vs Markdown page', () => {
     const html = renderToString(MdxVsMarkdownPage())
     expect(html).toContain('MDX is Markdown plus JSX.')
   })
+
+  it('renders 8 comparison rows + 1 header row', () => {
+    // Catches accidental row deletion; the row count is the contract.
+    const html = renderToString(MdxVsMarkdownPage())
+    const rowMatches = html.match(/<tr/g) ?? []
+    expect(rowMatches.length).toBe(9)
+  })
+
+  it('renders the decision tree as an ordered list', () => {
+    const html = renderToString(MdxVsMarkdownPage())
+    expect(html).toMatch(/<ol[^>]*list-decimal/)
+    expect(html).toContain('Decision tree')
+  })
+
+  it('renders the byline with the freshness date', () => {
+    const html = renderToString(MdxVsMarkdownPage())
+    expect(html).toContain('Maintained by Jamdesk')
+    expect(html).toMatch(/<time dateTime="\d{4}-\d{2}-\d{2}"/)
+  })
 })

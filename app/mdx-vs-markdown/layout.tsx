@@ -84,7 +84,7 @@ export default function MdxVsMarkdownLayout({
   return (
     <>
       <JsonLd data={articleSchema} />
-      <JsonLd data={buildFaqSchema([...mdxVsMarkdownFaqs])} />
+      <JsonLd data={buildFaqSchema(mdxVsMarkdownFaqs)} />
       {children}
     </>
   )

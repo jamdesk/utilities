@@ -138,7 +138,7 @@ function buildBreadcrumbSchema(tool: Tool) {
 }
 
 export function buildFaqSchema(
-  faqs: { question: string; answer: string }[]
+  faqs: readonly { question: string; answer: string }[]
 ) {
   return {
     '@context': 'https://schema.org',
