@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { tools, getToolBySlug, freeFaqEntry, LAST_REVIEWED } from '@/lib/tools'
+import { getToolBySlug, freeFaqEntry, LAST_REVIEWED, getRelatedTools } from '@/lib/tools'
 import { toolSeoContent } from '@/lib/tool-seo-content'
 import { FaqSection } from '@/components/seo/FaqSection'
 import { ConversionCta } from '@/components/seo/ConversionCta'
@@ -21,7 +21,7 @@ export default async function ToolPage({
   }
 
   const seoContent = toolSeoContent[tool.slug]
-  const relatedTools = tools.filter((t) => t.slug !== tool.slug)
+  const relatedTools = getRelatedTools(tool)
 
   return (
     <>

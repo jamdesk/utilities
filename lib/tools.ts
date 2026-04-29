@@ -9,6 +9,8 @@ export interface Tool {
   seoSubject: string
   ctaText: string
   ctaDescription: string
+  /** Optional explicit ordering for the Related Tools section. If omitted, falls back to prefix-based grouping. */
+  relatedSlugs?: string[]
 }
 
 /** Single shared review date. Bump when any tool's content materially changes. */
@@ -64,6 +66,7 @@ export const tools: Tool[] = [
     seoSubject: 'The MDX to Markdown converter',
     ctaText: 'Jamdesk supports MDX natively',
     ctaDescription: 'No conversion needed — Jamdesk renders MDX as-is.',
+    relatedSlugs: ['markdown-to-html', 'mdx-validator', 'mdx-viewer'],
   },
   {
     slug: 'markdown-to-html',
@@ -77,6 +80,7 @@ export const tools: Tool[] = [
     ctaText: 'Publish Markdown as live documentation',
     ctaDescription:
       'Jamdesk turns your Markdown and MDX into beautiful docs sites automatically.',
+    relatedSlugs: ['mdx-to-markdown', 'markdown-table-generator', 'mdx-viewer'],
   },
   {
     slug: 'yaml-validator',
@@ -135,4 +139,29 @@ export function freeFaqEntry(tool: Tool): { question: string; answer: string } {
     question: `Is ${subjectLower} free and open source?`,
     answer: `Yes. ${tool.seoSubject} is free and open source under the Apache 2.0 license. The full source code is on GitHub at ${repoLabel}, and there are no ads, accounts, or usage limits.`,
   }
+}
+
+/**
+ * Returns up to `count` thematically-related tools, never including the current one.
+ *
+ * Resolution order:
+ *   1. If `current.relatedSlugs` is set, use it (in order, dedup, slice).
+ *   2. Otherwise, prefer tools sharing the same family prefix (mdx-*, markdown-*).
+ *   3. Fall back to remaining tools in registry order.
+ */
+export function getRelatedTools(current: Tool, count = 3): Tool[] {
+  if (current.relatedSlugs && current.relatedSlugs.length > 0) {
+    const explicit = current.relatedSlugs
+      .map((slug) => tools.find((t) => t.slug === slug))
+      .filter((t): t is Tool => t !== undefined && t.slug !== current.slug)
+    return explicit.slice(0, count)
+  }
+  const prefix = current.slug.split('-')[0]
+  const sameFamily = tools.filter(
+    (t) => t.slug !== current.slug && t.slug.startsWith(`${prefix}-`)
+  )
+  const others = tools.filter(
+    (t) => t.slug !== current.slug && !t.slug.startsWith(`${prefix}-`)
+  )
+  return [...sameFamily, ...others].slice(0, count)
 }
