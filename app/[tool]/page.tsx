@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { tools, getToolBySlug, freeFaqEntry } from '@/lib/tools'
+import { tools, getToolBySlug, freeFaqEntry, LAST_REVIEWED } from '@/lib/tools'
 import { toolSeoContent } from '@/lib/tool-seo-content'
 import { FaqSection } from '@/components/seo/FaqSection'
 import { ConversionCta } from '@/components/seo/ConversionCta'
@@ -101,6 +101,9 @@ export default async function ToolPage({
       {/* Open source / client-side note */}
       <section className="mx-auto max-w-3xl px-6 pb-12">
         <OpenSourceNote tool={tool} />
+        <p className="mt-4 text-xs text-muted-foreground">
+          Maintained by Jamdesk &middot; Last reviewed {LAST_REVIEWED}
+        </p>
       </section>
 
       {/* Related tools */}

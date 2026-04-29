@@ -1,4 +1,4 @@
-import type { Tool } from '@/lib/tools'
+import { type Tool, LAST_REVIEWED } from '@/lib/tools'
 import { REPO_URL, LICENSE_URL, ORG_NAME, ORG_URL } from '@/lib/site'
 
 type JsonLdScriptProps =
@@ -43,12 +43,14 @@ function buildCollectionSchema(tools: Tool[]) {
       operatingSystem: 'Any',
       license: LICENSE_URL,
       creator: CREATOR,
+      author: CREATOR,
+      dateModified: LAST_REVIEWED,
       sameAs: [REPO_URL],
     })),
   }
 }
 
-function buildToolSchema(tool: Tool) {
+export function buildToolSchema(tool: Tool) {
   return {
     '@context': 'https://schema.org',
     '@type': 'WebApplication',
@@ -61,6 +63,8 @@ function buildToolSchema(tool: Tool) {
     operatingSystem: 'Any',
     license: LICENSE_URL,
     creator: CREATOR,
+    author: CREATOR,
+    dateModified: LAST_REVIEWED,
     sameAs: [REPO_URL],
     offers: {
       '@type': 'Offer',

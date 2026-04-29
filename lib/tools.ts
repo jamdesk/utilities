@@ -11,6 +11,9 @@ export interface Tool {
   ctaDescription: string
 }
 
+/** Single shared review date. Bump when any tool's content materially changes. */
+export const LAST_REVIEWED = '2026-04-29'
+
 export const tools: Tool[] = [
   {
     slug: 'mdx-formatter',
