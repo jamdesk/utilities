@@ -6,6 +6,12 @@ import { mdxVsMarkdownFaqs } from '@/lib/mdx-vs-markdown-faqs'
 const PAGE_URL = 'https://www.jamdesk.com/utilities/mdx-vs-markdown'
 const DESCRIPTION =
   'MDX vs Markdown explained. Syntax differences, performance trade-offs, ecosystem support, and a decision tree for choosing between them.'
+const OG_DESCRIPTION =
+  'MDX vs Markdown explained. Syntax, performance, and a decision tree.'
+// See note in mdx-cheatsheet/layout.tsx — metadataBase doesn't combine with
+// basePath, so the auto-resolved /opengraph-image URL drops /utilities/
+// and 404s. Pin explicitly.
+const OG_IMAGE = 'https://www.jamdesk.com/utilities/mdx-vs-markdown/opengraph-image'
 
 export const metadata: Metadata = {
   title: { absolute: 'MDX vs Markdown — When to Use Each (2026 Guide) | Jamdesk' },
@@ -13,15 +19,17 @@ export const metadata: Metadata = {
   alternates: { canonical: PAGE_URL },
   openGraph: {
     title: 'MDX vs Markdown — When to Use Each | Jamdesk',
-    description: 'MDX vs Markdown explained. Syntax, performance, and a decision tree.',
+    description: OG_DESCRIPTION,
     url: PAGE_URL,
     siteName: 'Jamdesk',
     type: 'article',
+    images: [{ url: OG_IMAGE, width: 1200, height: 630, alt: 'MDX vs Markdown — When to Use Each' }],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'MDX vs Markdown — When to Use Each | Jamdesk',
-    description: 'MDX vs Markdown explained. Syntax, performance, and a decision tree.',
+    description: OG_DESCRIPTION,
+    images: [OG_IMAGE],
   },
 }
 
