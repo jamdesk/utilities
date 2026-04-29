@@ -2,17 +2,20 @@ import type { Metadata } from 'next'
 import { LAST_REVIEWED } from '@/lib/tools'
 import { ORG_NAME, ORG_URL, LICENSE_URL } from '@/lib/site'
 import { JsonLd } from '@/components/seo/JsonLd'
+import { buildFaqSchema } from '@/components/seo/JsonLdScript'
+import { cheatsheetFaqs } from '@/lib/mdx-cheatsheet-data'
 
 const PAGE_URL = 'https://www.jamdesk.com/utilities/mdx-cheatsheet'
+const DESCRIPTION =
+  'MDX syntax with copy-paste examples for Markdown basics, MDX additions, JSX components, and the blank-line rule.'
 
 export const metadata: Metadata = {
   title: { absolute: 'MDX Cheatsheet — Syntax Reference with Live Examples | Jamdesk' },
-  description:
-    'Complete MDX syntax reference with copy-paste examples. Headings, frontmatter, JSX components, expressions, imports — every MDX feature in one page.',
+  description: DESCRIPTION,
   alternates: { canonical: PAGE_URL },
   openGraph: {
     title: 'MDX Cheatsheet — Syntax Reference | Jamdesk',
-    description: 'Complete MDX syntax reference with copy-paste examples.',
+    description: DESCRIPTION,
     url: PAGE_URL,
     siteName: 'Jamdesk',
     type: 'article',
@@ -20,7 +23,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'MDX Cheatsheet — Syntax Reference | Jamdesk',
-    description: 'Complete MDX syntax reference with copy-paste examples.',
+    description: DESCRIPTION,
   },
 }
 
@@ -30,7 +33,7 @@ const articleSchema = {
   '@context': 'https://schema.org',
   '@type': 'Article',
   headline: 'MDX Cheatsheet',
-  description: 'Complete MDX syntax reference with copy-paste examples.',
+  description: DESCRIPTION,
   url: PAGE_URL,
   mainEntityOfPage: PAGE_URL,
   inLanguage: 'en',
@@ -45,6 +48,7 @@ export default function CheatsheetLayout({ children }: { children: React.ReactNo
   return (
     <>
       <JsonLd data={articleSchema} />
+      <JsonLd data={buildFaqSchema(cheatsheetFaqs)} />
       {children}
     </>
   )
