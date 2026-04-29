@@ -10,64 +10,16 @@ import satori from 'satori'
 import { Resvg } from '@resvg/resvg-js'
 import { writeFileSync, mkdirSync, readFileSync } from 'fs'
 import { join } from 'path'
+import { tools as toolRegistry } from '../lib/tools'
 
-// Import tools statically to avoid path alias issues in tsx
-const tools = [
-  {
-    slug: 'mdx-formatter',
-    name: 'MDX Formatter',
-    description: 'Format and beautify MDX files',
-    icon: '\u26A1',
-  },
-  {
-    slug: 'mdx-validator',
-    name: 'MDX Validator',
-    description: 'Check MDX for syntax errors',
-    icon: '\u2713',
-  },
-  {
-    slug: 'mdx-viewer',
-    name: 'MDX Viewer',
-    description: 'Preview rendered MDX output',
-    icon: '\uD83D\uDC41',
-  },
-  {
-    slug: 'mdx-to-markdown',
-    name: 'MDX to Markdown',
-    description: 'Strip JSX, get clean Markdown',
-    icon: '\u2193',
-  },
-  {
-    slug: 'html-to-mdx',
-    name: 'HTML to MDX',
-    description: 'Convert HTML to clean MDX-ready Markdown',
-    icon: '\u2191',
-  },
-  {
-    slug: 'markdown-to-html',
-    name: 'Markdown to HTML',
-    description: 'Convert Markdown to clean HTML',
-    icon: '\uD83D\uDD04', // 🔄
-  },
-  {
-    slug: 'yaml-validator',
-    name: 'YAML Validator',
-    description: 'Validate YAML syntax and find errors',
-    icon: '\uD83D\uDCCB', // 📋
-  },
-  {
-    slug: 'json-yaml-converter',
-    name: 'JSON \u21C4 YAML',
-    description: 'Convert between JSON and YAML',
-    icon: '\u21C4', // ⇄
-  },
-  {
-    slug: 'markdown-table-generator',
-    name: 'Markdown Table Generator',
-    description: 'Convert CSV or TSV to Markdown tables',
-    icon: '\uD83D\uDCCA', // 📊
-  },
-]
+// Project to the subset the OG generator needs. Relative import (not the @/
+// alias) so tsx can resolve without a tsconfig path-aliases pass.
+const tools = toolRegistry.map((t) => ({
+  slug: t.slug,
+  name: t.name,
+  description: t.description,
+  icon: t.icon,
+}))
 
 const outDir = join(process.cwd(), 'public', 'og')
 mkdirSync(outDir, { recursive: true })
@@ -162,7 +114,7 @@ async function generateOgImage(
                 fontSize: '20px',
                 color: '#8fa8b3',
               },
-              children: 'Free \u00B7 Open Source \u00B7 Client-side',
+              children: 'Free · Open Source · Client-side',
             },
           },
           // Bottom accent bar
@@ -272,7 +224,7 @@ async function generateHubImage(fontData: ArrayBuffer) {
                 fontSize: '20px',
                 color: '#8fa8b3',
               },
-              children: 'Format \u00B7 Validate \u00B7 Preview \u00B7 Convert',
+              children: 'Format · Validate · Preview · Convert',
             },
           },
           {

@@ -1,6 +1,7 @@
 'use client'
 
 import dynamic from 'next/dynamic'
+import type { ComponentType } from 'react'
 
 const MdxFormatter = dynamic(
   () => import('@/components/tools/MdxFormatter').then((m) => m.MdxFormatter),
@@ -44,22 +45,27 @@ const TableGenerator = dynamic(
   { ssr: false }
 )
 
+const COMPONENTS: Record<string, ComponentType> = {
+  'mdx-formatter': MdxFormatter,
+  'mdx-validator': MdxValidator,
+  'mdx-viewer': MdxViewer,
+  'mdx-to-markdown': MdxToMarkdown,
+  'markdown-to-html': MdToHtml,
+  'html-to-mdx': HtmlToMdx,
+  'yaml-validator': YamlValidator,
+  'json-yaml-converter': JsonYamlConverter,
+  'markdown-table-generator': TableGenerator,
+}
+
 interface ToolEditorProps {
   slug: string
 }
 
 export function ToolEditor({ slug }: ToolEditorProps) {
+  const Component = COMPONENTS[slug]
   return (
     <div className="flex min-h-[400px] flex-col overflow-hidden rounded-xl border border-border bg-card shadow-[0_2px_16px_rgba(0,0,0,0.06)]">
-      {slug === 'mdx-formatter' && <MdxFormatter />}
-      {slug === 'mdx-validator' && <MdxValidator />}
-      {slug === 'mdx-viewer' && <MdxViewer />}
-      {slug === 'mdx-to-markdown' && <MdxToMarkdown />}
-      {slug === 'markdown-to-html' && <MdToHtml />}
-      {slug === 'html-to-mdx' && <HtmlToMdx />}
-      {slug === 'yaml-validator' && <YamlValidator />}
-      {slug === 'json-yaml-converter' && <JsonYamlConverter />}
-      {slug === 'markdown-table-generator' && <TableGenerator />}
+      {Component ? <Component /> : null}
     </div>
   )
 }

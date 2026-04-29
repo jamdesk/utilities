@@ -4,6 +4,19 @@ import rehypeRemark from 'rehype-remark'
 import remarkGfm from 'remark-gfm'
 import remarkStringify from 'remark-stringify'
 
+// Frozen at module load so each conversion reuses one processor instead of
+// rebuilding the unified chain on every keystroke.
+const processor = unified()
+  .use(rehypeParse, { fragment: true })
+  .use(rehypeRemark)
+  .use(remarkGfm)
+  .use(remarkStringify, {
+    bullet: '*',
+    fences: true,
+    incrementListMarker: false,
+  })
+  .freeze()
+
 /**
  * Convert HTML to MDX-compatible Markdown.
  *
@@ -15,17 +28,6 @@ import remarkStringify from 'remark-stringify'
  */
 export async function convertHtmlToMdx(input: string): Promise<string> {
   if (!input.trim()) return ''
-
-  const result = await unified()
-    .use(rehypeParse, { fragment: true })
-    .use(rehypeRemark)
-    .use(remarkGfm)
-    .use(remarkStringify, {
-      bullet: '*',
-      fences: true,
-      incrementListMarker: false,
-    })
-    .process(input)
-
+  const result = await processor.process(input)
   return String(result)
 }
