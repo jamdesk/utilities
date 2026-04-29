@@ -8,10 +8,9 @@ const DESCRIPTION =
   'MDX vs Markdown explained. Syntax differences, performance trade-offs, ecosystem support, and a decision tree for choosing between them.'
 const OG_DESCRIPTION =
   'MDX vs Markdown explained. Syntax, performance, and a decision tree.'
-// See note in mdx-cheatsheet/layout.tsx — metadataBase doesn't combine with
-// basePath, so the auto-resolved /opengraph-image URL drops /utilities/
-// and 404s. Pin explicitly.
-const OG_IMAGE = 'https://www.jamdesk.com/utilities/mdx-vs-markdown/opengraph-image'
+// See note in mdx-cheatsheet/layout.tsx. Reuses hub image until per-page
+// static images are generated.
+const OG_IMAGE = 'https://www.jamdesk.com/utilities/og/hub.png'
 
 export const metadata: Metadata = {
   title: { absolute: 'MDX vs Markdown — When to Use Each (2026 Guide) | Jamdesk' },

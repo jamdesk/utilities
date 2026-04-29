@@ -6,11 +6,10 @@ import { cheatsheetFaqs } from '@/lib/mdx-cheatsheet-data'
 const PAGE_URL = 'https://www.jamdesk.com/utilities/mdx-cheatsheet'
 const DESCRIPTION =
   'MDX syntax with copy-paste examples for Markdown basics, MDX additions, JSX components, and the blank-line rule.'
-// Explicit absolute URL for the auto-generated /opengraph-image route. Next's
-// metadataBase doesn't include basePath, so relying on auto-resolution
-// produces /mdx-cheatsheet/opengraph-image (404) instead of the correct
-// /utilities/mdx-cheatsheet/opengraph-image. Pin it manually.
-const OG_IMAGE = 'https://www.jamdesk.com/utilities/mdx-cheatsheet/opengraph-image'
+// Reuses the hub OG image. The dynamic opengraph-image.tsx route was deleted
+// because Next.js metadataBase resolution drops basePath, producing a 404 URL.
+// TODO: generate a per-page static image at public/og/mdx-cheatsheet.png.
+const OG_IMAGE = 'https://www.jamdesk.com/utilities/og/hub.png'
 
 export const metadata: Metadata = {
   title: { absolute: 'MDX Cheatsheet — Syntax Reference with Live Examples | Jamdesk' },
