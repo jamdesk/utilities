@@ -38,6 +38,12 @@ const tools = [
     icon: '\u2193',
   },
   {
+    slug: 'html-to-mdx',
+    name: 'HTML to MDX',
+    description: 'Convert HTML to clean MDX-ready Markdown',
+    icon: '\u2191',
+  },
+  {
     slug: 'markdown-to-html',
     name: 'Markdown to HTML',
     description: 'Convert Markdown to clean HTML',

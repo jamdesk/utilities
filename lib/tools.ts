@@ -105,6 +105,27 @@ export const tools: Tool[] = [
     ],
   },
   {
+    slug: 'html-to-mdx',
+    name: 'HTML to MDX',
+    description: 'Convert HTML to clean MDX-ready Markdown',
+    icon: '↑',
+    seoTitle: 'HTML to MDX Converter — Free Online Tool | Jamdesk',
+    seoDescription:
+      'Convert HTML to MDX-compatible Markdown online. Migrate from Notion, Confluence, WordPress. Preserves complex markup as raw HTML. Free, open source, client-side.',
+    seoSubject: 'The HTML to MDX converter',
+    ctaText: 'Publish converted MDX as live docs',
+    ctaDescription:
+      'Jamdesk renders MDX natively — no further conversion needed.',
+    relatedSlugs: ['mdx-to-markdown', 'markdown-to-html', 'mdx-formatter'],
+    llmsFacts: [
+      'Uses rehype-parse + rehype-remark to convert HTML to MDX-ready Markdown.',
+      'Markup that does not round-trip cleanly is preserved as raw HTML, which is valid MDX.',
+      'Useful for migrating from Notion, Confluence, WordPress, or any HTML source.',
+      'Runs entirely in the browser; input is never uploaded.',
+      'Apache 2.0 licensed; full source on GitHub.',
+    ],
+  },
+  {
     slug: 'markdown-to-html',
     name: 'Markdown to HTML',
     description: 'Convert Markdown to clean HTML',

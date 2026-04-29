@@ -23,6 +23,10 @@ const MdToHtml = dynamic(
   () => import('@/components/tools/MdToHtml').then((m) => m.MdToHtml),
   { ssr: false }
 )
+const HtmlToMdx = dynamic(
+  () => import('@/components/tools/HtmlToMdx').then((m) => m.HtmlToMdx),
+  { ssr: false }
+)
 const YamlValidator = dynamic(
   () =>
     import('@/components/tools/YamlValidator').then((m) => m.YamlValidator),
@@ -52,6 +56,7 @@ export function ToolEditor({ slug }: ToolEditorProps) {
       {slug === 'mdx-viewer' && <MdxViewer />}
       {slug === 'mdx-to-markdown' && <MdxToMarkdown />}
       {slug === 'markdown-to-html' && <MdToHtml />}
+      {slug === 'html-to-mdx' && <HtmlToMdx />}
       {slug === 'yaml-validator' && <YamlValidator />}
       {slug === 'json-yaml-converter' && <JsonYamlConverter />}
       {slug === 'markdown-table-generator' && <TableGenerator />}
