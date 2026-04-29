@@ -27,4 +27,12 @@ describe('MDX Cheatsheet page', () => {
     const html = renderToString(MdxCheatsheetPage())
     expect(html).toMatch(/<a [^>]*href="\/mdx-validator"/)
   })
+
+  it('renders the actual snippet body inside each <pre>', () => {
+    // Catches a regression where a refactor renders entry.label twice and
+    // entry.snippet zero times — count-only assertions wouldn't notice.
+    const html = renderToString(MdxCheatsheetPage())
+    expect(html).toContain('# H1')
+    expect(html).toContain('title: My Page')
+  })
 })

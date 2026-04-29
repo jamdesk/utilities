@@ -13,7 +13,8 @@ const REPO_LABEL = REPO_URL.replace(/^https?:\/\//, '')
 
 // Render the answer string with the repo URL turned into a clickable link.
 // The underlying string is kept as-is so the FAQPage JSON-LD answer.text stays
-// valid plain text (AI assistants quote it directly).
+// valid plain text (AI assistants quote it directly). Single-occurrence
+// assumption — see lib/tools.ts freeFaqEntry and app/page.tsx FAQ_ITEMS.
 function renderAnswer(answer: string) {
   const idx = answer.indexOf(REPO_LABEL)
   if (idx === -1) return answer
