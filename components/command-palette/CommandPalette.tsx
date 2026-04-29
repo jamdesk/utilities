@@ -37,6 +37,21 @@ export function CommandPalette() {
     [router]
   )
 
+  const guides = [
+    {
+      slug: 'mdx-cheatsheet',
+      icon: '📘',
+      name: 'MDX Cheatsheet',
+      description: 'Syntax reference for Markdown and MDX',
+    },
+    {
+      slug: 'mdx-vs-markdown',
+      icon: '⚖️',
+      name: 'MDX vs Markdown',
+      description: 'Compare formats and choose the right one',
+    },
+  ]
+
   if (!open) return null
 
   return (
@@ -85,6 +100,27 @@ export function CommandPalette() {
                     <div className="font-medium">{tool.name}</div>
                     <div className="text-xs text-muted-foreground">
                       {tool.description}
+                    </div>
+                  </div>
+                </Command.Item>
+              ))}
+            </Command.Group>
+            <Command.Group heading="Guides" className="[&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:py-1.5 [&_[cmdk-group-heading]]:text-xs [&_[cmdk-group-heading]]:font-medium [&_[cmdk-group-heading]]:text-text-muted">
+              {guides.map((guide) => (
+                <Command.Item
+                  key={guide.slug}
+                  value={guide.name}
+                  keywords={[guide.slug, guide.description]}
+                  onSelect={() => handleSelect(guide.slug)}
+                  className="flex cursor-pointer items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-foreground transition-colors data-[selected=true]:bg-[#ff3621]/10 data-[selected=true]:text-primary"
+                >
+                  <span className="text-base" aria-hidden="true">
+                    {guide.icon}
+                  </span>
+                  <div className="min-w-0 flex-1">
+                    <div className="font-medium">{guide.name}</div>
+                    <div className="text-xs text-muted-foreground">
+                      {guide.description}
                     </div>
                   </div>
                 </Command.Item>

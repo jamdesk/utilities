@@ -44,7 +44,7 @@ export default async function ToolPage({
           {tool.name}
         </h1>
         <p className="text-sm text-muted-foreground sm:text-lg">{tool.description}</p>
-        {(tool.slug.startsWith('mdx-') || tool.slug.startsWith('markdown-')) && (
+        {(tool.slug.startsWith('mdx-') || tool.slug.startsWith('markdown-') || tool.slug.endsWith('-mdx')) && (
           <p className="mt-2 text-xs text-muted-foreground">
             New to MDX? Read{' '}
             <Link href="/mdx-vs-markdown" className="text-primary underline-offset-2 hover:underline">

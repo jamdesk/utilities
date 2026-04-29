@@ -55,4 +55,34 @@ describe('convertHtmlToMdx', () => {
   it('returns empty string for empty input', async () => {
     expect((await convertHtmlToMdx('')).trim()).toBe('')
   })
+
+  describe('security stripping', () => {
+    it('strips <script> blocks (no executable JS in MDX output)', async () => {
+      const out = await convertHtmlToMdx(
+        '<p>Before</p><script>alert("xss")</script><p>After</p>',
+      )
+      expect(out).not.toContain('alert')
+      expect(out).not.toMatch(/<script/i)
+      expect(out).toContain('Before')
+      expect(out).toContain('After')
+    })
+
+    it('strips <style> blocks', async () => {
+      const out = await convertHtmlToMdx(
+        '<style>body { background: red }</style><p>Visible</p>',
+      )
+      expect(out).not.toMatch(/<style/i)
+      expect(out).not.toContain('background: red')
+      expect(out).toContain('Visible')
+    })
+
+    it('strips inline event handlers (onclick, onload)', async () => {
+      const out = await convertHtmlToMdx(
+        '<a href="https://example.com" onclick="alert(1)">Link</a>',
+      )
+      expect(out).not.toContain('onclick')
+      expect(out).not.toContain('alert(1)')
+      expect(out).toContain('[Link](https://example.com)')
+    })
+  })
 })

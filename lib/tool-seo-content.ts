@@ -200,7 +200,12 @@ export const toolSeoContent: Record<string, ToolSeoContent> = {
       {
         heading: 'Why preserve raw HTML',
         content:
-          'MDX accepts raw HTML inline. When markup cannot be expressed in Markdown (complex tables, custom elements, embedded iframes), the converter leaves the original HTML in place rather than dropping data. The result is always lossless — content survives the conversion.',
+          'MDX accepts raw HTML inline. When markup cannot be expressed in Markdown (complex tables, custom elements, embedded iframes), the converter leaves the original HTML in place rather than dropping data. Content survives the conversion — only executable markup is removed for safety (see below).',
+      },
+      {
+        heading: 'What is removed for safety',
+        content:
+          'Executable HTML is stripped: <script> blocks, <style> blocks, and inline event handlers like onclick or onload. MDX compiles to a React component tree that runs in your app, so passing arbitrary scripts through would be an XSS footgun for anyone migrating content from a CMS. Visible content (text, links, images, structure) is always preserved.',
       },
     ],
     faq: [
@@ -210,9 +215,9 @@ export const toolSeoContent: Record<string, ToolSeoContent> = {
           'Standard elements with Markdown equivalents: headings, paragraphs, bold, italic, links, lists, code blocks, blockquotes, horizontal rules, and images. Tables convert when simple; complex tables stay as raw HTML.',
       },
       {
-        question: 'Is the conversion lossless?',
+        question: 'Is any content dropped during conversion?',
         answer:
-          'Yes. Markup that cannot be expressed in Markdown is preserved as raw HTML, which is valid MDX. No content is dropped during conversion.',
+          'Visible content is preserved — markup that cannot be expressed in Markdown stays as raw HTML, which is valid MDX. The only things stripped are executable elements: <script> tags, <style> tags, and inline event handlers like onclick. This prevents XSS when migrating HTML into an MDX docs site.',
       },
       {
         question: 'Can I convert content from Notion or Confluence?',

@@ -7,13 +7,17 @@
  * <Link> in place of the URL — `mdxVsMarkdownFaq3Parts` exposes the typed
  * pieces so visible and JSON-LD versions cannot drift.
  */
+// linkHref is the source of truth; linkUrl is derived so the visible
+// <Link> and the JSON-LD answer string can never drift apart.
+const FAQ3_HREF = '/mdx-to-markdown'
+
 const FAQ3 = {
   question: 'Can MDX be converted to plain Markdown?',
   lead:
     'Yes. JSX components, imports, and exports can be stripped to produce plain Markdown. Inline content inside components is preserved; component-only behavior like custom layouts is lost.',
   linkText: 'MDX to Markdown converter',
-  linkUrl: 'jamdesk.com/utilities/mdx-to-markdown',
-  linkHref: '/mdx-to-markdown',
+  linkHref: FAQ3_HREF,
+  linkUrl: `jamdesk.com/utilities${FAQ3_HREF}`,
   trailing: 'does this in the browser.',
 } as const
 

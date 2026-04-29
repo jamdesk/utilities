@@ -148,7 +148,15 @@ export default function Home() {
           >
             MDX Cheatsheet
           </Link>{' '}
-          covers Markdown basics, MDX additions, and the blank-line gotcha.
+          covers Markdown basics, MDX additions, and the blank-line gotcha. Not
+          sure which format to pick?{' '}
+          <Link
+            href="/mdx-vs-markdown"
+            className="text-primary hover:underline"
+          >
+            MDX vs Markdown
+          </Link>{' '}
+          walks through the trade-offs.
         </p>
       </section>
 
