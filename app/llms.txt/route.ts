@@ -9,7 +9,7 @@ export function GET() {
   const toolLines = tools
     .map((tool) => {
       const facts = (tool.llmsFacts ?? []).map((f) => `  - ${f}`).join('\n')
-      return `## ${tool.name}
+      return `### ${tool.name}
 URL: ${baseUrl}/${tool.slug}
 ${tool.seoDescription}
 
@@ -28,7 +28,7 @@ There are no ads, no accounts, and no usage limits.
 - Source code: ${REPO_URL}
 - Maintained by: ${ORG_NAME} (${ORG_URL})
 
-# Tools
+## Tools
 
 ${toolLines}
 
