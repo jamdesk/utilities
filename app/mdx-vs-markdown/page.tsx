@@ -1,26 +1,19 @@
 import Link from 'next/link'
 import { LAST_REVIEWED } from '@/lib/tools'
-import { mdxVsMarkdownFaqs } from './layout'
+import {
+  mdxVsMarkdownFaqs,
+  mdxVsMarkdownFaq3Parts,
+} from '@/lib/mdx-vs-markdown-faqs'
 
 const FORMATTED_DATE = new Date(LAST_REVIEWED + 'T00:00:00Z').toLocaleDateString(
   'en-US',
   { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' },
 )
 
-// Single source of truth for FAQ #3's visible body: take the lead from the
-// const, render the trailing converter sentence as a Link. Falls back safely
-// if the const is rewritten and no longer contains the marker.
-const FAQ3_SUFFIX_MARKER = 'The MDX to Markdown converter'
-const FAQ3_LEAD = (() => {
-  const text = mdxVsMarkdownFaqs[2].answer
-  const idx = text.indexOf(FAQ3_SUFFIX_MARKER)
-  return idx >= 0 ? text.slice(0, idx) : text
-})()
-
 export default function MdxVsMarkdownPage() {
   return (
     <>
-      {/* Hero — opens with a one-line answer so AI Overviews can extract it */}
+      {/* Opens with a one-line answer so AI Overviews can extract it */}
       <section className="mx-auto max-w-3xl px-6 pb-6 pt-12">
         <span className="mb-3 inline-block rounded-full border border-border bg-card px-3 py-1 text-[11px] text-muted-foreground">
           Updated <time dateTime={LAST_REVIEWED}>{FORMATTED_DATE}</time>
@@ -36,7 +29,6 @@ export default function MdxVsMarkdownPage() {
         </p>
       </section>
 
-      {/* At a glance — comparison table */}
       <section className="mx-auto max-w-3xl px-6 pb-12">
         <h2 className="mb-4 font-heading text-2xl font-bold text-foreground">
           At a glance
@@ -96,7 +88,6 @@ export default function MdxVsMarkdownPage() {
         </div>
       </section>
 
-      {/* When to use Markdown */}
       <section className="mx-auto max-w-3xl px-6 pb-12">
         <h2 className="mb-4 font-heading text-2xl font-bold text-foreground">
           When to use Markdown
@@ -139,7 +130,6 @@ export default function MdxVsMarkdownPage() {
         </p>
       </section>
 
-      {/* When to use MDX */}
       <section className="mx-auto max-w-3xl px-6 pb-12">
         <h2 className="mb-4 font-heading text-2xl font-bold text-foreground">
           When to use MDX
@@ -174,7 +164,6 @@ export default function MdxVsMarkdownPage() {
         </p>
       </section>
 
-      {/* Under the hood — the technical tradeoff most guides skip */}
       <section className="mx-auto max-w-3xl px-6 pb-12">
         <h2 className="mb-4 font-heading text-2xl font-bold text-foreground">
           Under the hood
@@ -194,7 +183,6 @@ export default function MdxVsMarkdownPage() {
         </p>
       </section>
 
-      {/* Decision tree */}
       <section className="mx-auto max-w-3xl px-6 pb-12">
         <h2 className="mb-4 font-heading text-2xl font-bold text-foreground">
           Decision tree
@@ -225,7 +213,7 @@ export default function MdxVsMarkdownPage() {
         </ol>
       </section>
 
-      {/* FAQ — rendered open (not as <details>) so AI crawlers can quote answers verbatim */}
+      {/* FAQ rendered open (not as <details>) so AI crawlers quote answers verbatim */}
       <section className="mx-auto max-w-3xl px-6 pb-12">
         <h2 className="mb-6 font-heading text-2xl font-bold text-foreground">
           Frequently Asked Questions
@@ -249,18 +237,17 @@ export default function MdxVsMarkdownPage() {
           </div>
           <div>
             <h3 className="mb-2 font-semibold">
-              {mdxVsMarkdownFaqs[2].question}
+              {mdxVsMarkdownFaq3Parts.question}
             </h3>
             <p className="leading-relaxed text-muted-foreground">
-              {FAQ3_LEAD}
-              The{' '}
+              {mdxVsMarkdownFaq3Parts.lead} The{' '}
               <Link
-                href="/mdx-to-markdown"
+                href={mdxVsMarkdownFaq3Parts.linkHref}
                 className="text-primary underline-offset-2 hover:underline"
               >
-                MDX to Markdown converter
+                {mdxVsMarkdownFaq3Parts.linkText}
               </Link>{' '}
-              does this in the browser.
+              {mdxVsMarkdownFaq3Parts.trailing}
             </p>
           </div>
           <div>
@@ -274,7 +261,6 @@ export default function MdxVsMarkdownPage() {
         </div>
       </section>
 
-      {/* Byline */}
       <section className="mx-auto max-w-3xl px-6 pb-16">
         <p className="text-xs text-muted-foreground">
           Maintained by Jamdesk &middot; Last reviewed{' '}

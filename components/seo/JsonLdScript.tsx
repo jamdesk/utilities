@@ -137,6 +137,30 @@ function buildBreadcrumbSchema(tool: Tool) {
   }
 }
 
+export function buildArticleSchema(props: {
+  headline: string
+  description: string
+  url: string
+}) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: props.headline,
+    description: props.description,
+    url: props.url,
+    mainEntityOfPage: { '@type': 'WebPage', '@id': props.url },
+    inLanguage: 'en',
+    author: CREATOR,
+    publisher: CREATOR,
+    // datePublished is required for Google's Article rich-result eligibility.
+    // We don't track first-publish separately, so both fields surface LAST_REVIEWED.
+    datePublished: LAST_REVIEWED,
+    dateModified: LAST_REVIEWED,
+    license: LICENSE_URL,
+    isPartOf: { '@type': 'WebSite', name: 'Jamdesk', url: 'https://www.jamdesk.com' },
+  }
+}
+
 export function buildFaqSchema(
   faqs: readonly { question: string; answer: string }[]
 ) {

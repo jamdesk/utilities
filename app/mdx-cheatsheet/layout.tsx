@@ -1,8 +1,6 @@
 import type { Metadata } from 'next'
-import { LAST_REVIEWED } from '@/lib/tools'
-import { ORG_NAME, ORG_URL, LICENSE_URL } from '@/lib/site'
 import { JsonLd } from '@/components/seo/JsonLd'
-import { buildFaqSchema } from '@/components/seo/JsonLdScript'
+import { buildArticleSchema, buildFaqSchema } from '@/components/seo/JsonLdScript'
 import { cheatsheetFaqs } from '@/lib/mdx-cheatsheet-data'
 
 const PAGE_URL = 'https://www.jamdesk.com/utilities/mdx-cheatsheet'
@@ -27,22 +25,11 @@ export const metadata: Metadata = {
   },
 }
 
-const CREATOR = { '@type': 'Organization', name: ORG_NAME, url: ORG_URL }
-
-const articleSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'Article',
+const articleSchema = buildArticleSchema({
   headline: 'MDX Cheatsheet',
   description: DESCRIPTION,
   url: PAGE_URL,
-  mainEntityOfPage: PAGE_URL,
-  inLanguage: 'en',
-  author: CREATOR,
-  publisher: CREATOR,
-  dateModified: LAST_REVIEWED,
-  license: LICENSE_URL,
-  isPartOf: { '@type': 'WebSite', name: 'Jamdesk', url: 'https://www.jamdesk.com' },
-}
+})
 
 export default function CheatsheetLayout({ children }: { children: React.ReactNode }) {
   return (
