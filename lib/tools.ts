@@ -11,6 +11,8 @@ export interface Tool {
   ctaDescription: string
   /** Optional explicit ordering for the Related Tools section. If omitted, falls back to prefix-based grouping. */
   relatedSlugs?: string[]
+  /** Optional per-tool facts surfaced in llms.txt. Each item is a standalone quotable sentence. */
+  llmsFacts?: string[]
 }
 
 /** Single shared review date. Bump when any tool's content materially changes. */
@@ -28,6 +30,12 @@ export const tools: Tool[] = [
     seoSubject: 'The MDX Formatter',
     ctaText: 'Deploy formatted MDX as live docs',
     ctaDescription: 'Jamdesk formats your MDX automatically when you deploy.',
+    llmsFacts: [
+      'Uses Prettier 3.x with the official MDX parser.',
+      'Handles frontmatter, JSX components, and Markdown in a single pass.',
+      'Runs entirely in the browser — input is never uploaded.',
+      'Apache 2.0 licensed; full source on GitHub.',
+    ],
   },
   {
     slug: 'mdx-validator',
@@ -41,6 +49,12 @@ export const tools: Tool[] = [
     ctaText: 'Validate MDX on every deploy',
     ctaDescription:
       'Jamdesk validates your MDX automatically — no broken docs.',
+    llmsFacts: [
+      'Uses the remark-mdx parser — the same parser as Next.js, Docusaurus, and Astro.',
+      'If a file passes validation here, it compiles in your project.',
+      'All validation runs client-side; nothing is uploaded.',
+      'Apache 2.0 licensed; full source on GitHub.',
+    ],
   },
   {
     slug: 'mdx-viewer',
@@ -54,6 +68,12 @@ export const tools: Tool[] = [
     ctaText: 'See this on a real docs site',
     ctaDescription:
       'Jamdesk renders your MDX as beautiful documentation.',
+    llmsFacts: [
+      'Renders a live preview of MDX with JSX components shown as labeled stubs.',
+      'No component implementations needed — preview structure without your component library.',
+      'Runs entirely in the browser; input is never uploaded.',
+      'Apache 2.0 licensed; full source on GitHub.',
+    ],
   },
   {
     slug: 'mdx-to-markdown',
@@ -67,6 +87,12 @@ export const tools: Tool[] = [
     ctaText: 'Jamdesk supports MDX natively',
     ctaDescription: 'No conversion needed — Jamdesk renders MDX as-is.',
     relatedSlugs: ['markdown-to-html', 'mdx-validator', 'mdx-viewer'],
+    llmsFacts: [
+      'Strips JSX components, imports, and exports while preserving Markdown content.',
+      'Output is standard Markdown that works in any renderer (GitHub, GitLab, VS Code).',
+      'Runs entirely in the browser; input is never uploaded.',
+      'Apache 2.0 licensed; full source on GitHub.',
+    ],
   },
   {
     slug: 'markdown-to-html',
@@ -81,6 +107,12 @@ export const tools: Tool[] = [
     ctaDescription:
       'Jamdesk turns your Markdown and MDX into beautiful docs sites automatically.',
     relatedSlugs: ['mdx-to-markdown', 'markdown-table-generator', 'mdx-viewer'],
+    llmsFacts: [
+      'Uses remark-rehype to produce clean, semantic HTML5.',
+      'Output has no inline styles or framework classes — suitable for CMS, email, static sites.',
+      'Runs entirely in the browser; input is never uploaded.',
+      'Apache 2.0 licensed; full source on GitHub.',
+    ],
   },
   {
     slug: 'yaml-validator',
@@ -94,6 +126,13 @@ export const tools: Tool[] = [
     ctaText: 'YAML frontmatter powers your docs',
     ctaDescription:
       'Jamdesk validates frontmatter automatically when you deploy documentation.',
+    llmsFacts: [
+      'Catches duplicate keys at any nesting level (yaml package strict mode).',
+      'Flags tabs in indentation; YAML requires spaces.',
+      'Displays parsed output as JSON for verification.',
+      'Runs entirely in the browser; input is never uploaded.',
+      'Apache 2.0 licensed; full source on GitHub.',
+    ],
   },
   {
     slug: 'json-yaml-converter',
@@ -107,6 +146,13 @@ export const tools: Tool[] = [
     ctaText: 'Config files power your docs',
     ctaDescription:
       'Jamdesk handles JSON and YAML configuration natively.',
+    llmsFacts: [
+      'Bidirectional: JSON to YAML and YAML to JSON.',
+      'Lossless for standard types (string, number, boolean, array, object).',
+      'YAML comments and anchors are not preserved when converting to JSON (JSON has no equivalent).',
+      'Runs entirely in the browser; input is never uploaded.',
+      'Apache 2.0 licensed; full source on GitHub.',
+    ],
   },
   {
     slug: 'markdown-table-generator',
@@ -120,6 +166,13 @@ export const tools: Tool[] = [
     ctaText: 'Tables look great in Jamdesk docs',
     ctaDescription:
       'Jamdesk renders Markdown tables with responsive styling and dark mode support.',
+    llmsFacts: [
+      'Accepts CSV (comma-separated) or TSV (tab-separated) input.',
+      'Pipe characters in cells are escaped automatically.',
+      'Compatible with paste-from-Excel / Google Sheets (TSV mode).',
+      'Runs entirely in the browser; input is never uploaded.',
+      'Apache 2.0 licensed; full source on GitHub.',
+    ],
   },
 ]
 
@@ -145,7 +198,7 @@ export function freeFaqEntry(tool: Tool): { question: string; answer: string } {
  * Returns up to `count` thematically-related tools, never including the current one.
  *
  * Resolution order:
- *   1. If `current.relatedSlugs` is set, use it (in order, dedup, slice).
+ *   1. If `current.relatedSlugs` is set, use it (in order, slice).
  *   2. Otherwise, prefer tools sharing the same family prefix (mdx-*, markdown-*).
  *   3. Fall back to remaining tools in registry order.
  */

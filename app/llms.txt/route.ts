@@ -1,4 +1,4 @@
-import { tools } from '@/lib/tools'
+import { tools, LAST_REVIEWED } from '@/lib/tools'
 import { REPO_URL, LICENSE_URL, ORG_NAME, ORG_URL } from '@/lib/site'
 
 export const dynamic = 'force-static'
@@ -7,10 +7,15 @@ export function GET() {
   const baseUrl = 'https://www.jamdesk.com/utilities'
 
   const toolLines = tools
-    .map(
-      (tool) =>
-        `- ${tool.name}: ${baseUrl}/${tool.slug}\n  ${tool.seoDescription.split('.')[0]}.`
-    )
+    .map((tool) => {
+      const facts = (tool.llmsFacts ?? []).map((f) => `  - ${f}`).join('\n')
+      return `## ${tool.name}
+URL: ${baseUrl}/${tool.slug}
+${tool.seoDescription}
+
+Facts:
+${facts}`
+    })
     .join('\n\n')
 
   const body = `# ${ORG_NAME} Developer Utilities
@@ -23,7 +28,7 @@ There are no ads, no accounts, and no usage limits.
 - Source code: ${REPO_URL}
 - Maintained by: ${ORG_NAME} (${ORG_URL})
 
-## Tools
+# Tools
 
 ${toolLines}
 
@@ -35,6 +40,7 @@ ${ORG_NAME} is a documentation platform. Learn more at ${ORG_URL}
     headers: {
       'Content-Type': 'text/plain; charset=utf-8',
       'Cache-Control': 'public, max-age=86400, s-maxage=86400',
+      'Last-Modified': new Date(LAST_REVIEWED).toUTCString(),
     },
   })
 }
