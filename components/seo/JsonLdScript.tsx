@@ -16,6 +16,18 @@ const CREATOR = {
   url: ORG_URL,
 }
 
+const WEBAPP_BASE = {
+  applicationCategory: 'DeveloperApplication',
+  isAccessibleForFree: true,
+  browserRequirements: 'Requires JavaScript',
+  operatingSystem: 'Any',
+  license: LICENSE_URL,
+  creator: CREATOR,
+  author: CREATOR,
+  dateModified: LAST_REVIEWED,
+  sameAs: [REPO_URL],
+}
+
 function buildCollectionSchema(tools: Tool[]) {
   return {
     '@context': 'https://schema.org',
@@ -37,15 +49,7 @@ function buildCollectionSchema(tools: Tool[]) {
       name: tool.name,
       description: tool.seoDescription,
       url: `https://www.jamdesk.com/utilities/${tool.slug}`,
-      applicationCategory: 'DeveloperApplication',
-      isAccessibleForFree: true,
-      browserRequirements: 'Requires JavaScript',
-      operatingSystem: 'Any',
-      license: LICENSE_URL,
-      creator: CREATOR,
-      author: CREATOR,
-      dateModified: LAST_REVIEWED,
-      sameAs: [REPO_URL],
+      ...WEBAPP_BASE,
     })),
   }
 }
@@ -57,15 +61,7 @@ export function buildToolSchema(tool: Tool) {
     name: tool.name,
     description: tool.seoDescription,
     url: `https://www.jamdesk.com/utilities/${tool.slug}`,
-    applicationCategory: 'DeveloperApplication',
-    isAccessibleForFree: true,
-    browserRequirements: 'Requires JavaScript',
-    operatingSystem: 'Any',
-    license: LICENSE_URL,
-    creator: CREATOR,
-    author: CREATOR,
-    dateModified: LAST_REVIEWED,
-    sameAs: [REPO_URL],
+    ...WEBAPP_BASE,
     offers: {
       '@type': 'Offer',
       price: '0',
@@ -170,7 +166,7 @@ export function JsonLdScript(props: JsonLdScriptProps) {
           buildToolSchema(props.tool),
           buildBreadcrumbSchema(props.tool),
           ...(props.howTo ? [buildHowToSchema(props.tool, props.howTo)] : []),
-          ...(props.faqs && props.faqs.length > 0 ? [buildFaqSchema(props.faqs)] : []),
+          ...(props.faqs?.length ? [buildFaqSchema(props.faqs)] : []),
         ]
 
   return (

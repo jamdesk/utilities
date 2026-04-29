@@ -1,3 +1,5 @@
+import { toolSeoContent } from './tool-seo-content'
+
 export interface Tool {
   slug: string
   name: string
@@ -15,8 +17,16 @@ export interface Tool {
   llmsFacts?: string[]
 }
 
-/** Single shared review date. Bump when any tool's content materially changes. */
+/**
+ * Single shared review date. Bump when any tool's content materially changes.
+ * Must be a valid ISO `YYYY-MM-DD` so `new Date(LAST_REVIEWED)` parses as UTC midnight
+ * — relied on by Last-Modified header, sitemap lastmod, and JSON-LD dateModified.
+ */
 export const LAST_REVIEWED = '2026-04-29'
+
+if (!/^\d{4}-\d{2}-\d{2}$/.test(LAST_REVIEWED) || isNaN(Date.parse(LAST_REVIEWED))) {
+  throw new Error(`LAST_REVIEWED must be valid YYYY-MM-DD: got "${LAST_REVIEWED}"`)
+}
 
 export const tools: Tool[] = [
   {
@@ -192,6 +202,15 @@ export function freeFaqEntry(tool: Tool): { question: string; answer: string } {
     question: `Is ${subjectLower} free and open source?`,
     answer: `Yes. ${tool.seoSubject} is free and open source under the Apache 2.0 license. The full source code is on GitHub at ${repoLabel}, and there are no ads, accounts, or usage limits.`,
   }
+}
+
+/**
+ * FAQs for a tool: the canonical free/OSS entry first, then the per-tool entries.
+ * Used by both the visible FAQ section and the FAQPage JSON-LD so they cannot drift.
+ */
+export function getToolFaqs(tool: Tool): { question: string; answer: string }[] {
+  const seoContent = toolSeoContent[tool.slug]
+  return [freeFaqEntry(tool), ...(seoContent?.faq ?? [])]
 }
 
 /**

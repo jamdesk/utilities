@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { tools, getToolBySlug, freeFaqEntry } from '@/lib/tools'
+import { tools, getToolBySlug, getToolFaqs } from '@/lib/tools'
 import { toolSeoContent } from '@/lib/tool-seo-content'
 import { JsonLdScript } from '@/components/seo/JsonLdScript'
 
@@ -62,10 +62,6 @@ export default async function ToolLayout({
   const tool = getToolBySlug(slug)
   const seoContent = tool ? toolSeoContent[tool.slug] : undefined
 
-  const faqs = tool && seoContent
-    ? [freeFaqEntry(tool), ...seoContent.faq]
-    : undefined
-
   return (
     <>
       {tool && (
@@ -73,7 +69,7 @@ export default async function ToolLayout({
           type="tool"
           tool={tool}
           howTo={seoContent ? { title: seoContent.howToTitle, content: seoContent.howToContent } : undefined}
-          faqs={faqs}
+          faqs={seoContent ? getToolFaqs(tool) : undefined}
         />
       )}
       {children}

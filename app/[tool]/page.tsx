@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { getToolBySlug, freeFaqEntry, LAST_REVIEWED, getRelatedTools } from '@/lib/tools'
+import { getToolBySlug, getToolFaqs, LAST_REVIEWED, getRelatedTools } from '@/lib/tools'
 import { toolSeoContent } from '@/lib/tool-seo-content'
 import { FaqSection } from '@/components/seo/FaqSection'
 import { ConversionCta } from '@/components/seo/ConversionCta'
@@ -94,7 +94,7 @@ export default async function ToolPage({
           <h2 className="mb-6 font-heading text-2xl font-bold text-foreground">
             Frequently Asked Questions
           </h2>
-          <FaqSection items={[freeFaqEntry(tool), ...seoContent.faq]} />
+          <FaqSection items={getToolFaqs(tool)} />
         </section>
       )}
 
@@ -102,7 +102,8 @@ export default async function ToolPage({
       <section className="mx-auto max-w-3xl px-6 pb-12">
         <OpenSourceNote tool={tool} />
         <p className="mt-4 text-xs text-muted-foreground">
-          Maintained by Jamdesk &middot; Last reviewed {LAST_REVIEWED}
+          Maintained by Jamdesk &middot; Last reviewed{' '}
+          <time dateTime={LAST_REVIEWED}>{LAST_REVIEWED}</time>
         </p>
       </section>
 
