@@ -1,3 +1,5 @@
+import { REPO_URL } from '@/lib/site'
+
 interface FaqItem {
   question: string
   answer: string
@@ -5,6 +7,30 @@ interface FaqItem {
 
 interface FaqSectionProps {
   items: FaqItem[]
+}
+
+const REPO_LABEL = REPO_URL.replace(/^https?:\/\//, '')
+
+// Render the answer string with the repo URL turned into a clickable link.
+// The underlying string is kept as-is so the FAQPage JSON-LD answer.text stays
+// valid plain text (AI assistants quote it directly).
+function renderAnswer(answer: string) {
+  const idx = answer.indexOf(REPO_LABEL)
+  if (idx === -1) return answer
+  return (
+    <>
+      {answer.slice(0, idx)}
+      <a
+        href={REPO_URL}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="text-primary underline-offset-2 hover:underline"
+      >
+        {REPO_LABEL}
+      </a>
+      {answer.slice(idx + REPO_LABEL.length)}
+    </>
+  )
 }
 
 export function FaqSection({ items }: FaqSectionProps) {
@@ -25,7 +51,7 @@ export function FaqSection({ items }: FaqSectionProps) {
             </span>
           </summary>
           <div className="border-t border-border px-5 py-4 text-sm leading-relaxed text-muted-foreground">
-            {item.answer}
+            {renderAnswer(item.answer)}
           </div>
         </details>
       ))}
