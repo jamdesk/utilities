@@ -35,10 +35,13 @@ const articleSchema = {
   description:
     'Comparison of MDX and Markdown including syntax, performance, and ecosystem support.',
   url: PAGE_URL,
-  mainEntityOfPage: PAGE_URL,
+  mainEntityOfPage: { '@type': 'WebPage', '@id': PAGE_URL },
   inLanguage: 'en',
   author: CREATOR,
   publisher: CREATOR,
+  // datePublished is required for Google rich-result eligibility on Article.
+  // We don't track first-publish separately, so we surface LAST_REVIEWED for both.
+  datePublished: LAST_REVIEWED,
   dateModified: LAST_REVIEWED,
   license: LICENSE_URL,
   isPartOf: { '@type': 'WebSite', name: 'Jamdesk', url: 'https://www.jamdesk.com' },
@@ -49,9 +52,10 @@ const articleSchema = {
  * page.tsx imports this so the JSON-LD `acceptedAnswer.text` and the rendered
  * answer never drift apart.
  *
- * The third answer's visible version replaces the trailing literal URL with a
- * `<Link>` to the converter. The plain-text URL stays here so AI crawlers
- * extracting the FAQPage schema get a self-contained citable answer.
+ * The third answer's visible version splits at "The MDX to Markdown converter"
+ * and renders the trailing sentence as a `<Link>` instead of plain text. The
+ * lead-in still flows from this const, so any edit to the first sentences
+ * propagates to both JSON-LD and the visible page automatically.
  */
 export const mdxVsMarkdownFaqs = [
   {

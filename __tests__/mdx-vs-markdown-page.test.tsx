@@ -20,6 +20,18 @@ describe('MDX vs Markdown page', () => {
     // basePath is injected by Next at request time, not by renderToString
     const html = renderToString(MdxVsMarkdownPage())
     expect(html).toMatch(/<a [^>]*href="\/mdx-to-markdown"/)
+    // Link visible text — guards against the FAQ #3 single-source split going wrong.
+    expect(html).toContain('MDX to Markdown converter</a>')
+  })
+
+  it('renders an internal link to the MDX cheatsheet', () => {
+    const html = renderToString(MdxVsMarkdownPage())
+    expect(html).toMatch(/<a [^>]*href="\/mdx-cheatsheet"/)
+  })
+
+  it('links out to mdxjs.com (authority signal)', () => {
+    const html = renderToString(MdxVsMarkdownPage())
+    expect(html).toMatch(/<a [^>]*href="https:\/\/mdxjs\.com"/)
   })
 
   it('renders all four FAQ headings', () => {

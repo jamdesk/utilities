@@ -2,22 +2,37 @@ import Link from 'next/link'
 import { LAST_REVIEWED } from '@/lib/tools'
 import { mdxVsMarkdownFaqs } from './layout'
 
+const FORMATTED_DATE = new Date(LAST_REVIEWED + 'T00:00:00Z').toLocaleDateString(
+  'en-US',
+  { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' },
+)
+
+// Single source of truth for FAQ #3's visible body: take the lead from the
+// const, render the trailing converter sentence as a Link. Falls back safely
+// if the const is rewritten and no longer contains the marker.
+const FAQ3_SUFFIX_MARKER = 'The MDX to Markdown converter'
+const FAQ3_LEAD = (() => {
+  const text = mdxVsMarkdownFaqs[2].answer
+  const idx = text.indexOf(FAQ3_SUFFIX_MARKER)
+  return idx >= 0 ? text.slice(0, idx) : text
+})()
+
 export default function MdxVsMarkdownPage() {
   return (
     <>
       {/* Hero — opens with a one-line answer so AI Overviews can extract it */}
       <section className="mx-auto max-w-3xl px-6 pb-6 pt-12">
         <span className="mb-3 inline-block rounded-full border border-border bg-card px-3 py-1 text-[11px] text-muted-foreground">
-          Updated <time dateTime={LAST_REVIEWED}>{LAST_REVIEWED}</time>
+          Updated <time dateTime={LAST_REVIEWED}>{FORMATTED_DATE}</time>
         </span>
         <h1 className="mb-4 font-heading text-4xl font-bold tracking-tight">
           MDX vs Markdown
         </h1>
         <p className="text-lg leading-relaxed text-muted-foreground">
-          MDX is Markdown plus JSX. Reach for Markdown when your content is
-          static and needs to render in lots of places without a build step.
-          Pick MDX when you want React components, computed values, or
-          interactivity inline with your prose.
+          MDX is Markdown plus JSX. Reach for Markdown when your content has to
+          render in places you don&apos;t control, like GitHub, wikis, or any
+          editor with a built-in renderer. Pick MDX when you want React
+          components, computed values, or interactivity inline with your prose.
         </p>
       </section>
 
@@ -62,14 +77,14 @@ export default function MdxVsMarkdownPage() {
                 <td>Yes</td>
               </tr>
               <tr>
-                <th scope="row">GitHub renders directly</th>
-                <td>Yes</td>
-                <td>No (renders as text)</td>
+                <th scope="row">Renders without a toolchain</th>
+                <td>Yes (GitHub, wikis, editors)</td>
+                <td>No</td>
               </tr>
               <tr>
-                <th scope="row">Build step required</th>
-                <td>No</td>
-                <td>Yes</td>
+                <th scope="row">Compiles to</th>
+                <td>HTML</td>
+                <td>JavaScript module</td>
               </tr>
               <tr>
                 <th scope="row">Best for</th>
@@ -87,12 +102,40 @@ export default function MdxVsMarkdownPage() {
           When to use Markdown
         </h2>
         <p className="leading-relaxed text-muted-foreground">
-          Stick with Markdown for content that needs to travel. READMEs, GitHub
-          wikis, GitLab pages, Confluence exports, Notion documents, internal
-          team docs: all of these render Markdown natively. The format is
-          portable, easy to diff, and survives copy-paste between tools without
-          mangling. If a future maintainer might open the file in a basic
-          editor and expect it to just work, that&apos;s a Markdown file.
+          Stick with Markdown for content that needs to travel. READMEs, wikis,
+          Notion exports, internal team docs: these render natively wherever you
+          put them. It&apos;s portable, diffs cleanly, and survives a copy-paste
+          into Slack without mangling. If a future maintainer might open the
+          file in a basic editor and expect it to just work, that&apos;s a
+          Markdown file.
+        </p>
+        <p className="mt-3 leading-relaxed text-muted-foreground">
+          If your team&apos;s writers don&apos;t ship JavaScript, this is
+          almost always the right answer. MDX&apos;s flexibility becomes your
+          maintenance burden the first time a <code>&lt;Tabs&gt;</code>{' '}
+          component throws in production and the only person who knows the
+          wiring is out for the week.
+        </p>
+        <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+          The shared baseline is{' '}
+          <a
+            href="https://commonmark.org"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-primary hover:underline"
+          >
+            CommonMark
+          </a>
+          ; most renderers also support{' '}
+          <a
+            href="https://github.github.com/gfm/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-primary hover:underline"
+          >
+            GitHub Flavored Markdown
+          </a>{' '}
+          for tables, task lists, and strikethrough.
         </p>
       </section>
 
@@ -102,14 +145,52 @@ export default function MdxVsMarkdownPage() {
           When to use MDX
         </h2>
         <p className="leading-relaxed text-muted-foreground">
-          Pick MDX when prose alone isn&apos;t enough. Code playgrounds,
-          callout components, tabbed examples, live charts, conditional
-          rendering against your own data: all of it slots into MDX without
-          leaving the file. Adoption is broad. Next.js, Docusaurus, Astro, and
-          Gatsby all ship first-class MDX support. Best of all, the move is
-          additive, not disruptive. Because every Markdown file is already
-          valid MDX, you can rename <code>.md</code> to <code>.mdx</code> and
-          start adding components incrementally. No rewrite required.
+          Pick MDX when prose alone isn&apos;t enough. Callouts, tabbed code
+          examples, and conditional rendering against your own data slot in
+          right next to the writing. Next.js, Docusaurus, Astro, and Gatsby all
+          ship first-class MDX support; the format itself is documented at{' '}
+          <a
+            href="https://mdxjs.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-primary hover:underline"
+          >
+            mdxjs.com
+          </a>
+          .
+        </p>
+        <p className="mt-3 leading-relaxed text-muted-foreground">
+          Most Markdown files are valid MDX too. MDX is stricter than CommonMark
+          though, so expect a handful of fixes when migrating: raw <code>&lt;</code>{' '}
+          characters in prose, certain HTML blocks, and some indentation
+          patterns that parse fine as Markdown will throw in MDX. The{' '}
+          <Link
+            href="/mdx-cheatsheet"
+            className="text-primary hover:underline"
+          >
+            MDX Cheatsheet
+          </Link>{' '}
+          covers the common gotchas.
+        </p>
+      </section>
+
+      {/* Under the hood — the technical tradeoff most guides skip */}
+      <section className="mx-auto max-w-3xl px-6 pb-12">
+        <h2 className="mb-4 font-heading text-2xl font-bold text-foreground">
+          Under the hood
+        </h2>
+        <p className="leading-relaxed text-muted-foreground">
+          Markdown compiles to an HTML string. MDX compiles to a JavaScript
+          module: your content becomes code, with everything that implies. That
+          buys you imports, expressions, and components inline. It also buys you
+          a real security boundary.
+        </p>
+        <p className="mt-3 leading-relaxed text-muted-foreground">
+          Never accept MDX from authors you don&apos;t trust. Their content can
+          import anything your bundler can resolve. Markdown is safe to take
+          from anywhere; MDX is safe only from people you&apos;d give commit
+          access. If you&apos;re building a CMS where end users author content,
+          this almost certainly means Markdown plus a sanitizer, not MDX.
         </p>
       </section>
 
@@ -123,6 +204,11 @@ export default function MdxVsMarkdownPage() {
             Does the file need to render directly on GitHub, GitLab, or a wiki
             that doesn&apos;t run a build? →{' '}
             <strong>Markdown.</strong>
+          </li>
+          <li>
+            Are people you don&apos;t fully trust authoring the content? →{' '}
+            <strong>Markdown.</strong> MDX content can import anything in your
+            bundler.
           </li>
           <li>
             Do you want React components inline with the prose (callouts, tabs,
@@ -166,9 +252,7 @@ export default function MdxVsMarkdownPage() {
               {mdxVsMarkdownFaqs[2].question}
             </h3>
             <p className="leading-relaxed text-muted-foreground">
-              Yes. JSX components, imports, and exports can be stripped to
-              produce plain Markdown. Inline content inside components is
-              preserved; component-only behavior like custom layouts is lost.
+              {FAQ3_LEAD}
               The{' '}
               <Link
                 href="/mdx-to-markdown"
@@ -194,7 +278,7 @@ export default function MdxVsMarkdownPage() {
       <section className="mx-auto max-w-3xl px-6 pb-16">
         <p className="text-xs text-muted-foreground">
           Maintained by Jamdesk &middot; Last reviewed{' '}
-          <time dateTime={LAST_REVIEWED}>{LAST_REVIEWED}</time>
+          <time dateTime={LAST_REVIEWED}>{FORMATTED_DATE}</time>
         </p>
       </section>
     </>
