@@ -3,7 +3,12 @@ import { REPO_URL, LICENSE_URL, ORG_NAME, ORG_URL } from '@/lib/site'
 
 type JsonLdScriptProps =
   | { type: 'collection'; tools: Tool[] }
-  | { type: 'tool'; tool: Tool; howTo?: { title: string; content: string } }
+  | {
+      type: 'tool'
+      tool: Tool
+      howTo?: { title: string; content: string }
+      faqs?: { question: string; answer: string }[]
+    }
 
 const CREATOR = {
   '@type': 'Organization',
@@ -132,6 +137,23 @@ function buildBreadcrumbSchema(tool: Tool) {
   }
 }
 
+export function buildFaqSchema(
+  faqs: { question: string; answer: string }[]
+) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faqs.map((faq) => ({
+      '@type': 'Question',
+      name: faq.question,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: faq.answer,
+      },
+    })),
+  }
+}
+
 /**
  * Renders structured data for search engines.
  * Content is safe — built from our own static tool registry, not user input.
@@ -144,6 +166,7 @@ export function JsonLdScript(props: JsonLdScriptProps) {
           buildToolSchema(props.tool),
           buildBreadcrumbSchema(props.tool),
           ...(props.howTo ? [buildHowToSchema(props.tool, props.howTo)] : []),
+          ...(props.faqs && props.faqs.length > 0 ? [buildFaqSchema(props.faqs)] : []),
         ]
 
   return (

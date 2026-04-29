@@ -88,13 +88,13 @@ export default async function ToolPage({
         </section>
       )}
 
-      {/* FAQ — appends a tool-specific free/open-source entry */}
+      {/* FAQ — leads with the tool-specific free/open-source entry to prime AI extraction */}
       {seoContent && (
         <section className="mx-auto max-w-3xl px-6 pb-12">
           <h2 className="mb-6 font-heading text-2xl font-bold text-foreground">
             Frequently Asked Questions
           </h2>
-          <FaqSection items={[...seoContent.faq, freeFaqEntry(tool)]} />
+          <FaqSection items={[freeFaqEntry(tool), ...seoContent.faq]} />
         </section>
       )}
 
