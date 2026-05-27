@@ -84,5 +84,75 @@ describe('convertHtmlToMdx', () => {
       expect(out).not.toContain('alert(1)')
       expect(out).toContain('[Link](https://example.com)')
     })
+
+    it('strips event handlers from non-anchor elements', async () => {
+      const cases = [
+        '<button onclick="alert(1)">Click</button>',
+        '<div onclick="alert(1)">hi</div>',
+        '<img onerror="alert(1)" src="https://x.test/y.png" alt="z">',
+        '<svg onload="alert(1)"><circle r="10"/></svg>',
+        '<details onclick="alert(1)"><summary>S</summary><p>P</p></details>',
+      ]
+      for (const html of cases) {
+        const out = await convertHtmlToMdx(html)
+        expect(out).not.toMatch(/onclick|onerror|onload/i)
+        expect(out).not.toContain('alert(1)')
+      }
+    })
+
+    it('strips javascript: URLs from <a href>', async () => {
+      for (const href of [
+        'javascript:alert(1)',
+        'JaVaScRiPt:alert(1)',
+        '  javascript:alert(1)  ',
+        'java\tscript:alert(1)',
+        'vbscript:msgbox',
+      ]) {
+        const out = await convertHtmlToMdx(`<a href="${href}">go</a>`)
+        expect(out).not.toMatch(/javascript:/i)
+        expect(out).not.toMatch(/vbscript:/i)
+        expect(out).not.toContain('alert(1)')
+      }
+    })
+
+    it('strips data:text/html from <a href> but preserves data:image/* in <img>', async () => {
+      const navOut = await convertHtmlToMdx(
+        '<a href="data:text/html,<script>alert(1)</script>">x</a>',
+      )
+      expect(navOut).not.toContain('data:text/html')
+      expect(navOut).not.toContain('alert(1)')
+
+      const imgOut = await convertHtmlToMdx(
+        '<img src="data:image/svg+xml;base64,abc" alt="z">',
+      )
+      expect(imgOut).toContain('data:image/svg+xml')
+    })
+
+    it('strips protocol-relative URLs from <a href>', async () => {
+      const out = await convertHtmlToMdx('<a href="//evil.example/x">go</a>')
+      expect(out).not.toContain('//evil.example')
+    })
+
+    it('strips javascript: URLs from <img src>', async () => {
+      const out = await convertHtmlToMdx(
+        '<img src="javascript:alert(1)" alt="x">',
+      )
+      expect(out).not.toMatch(/javascript:/i)
+      expect(out).not.toContain('alert(1)')
+    })
+
+    it('preserves safe URL schemes (https, mailto, tel, fragment, relative)', async () => {
+      for (const href of [
+        'https://example.com',
+        'http://example.com',
+        'mailto:x@y.com',
+        'tel:+1234',
+        '#section',
+        '/relative/path',
+      ]) {
+        const out = await convertHtmlToMdx(`<a href="${href}">x</a>`)
+        expect(out).toContain(href)
+      }
+    })
   })
 })

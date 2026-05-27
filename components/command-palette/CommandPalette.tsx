@@ -4,6 +4,7 @@ import { useEffect, useState, useCallback } from 'react'
 import { Command } from 'cmdk'
 import { useRouter } from 'next/navigation'
 import { tools } from '@/lib/tools'
+import { guides as GUIDES } from '@/lib/guides'
 
 export function CommandPalette() {
   const [open, setOpen] = useState(false)
@@ -36,21 +37,6 @@ export function CommandPalette() {
     },
     [router]
   )
-
-  const guides = [
-    {
-      slug: 'mdx-cheatsheet',
-      icon: '📘',
-      name: 'MDX Cheatsheet',
-      description: 'Syntax reference for Markdown and MDX',
-    },
-    {
-      slug: 'mdx-vs-markdown',
-      icon: '⚖️',
-      name: 'MDX vs Markdown',
-      description: 'Compare formats and choose the right one',
-    },
-  ]
 
   if (!open) return null
 
@@ -106,7 +92,7 @@ export function CommandPalette() {
               ))}
             </Command.Group>
             <Command.Group heading="Guides" className="[&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:py-1.5 [&_[cmdk-group-heading]]:text-xs [&_[cmdk-group-heading]]:font-medium [&_[cmdk-group-heading]]:text-text-muted">
-              {guides.map((guide) => (
+              {GUIDES.map((guide) => (
                 <Command.Item
                   key={guide.slug}
                   value={guide.name}

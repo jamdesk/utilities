@@ -28,6 +28,20 @@ if (!/^\d{4}-\d{2}-\d{2}$/.test(LAST_REVIEWED) || isNaN(Date.parse(LAST_REVIEWED
   throw new Error(`LAST_REVIEWED must be valid YYYY-MM-DD: got "${LAST_REVIEWED}"`)
 }
 
+/**
+ * Human-readable form of LAST_REVIEWED, computed once at module load. Pinned to
+ * `en-US` + UTC so SSR output matches across environments and never depends on
+ * the request's locale or timezone.
+ */
+export const LAST_REVIEWED_FORMATTED = new Date(
+  LAST_REVIEWED + 'T00:00:00Z',
+).toLocaleDateString('en-US', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+  timeZone: 'UTC',
+})
+
 export const tools: Tool[] = [
   {
     slug: 'mdx-formatter',

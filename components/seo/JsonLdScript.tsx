@@ -1,5 +1,6 @@
 import { type Tool, LAST_REVIEWED } from '@/lib/tools'
 import { REPO_URL, LICENSE_URL, ORG_NAME, ORG_URL } from '@/lib/site'
+import { JsonLd } from './JsonLd'
 
 type JsonLdScriptProps =
   | { type: 'collection'; tools: Tool[] }
@@ -70,17 +71,23 @@ export function buildToolSchema(tool: Tool) {
   }
 }
 
-function buildHowToSchema(tool: Tool, howTo: { title: string; content: string }) {
-  const inputDescription = tool.slug.startsWith('mdx')
-    ? 'Paste your MDX content into the input editor, or upload an .mdx file'
-    : tool.slug === 'yaml-validator'
-      ? 'Paste your YAML content into the input editor'
-      : tool.slug === 'json-yaml-converter'
-        ? 'Paste your JSON or YAML content into the input editor'
-        : tool.slug === 'markdown-table-generator'
-          ? 'Paste your CSV or TSV data into the input editor'
-          : 'Paste your content into the input editor, or upload a file'
+function getInputDescription(slug: string): string {
+  if (slug.startsWith('mdx')) {
+    return 'Paste your MDX content into the input editor, or upload an .mdx file'
+  }
+  switch (slug) {
+    case 'yaml-validator':
+      return 'Paste your YAML content into the input editor'
+    case 'json-yaml-converter':
+      return 'Paste your JSON or YAML content into the input editor'
+    case 'markdown-table-generator':
+      return 'Paste your CSV or TSV data into the input editor'
+    default:
+      return 'Paste your content into the input editor, or upload a file'
+  }
+}
 
+function buildHowToSchema(tool: Tool, howTo: { title: string; content: string }) {
   return {
     '@context': 'https://schema.org',
     '@type': 'HowTo',
@@ -95,7 +102,7 @@ function buildHowToSchema(tool: Tool, howTo: { title: string; content: string })
       {
         '@type': 'HowToStep',
         name: 'Add your content',
-        text: inputDescription,
+        text: getInputDescription(tool.slug),
       },
       {
         '@type': 'HowToStep',
@@ -179,7 +186,8 @@ export function buildFaqSchema(
 }
 
 /**
- * Renders structured data for search engines.
+ * Renders structured data for search engines. Delegates each schema to
+ * <JsonLd> so the `</script>` escape lives in exactly one place.
  * Content is safe — built from our own static tool registry, not user input.
  */
 export function JsonLdScript(props: JsonLdScriptProps) {
@@ -196,11 +204,7 @@ export function JsonLdScript(props: JsonLdScriptProps) {
   return (
     <>
       {schemas.map((schema, i) => (
-        <script
-          key={i}
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
-        />
+        <JsonLd key={i} data={schema} />
       ))}
     </>
   )

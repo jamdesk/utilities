@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { LAST_REVIEWED } from '@/lib/tools'
+import { LAST_REVIEWED, LAST_REVIEWED_FORMATTED } from '@/lib/tools'
 import {
   cheatsheetGroups,
   cheatsheetFaqs,
@@ -12,7 +12,7 @@ export default function MdxCheatsheetPage() {
     <>
       <section className="mx-auto max-w-3xl px-6 pb-6 pt-12">
         <span className="mb-3 inline-block rounded-full border border-border bg-card px-3 py-1 text-[11px] text-muted-foreground">
-          Updated <time dateTime={LAST_REVIEWED}>{LAST_REVIEWED}</time>
+          Updated <time dateTime={LAST_REVIEWED}>{LAST_REVIEWED_FORMATTED}</time>
         </span>
         <h1 className="mb-4 font-heading text-4xl font-bold tracking-tight">
           MDX Cheatsheet
@@ -135,7 +135,7 @@ export default function MdxCheatsheetPage() {
       <section className="mx-auto max-w-3xl px-6 pb-16">
         <p className="text-xs text-muted-foreground">
           Maintained by Jamdesk &middot; Last reviewed{' '}
-          <time dateTime={LAST_REVIEWED}>{LAST_REVIEWED}</time>
+          <time dateTime={LAST_REVIEWED}>{LAST_REVIEWED_FORMATTED}</time>
         </p>
       </section>
     </>

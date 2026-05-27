@@ -1,14 +1,9 @@
 import Link from 'next/link'
-import { LAST_REVIEWED } from '@/lib/tools'
+import { LAST_REVIEWED, LAST_REVIEWED_FORMATTED } from '@/lib/tools'
 import {
   mdxVsMarkdownFaqs,
   mdxVsMarkdownFaq3Parts,
 } from '@/lib/mdx-vs-markdown-faqs'
-
-const FORMATTED_DATE = new Date(LAST_REVIEWED + 'T00:00:00Z').toLocaleDateString(
-  'en-US',
-  { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' },
-)
 
 export default function MdxVsMarkdownPage() {
   return (
@@ -16,7 +11,7 @@ export default function MdxVsMarkdownPage() {
       {/* Opens with a one-line answer so AI Overviews can extract it */}
       <section className="mx-auto max-w-3xl px-6 pb-6 pt-12">
         <span className="mb-3 inline-block rounded-full border border-border bg-card px-3 py-1 text-[11px] text-muted-foreground">
-          Updated <time dateTime={LAST_REVIEWED}>{FORMATTED_DATE}</time>
+          Updated <time dateTime={LAST_REVIEWED}>{LAST_REVIEWED_FORMATTED}</time>
         </span>
         <h1 className="mb-4 font-heading text-4xl font-bold tracking-tight">
           MDX vs Markdown
@@ -219,52 +214,34 @@ export default function MdxVsMarkdownPage() {
           Frequently Asked Questions
         </h2>
         <div className="space-y-6">
-          <div>
-            <h3 className="mb-2 font-semibold">
-              {mdxVsMarkdownFaqs[0].question}
-            </h3>
-            <p className="leading-relaxed text-muted-foreground">
-              {mdxVsMarkdownFaqs[0].answer}
-            </p>
-          </div>
-          <div>
-            <h3 className="mb-2 font-semibold">
-              {mdxVsMarkdownFaqs[1].question}
-            </h3>
-            <p className="leading-relaxed text-muted-foreground">
-              {mdxVsMarkdownFaqs[1].answer}
-            </p>
-          </div>
-          <div>
-            <h3 className="mb-2 font-semibold">
-              {mdxVsMarkdownFaq3Parts.question}
-            </h3>
-            <p className="leading-relaxed text-muted-foreground">
-              {mdxVsMarkdownFaq3Parts.lead} The{' '}
-              <Link
-                href={mdxVsMarkdownFaq3Parts.linkHref}
-                className="text-primary underline-offset-2 hover:underline"
-              >
-                {mdxVsMarkdownFaq3Parts.linkText}
-              </Link>{' '}
-              {mdxVsMarkdownFaq3Parts.trailing}
-            </p>
-          </div>
-          <div>
-            <h3 className="mb-2 font-semibold">
-              {mdxVsMarkdownFaqs[3].question}
-            </h3>
-            <p className="leading-relaxed text-muted-foreground">
-              {mdxVsMarkdownFaqs[3].answer}
-            </p>
-          </div>
+          {mdxVsMarkdownFaqs.map((faq) => (
+            <div key={faq.question}>
+              <h3 className="mb-2 font-semibold">{faq.question}</h3>
+              <p className="leading-relaxed text-muted-foreground">
+                {faq.question === mdxVsMarkdownFaq3Parts.question ? (
+                  <>
+                    {mdxVsMarkdownFaq3Parts.lead} The{' '}
+                    <Link
+                      href={mdxVsMarkdownFaq3Parts.linkHref}
+                      className="text-primary underline-offset-2 hover:underline"
+                    >
+                      {mdxVsMarkdownFaq3Parts.linkText}
+                    </Link>{' '}
+                    {mdxVsMarkdownFaq3Parts.trailing}
+                  </>
+                ) : (
+                  faq.answer
+                )}
+              </p>
+            </div>
+          ))}
         </div>
       </section>
 
       <section className="mx-auto max-w-3xl px-6 pb-16">
         <p className="text-xs text-muted-foreground">
           Maintained by Jamdesk &middot; Last reviewed{' '}
-          <time dateTime={LAST_REVIEWED}>{FORMATTED_DATE}</time>
+          <time dateTime={LAST_REVIEWED}>{LAST_REVIEWED_FORMATTED}</time>
         </p>
       </section>
     </>

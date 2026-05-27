@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { getRelatedTools, getToolBySlug } from '@/lib/tools'
+import { getRelatedTools, getToolBySlug, tools } from '@/lib/tools'
 
 describe('getRelatedTools', () => {
   it('returns exactly 3 tools', () => {
@@ -47,5 +47,19 @@ describe('getRelatedTools', () => {
       'mdx-validator',
       'mdx-viewer',
     ])
+  })
+
+  it('every registry relatedSlugs entry resolves to a real tool', () => {
+    // A typo in relatedSlugs would silently drop a card. This guards against
+    // that by walking the whole registry and asserting each declared related
+    // slug resolves.
+    for (const tool of tools) {
+      for (const slug of tool.relatedSlugs ?? []) {
+        expect(
+          getToolBySlug(slug),
+          `${tool.slug}.relatedSlugs references unknown slug "${slug}"`,
+        ).toBeDefined()
+      }
+    }
   })
 })

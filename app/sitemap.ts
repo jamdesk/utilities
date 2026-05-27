@@ -1,4 +1,5 @@
 import { tools, LAST_REVIEWED } from '@/lib/tools'
+import { guides } from '@/lib/guides'
 import type { MetadataRoute } from 'next'
 
 export default function sitemap(): MetadataRoute.Sitemap {
@@ -11,18 +12,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: 'weekly',
       priority: 1.0,
     },
-    {
-      url: `${baseUrl}/mdx-cheatsheet`,
+    ...guides.map((g) => ({
+      url: `${baseUrl}/${g.slug}`,
       lastModified,
-      changeFrequency: 'monthly',
+      changeFrequency: 'monthly' as const,
       priority: 0.9,
-    },
-    {
-      url: `${baseUrl}/mdx-vs-markdown`,
-      lastModified,
-      changeFrequency: 'monthly',
-      priority: 0.9,
-    },
+    })),
     ...tools.map((tool) => ({
       url: `${baseUrl}/${tool.slug}`,
       lastModified,

@@ -20,6 +20,12 @@ export function CheatsheetCopyHandler() {
       const pre = card?.querySelector<HTMLElement>('pre[data-snippet]')
       const snippet = pre?.dataset.snippet
       if (!snippet) return
+      // navigator.clipboard is undefined in non-secure contexts and old Safari.
+      if (!navigator.clipboard) {
+        setAnnouncement('Copy unsupported in this browser')
+        setTimeout(() => setAnnouncement(''), 1200)
+        return
+      }
       // Note: this is a synchronous click handler — calling clipboard.writeText
       // directly from the event preserves the user gesture on iOS Safari.
       // If you ever introduce async work BEFORE this call (e.g., transforming

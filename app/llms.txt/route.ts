@@ -1,4 +1,5 @@
 import { tools, LAST_REVIEWED } from '@/lib/tools'
+import { guides } from '@/lib/guides'
 import { REPO_URL, LICENSE_URL, ORG_NAME, ORG_URL } from '@/lib/site'
 
 export const dynamic = 'force-static'
@@ -18,6 +19,14 @@ ${facts}`
     })
     .join('\n\n')
 
+  const guideLines = guides
+    .map(
+      (g) => `### ${g.name}
+URL: ${baseUrl}/${g.slug}
+${g.description}`,
+    )
+    .join('\n\n')
+
   const body = `# ${ORG_NAME} Developer Utilities
 > Free, open-source developer tools for MDX, Markdown, YAML, and JSON at ${baseUrl}
 
@@ -31,6 +40,10 @@ There are no ads, no accounts, and no usage limits.
 ## Tools
 
 ${toolLines}
+
+## Guides
+
+${guideLines}
 
 ## About
 ${ORG_NAME} is a documentation platform. Learn more at ${ORG_URL}
