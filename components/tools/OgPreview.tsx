@@ -6,6 +6,7 @@ import { resolvePlatform, type PlatformId, type PlatformPreview } from '@/lib/og
 import type { OgPreviewResult } from '@/lib/og-types'
 import { ogPreviewSample } from '@/lib/samples'
 import { LintPanel } from './og-preview/LintPanel'
+import { PlatformLogo } from './og-preview/PlatformLogo'
 import { RawTagsTable } from './og-preview/RawTagsTable'
 import { XCard } from './og-preview/XCard'
 import { FacebookCard } from './og-preview/FacebookCard'
@@ -130,7 +131,10 @@ export function OgPreview() {
           <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
             {previews.map(({ id, label, Card, preview }) => (
               <div key={id}>
-                <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">{label}</h3>
+                <h3 className="mb-2 flex items-center gap-1.5 text-xs font-semibold text-muted-foreground">
+                  <PlatformLogo platform={id} />
+                  {label}
+                </h3>
                 <Card p={preview} />
               </div>
             ))}

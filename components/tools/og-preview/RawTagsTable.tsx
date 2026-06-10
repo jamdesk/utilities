@@ -12,7 +12,7 @@ export function RawTagsTable({ tags }: { tags: RawTag[] }) {
     <div className="overflow-x-auto rounded-lg border border-border">
       <table className="w-full text-left text-sm">
         <thead>
-          <tr className="border-b border-border text-xs uppercase tracking-wide text-muted-foreground">
+          <tr className="border-b border-border text-xs text-muted-foreground">
             <th className="px-3 py-2 font-medium">Tag</th>
             <th className="px-3 py-2 font-medium">Content</th>
           </tr>
