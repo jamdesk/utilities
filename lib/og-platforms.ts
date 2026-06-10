@@ -18,16 +18,17 @@ export interface PlatformPreview {
   siteName?: string
   /** Bare hostname, e.g. docs.example.com */
   domain: string
-  /** X only: card layout requested by twitter:card */
+  /** Card layout requested by twitter:card — populated for every platform; X lays out by it and Discord also enlarges embeds on summary_large_image */
   cardType: 'summary' | 'summary_large_image'
   themeColor?: string
   faviconUrl?: string
 }
 
 /**
- * Apply each platform's real metadata fallback chain. X reads twitter:*
- * before og:*; Google reads the plain HTML tags before og:*; everyone else
- * reads og:* with HTML fallback.
+ * Apply each platform's real metadata fallback chain. X and Slack read
+ * twitter:* before og:* (Slack's precedence is oEmbed → twitter:* → og:*);
+ * Google reads the plain HTML tags before og:*; everyone else reads og:*
+ * with HTML fallback.
  */
 export function resolvePlatform(platform: PlatformId, result: OgPreviewResult): PlatformPreview {
   const { og, twitter, title, description, themeColor, faviconUrl } = result.meta
@@ -50,8 +51,9 @@ export function resolvePlatform(platform: PlatformId, result: OgPreviewResult): 
     return abs
   }
 
-  const ogImage = usableImage(og['image:secure_url'] ?? og['image'])
-  const twitterImage = usableImage(twitter['image'] ?? twitter['image:src']) ?? ogImage
+  // `||` (not `??`) so an empty-string tag doesn't mask a valid fallback
+  const ogImage = usableImage(og['image:secure_url'] || og['image'])
+  const twitterImage = usableImage(twitter['image'] || twitter['image:src']) ?? ogImage
 
   const base: PlatformPreview = {
     title: og.title ?? title,
@@ -66,6 +68,7 @@ export function resolvePlatform(platform: PlatformId, result: OgPreviewResult): 
 
   switch (platform) {
     case 'x':
+    case 'slack':
       return {
         ...base,
         title: twitter.title ?? base.title,

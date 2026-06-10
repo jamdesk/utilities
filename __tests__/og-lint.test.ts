@@ -158,4 +158,61 @@ describe('lintOgResult', () => {
     expect(ids(r)).toContain('missing-og-url')
     expect(ids(r)).toContain('missing-site-name')
   })
+
+  it('empty-string og:image:secure_url does not mask a valid og:image', () => {
+    const r = makeResult({
+      og: { 'image:secure_url': '', image: 'https://example.com/og.png' },
+      images: { 'https://example.com/og.png': GOOD_IMAGE },
+    })
+    expect(ids(r)).not.toContain('missing-og-image')
+  })
+
+  it('warns (not errors) when only twitter:image is set', () => {
+    const r = makeResult({
+      twitter: { image: 'https://example.com/tw.png' },
+      images: { 'https://example.com/tw.png': { ...GOOD_IMAGE, url: 'https://example.com/tw.png' } },
+    })
+    const f = lintOgResult(r).find((x) => x.id === 'missing-og-image')
+    expect(f?.severity).toBe('warning')
+    expect(f?.message).toBe('Missing og:image — only twitter:image is set')
+  })
+
+  it('per-image findings carry distinct url fields', () => {
+    const r = makeResult({
+      og: { image: 'https://example.com/og.png' },
+      twitter: { image: 'https://example.com/tw.png' },
+      images: {
+        'https://example.com/og.png': { url: 'https://example.com/og.png', ok: false, status: 404 },
+        'https://example.com/tw.png': { url: 'https://example.com/tw.png', ok: false, status: 500 },
+      },
+    })
+    const unreachable = lintOgResult(r).filter((f) => f.id === 'image-unreachable')
+    expect(unreachable.map((f) => f.url).sort()).toEqual([
+      'https://example.com/og.png',
+      'https://example.com/tw.png',
+    ])
+  })
+
+  it('does not flag 1200×628 (exact 1.91:1) as small', () => {
+    const r = makeResult({
+      og: { image: 'https://example.com/og.png' },
+      images: { 'https://example.com/og.png': { ...GOOD_IMAGE, width: 1200, height: 628 } },
+    })
+    expect(ids(r)).not.toContain('image-small')
+  })
+
+  it('detects insecure image regardless of scheme case', () => {
+    const r = makeResult({ og: { image: 'HTTP://example.com/og.png' } })
+    expect(ids(r)).toContain('insecure-image')
+  })
+
+  it('warns when only og:image:height mismatches actual', () => {
+    const r = makeResult({
+      og: { image: 'https://example.com/og.png', 'image:width': '1200', 'image:height': '600' },
+      images: { 'https://example.com/og.png': GOOD_IMAGE },
+    })
+    const f = lintOgResult(r).find((x) => x.id === 'image-dims-mismatch')
+    expect(f?.message).toBe('og:image:height says 600 but the image is 630px tall')
+    expect(f?.url).toBe('https://example.com/og.png')
+  })
 })

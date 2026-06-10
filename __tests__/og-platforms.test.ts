@@ -90,4 +90,32 @@ describe('resolvePlatform', () => {
     expect(p.themeColor).toBe('#123456')
     expect(p.faviconUrl).toBe('https://example.com/favicon.ico')
   })
+
+  it('empty-string og:image:secure_url does not mask a valid og:image', () => {
+    const r = makeResult({
+      og: { 'image:secure_url': '', image: 'https://example.com/og.png' },
+      images: { 'https://example.com/og.png': OK_CHECK },
+    })
+    expect(resolvePlatform('facebook', r).imageUrl).toBe('https://example.com/og.png')
+  })
+
+  it('twitter:image-only: X gets the image, Facebook does not', () => {
+    const r = makeResult({
+      twitter: { image: 'https://example.com/tw.png' },
+      images: { 'https://example.com/tw.png': { ...OK_CHECK, url: 'https://example.com/tw.png' } },
+    })
+    expect(resolvePlatform('x', r).imageUrl).toBe('https://example.com/tw.png')
+    expect(resolvePlatform('facebook', r).imageUrl).toBeUndefined()
+  })
+
+  it('Slack prefers twitter:* over og:*', () => {
+    const r = makeResult({
+      title: 'HTML',
+      og: { title: 'OG', description: 'OG desc' },
+      twitter: { title: 'TW', description: 'TW desc' },
+    })
+    const p = resolvePlatform('slack', r)
+    expect(p.title).toBe('TW')
+    expect(p.description).toBe('TW desc')
+  })
 })

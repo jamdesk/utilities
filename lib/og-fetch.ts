@@ -43,9 +43,10 @@ export async function fetchPreview(inputUrl: string): Promise<OgPreviewResult> {
   }
   const meta = parseHead(html, finalUrl.toString())
 
+  // `||` (not `??`) so an empty-string tag doesn't mask a valid fallback
   const candidates = [
-    meta.og['image:secure_url'] ?? meta.og['image'],
-    meta.twitter['image'] ?? meta.twitter['image:src'],
+    meta.og['image:secure_url'] || meta.og['image'],
+    meta.twitter['image'] || meta.twitter['image:src'],
   ]
   const imageUrls = [
     ...new Set(
