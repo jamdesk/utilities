@@ -47,8 +47,14 @@ export function OgPreview() {
     setResult(null)
     try {
       const res = await fetch(`${API_PATH}?url=${encodeURIComponent(withScheme)}`)
-      const data = await res.json()
-      if (!res.ok) throw new Error(data.error ?? `Request failed (${res.status})`)
+      // Gateway errors (e.g. a 504 page) aren't JSON — never surface the
+      // parser failure as the user-facing message.
+      const data = await res.json().catch(() => null)
+      if (!res.ok || data === null) {
+        const message =
+          data && typeof data.error === 'string' ? data.error : `Request failed (${res.status})`
+        throw new Error(message)
+      }
       setResult(data as OgPreviewResult)
       const next = new URL(window.location.href)
       next.searchParams.set('url', withScheme)

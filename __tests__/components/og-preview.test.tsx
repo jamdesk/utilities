@@ -81,6 +81,33 @@ describe('OgPreview', () => {
     )
   })
 
+  it('auto-runs a preview from the ?url= deep link, normalizing the scheme', async () => {
+    window.history.replaceState(null, '', '/?url=example.com')
+    render(<OgPreview />)
+    expect(await screen.findByText('X (Twitter)')).toBeDefined()
+    expect(vi.mocked(fetch)).toHaveBeenCalledWith(
+      '/utilities/api/og-preview?url=' + encodeURIComponent('https://example.com')
+    )
+  })
+
+  it('shows a friendly message when the API returns non-JSON (e.g. a gateway 504)', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue({
+        ok: false,
+        status: 504,
+        json: () => Promise.reject(new SyntaxError('Unexpected token <')),
+      })
+    )
+    render(<OgPreview />)
+    fireEvent.change(screen.getByLabelText('URL to preview'), {
+      target: { value: 'https://example.com' },
+    })
+    fireEvent.click(screen.getByRole('button', { name: 'Preview' }))
+    expect(await screen.findByRole('alert')).toBeDefined()
+    expect(screen.getByText('Request failed (504)')).toBeDefined()
+  })
+
   it('shows the API error message on failure', async () => {
     vi.stubGlobal(
       'fetch',
