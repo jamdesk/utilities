@@ -1,0 +1,147 @@
+'use client'
+
+import { useCallback, useEffect, useState, type ComponentType } from 'react'
+import { lintOgResult } from '@/lib/og-lint'
+import { resolvePlatform, type PlatformId, type PlatformPreview } from '@/lib/og-platforms'
+import type { OgPreviewResult } from '@/lib/og-types'
+import { ogPreviewSample } from '@/lib/samples'
+import { PreviewFrame } from './og-preview/PreviewFrame'
+import { LintPanel } from './og-preview/LintPanel'
+import { RawTagsTable } from './og-preview/RawTagsTable'
+import { XCard } from './og-preview/XCard'
+import { FacebookCard } from './og-preview/FacebookCard'
+import { LinkedInCard } from './og-preview/LinkedInCard'
+import { SlackCard } from './og-preview/SlackCard'
+import { DiscordCard } from './og-preview/DiscordCard'
+import { WhatsAppCard } from './og-preview/WhatsAppCard'
+import { IMessageCard } from './og-preview/IMessageCard'
+import { GoogleSerpCard } from './og-preview/GoogleSerpCard'
+
+// basePath is /utilities — client fetch() does not get the prefix automatically
+const API_PATH = '/utilities/api/og-preview'
+
+const PLATFORMS: { id: PlatformId; label: string; Card: ComponentType<{ p: PlatformPreview }> }[] = [
+  { id: 'x', label: 'X (Twitter)', Card: XCard },
+  { id: 'facebook', label: 'Facebook', Card: FacebookCard },
+  { id: 'linkedin', label: 'LinkedIn', Card: LinkedInCard },
+  { id: 'slack', label: 'Slack', Card: SlackCard },
+  { id: 'discord', label: 'Discord', Card: DiscordCard },
+  { id: 'whatsapp', label: 'WhatsApp', Card: WhatsAppCard },
+  { id: 'imessage', label: 'iMessage', Card: IMessageCard },
+  { id: 'google', label: 'Google', Card: GoogleSerpCard },
+]
+
+export function OgPreview() {
+  const [url, setUrl] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
+  const [result, setResult] = useState<OgPreviewResult | null>(null)
+
+  const runPreview = useCallback(async (target: string) => {
+    const trimmed = target.trim()
+    if (!trimmed) return
+    const withScheme = /^https?:\/\//i.test(trimmed) ? trimmed : `https://${trimmed}`
+    setUrl(withScheme)
+    setLoading(true)
+    setError('')
+    setResult(null)
+    try {
+      const res = await fetch(`${API_PATH}?url=${encodeURIComponent(withScheme)}`)
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error ?? `Request failed (${res.status})`)
+      setResult(data as OgPreviewResult)
+      const next = new URL(window.location.href)
+      next.searchParams.set('url', withScheme)
+      window.history.replaceState(null, '', next.toString())
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to fetch the URL')
+    } finally {
+      setLoading(false)
+    }
+  }, [])
+
+  // Deep links: /utilities/opengraph-preview?url=…
+  useEffect(() => {
+    const param = new URLSearchParams(window.location.search).get('url')
+    if (param) {
+      // Syncing from the external URL is what effects are for; runPreview sets
+      // the input state (with scheme normalization) before its first await.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      void runPreview(param)
+    }
+  }, [runPreview])
+
+  return (
+    <div className="space-y-6 p-4 sm:p-6">
+      <form
+        className="flex flex-col gap-2 sm:flex-row"
+        onSubmit={(e) => {
+          e.preventDefault()
+          void runPreview(url)
+        }}
+      >
+        {/* text-base = 16px, required to avoid iOS auto-zoom on focus */}
+        <input
+          type="text"
+          inputMode="url"
+          value={url}
+          onChange={(e) => setUrl(e.target.value)}
+          placeholder={ogPreviewSample}
+          aria-label="URL to preview"
+          className="min-w-0 flex-1 rounded-lg border border-border bg-background px-3 py-2 text-base text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none"
+        />
+        <button
+          type="submit"
+          disabled={loading || !url.trim()}
+          className="rounded-lg bg-primary px-5 py-2 text-base font-medium text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-50"
+        >
+          {loading ? 'Fetching…' : 'Preview'}
+        </button>
+      </form>
+
+      {error && (
+        <div
+          className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
+          role="alert"
+        >
+          {error}
+        </div>
+      )}
+
+      {result && (
+        <>
+          <LintPanel findings={lintOgResult(result)} />
+          <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
+            {PLATFORMS.map(({ id, label, Card }) => (
+              <PreviewFrame key={id} label={label}>
+                <Card p={resolvePlatform(id, result)} />
+              </PreviewFrame>
+            ))}
+          </div>
+          <details>
+            <summary className="cursor-pointer text-sm font-medium text-foreground">
+              Raw tags ({result.meta.rawTags.length})
+            </summary>
+            <div className="mt-3">
+              <RawTagsTable tags={result.meta.rawTags} />
+            </div>
+          </details>
+        </>
+      )}
+
+      {!result && !error && !loading && (
+        <p className="text-sm text-muted-foreground">
+          Enter a URL to see how it renders when shared on X, Facebook, LinkedIn, Slack, Discord,
+          WhatsApp, iMessage, and Google — with tag-level validation.{' '}
+          <button
+            type="button"
+            className="text-primary underline-offset-2 hover:underline"
+            onClick={() => void runPreview(ogPreviewSample)}
+          >
+            Try an example
+          </button>
+        </p>
+      )}
+    </div>
+  )
+}

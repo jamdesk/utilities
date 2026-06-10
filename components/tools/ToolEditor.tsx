@@ -39,6 +39,10 @@ const TableGenerator = dynamic(
   () => import('@/components/tools/TableGenerator').then((m) => m.TableGenerator),
   { ssr: false }
 )
+const OgPreview = dynamic(
+  () => import('@/components/tools/OgPreview').then((m) => m.OgPreview),
+  { ssr: false }
+)
 
 interface ToolEditorProps {
   slug: string
@@ -55,6 +59,7 @@ export function ToolEditor({ slug }: ToolEditorProps) {
       {slug === 'yaml-validator' && <YamlValidator />}
       {slug === 'json-yaml-converter' && <JsonYamlConverter />}
       {slug === 'markdown-table-generator' && <TableGenerator />}
+      {slug === 'opengraph-preview' && <OgPreview />}
     </div>
   )
 }
