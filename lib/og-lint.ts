@@ -22,6 +22,11 @@ export function lintOgResult(result: OgPreviewResult): LintFinding[] {
   const add = (severity: LintSeverity, id: string, message: string, hint?: string, url?: string) =>
     findings.push({ severity, id, message, hint, url })
 
+  if (result.status >= 400) {
+    add('error', 'page-status', `Page returned HTTP ${result.status}`,
+      'Scrapers refuse non-200 pages — Facebook reports "Bad Response Code" and shows no card.')
+  }
+
   if (!og.title) {
     if (title) {
       add('warning', 'missing-og-title', 'Missing og:title',

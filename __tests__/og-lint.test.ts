@@ -59,6 +59,13 @@ describe('lintOgResult', () => {
     expect(lintOgResult(COMPLETE)).toEqual([])
   })
 
+  it('errors when the page returned a non-success status', () => {
+    const findings = lintOgResult({ ...COMPLETE, status: 404 })
+    const finding = findings.find((f) => f.id === 'page-status')
+    expect(finding?.severity).toBe('error')
+    expect(finding?.message).toBe('Page returned HTTP 404')
+  })
+
   it('errors on missing og:title with no <title> fallback', () => {
     const findings = lintOgResult(makeResult({}))
     const f = findings.find((x) => x.id === 'missing-og-title')

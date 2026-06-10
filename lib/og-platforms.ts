@@ -18,7 +18,7 @@ export interface PlatformPreview {
   siteName?: string
   /** Bare hostname, e.g. docs.example.com */
   domain: string
-  /** Card layout requested by twitter:card — populated for every platform; X lays out by it and Discord also enlarges embeds on summary_large_image */
+  /** Card layout requested by twitter:card — populated for every platform; XCard lays out by it */
   cardType: 'summary' | 'summary_large_image'
   themeColor?: string
   faviconUrl?: string
