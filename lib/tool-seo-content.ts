@@ -338,4 +338,48 @@ export const toolSeoContent: Record<string, ToolSeoContent> = {
       },
     ],
   },
+  'opengraph-preview': {
+    howToTitle: 'How to Preview Open Graph Tags',
+    howToContent:
+      'Enter any public URL and press Preview. A Jamdesk server fetches the page (browsers cannot read other websites directly), extracts every og:*, twitter:*, and standard HTML tag, and renders faithful preview cards for X, Facebook, LinkedIn, Slack, Discord, WhatsApp, iMessage, and Google search results. The validator then checks the metadata against each platform’s requirements — missing tags, image dimensions and file size, truncation limits — and explains how to fix every issue it finds. Share a report by copying the page URL: the ?url= parameter re-runs the same check.',
+    detailSections: [
+      {
+        heading: 'What the validator checks',
+        content:
+          'The validator verifies that og:title, og:description, og:image, and twitter:card are present, that the image URL is absolute and served over HTTPS, and that the image actually loads. It downloads the image to measure real pixel dimensions, flagging anything below Facebook’s 200×200 minimum or the recommended 1200×630, aspect ratios that stray far from 1.91:1, files over the 5 MB limit X enforces, and mismatches between declared og:image:width/height and the actual file. It also flags titles and descriptions long enough to truncate, and missing nice-to-haves like og:site_name and og:url.',
+      },
+      {
+        heading: 'How platforms choose their card data',
+        content:
+          'Each platform reads tags in a different order, and the preview cards replicate those fallback chains exactly. X reads twitter:* tags first and falls back to og:*; without twitter:card it renders only a small summary card. Facebook, LinkedIn, Slack, Discord, WhatsApp, and iMessage read og:* tags and fall back to the plain <title> and meta description. Google search ignores Open Graph for its snippet and uses the <title> tag and meta description directly. Discord additionally reads theme-color for its embed accent bar, and Slack shows your favicon and og:site_name above the title.',
+      },
+      {
+        heading: 'Recommended image setup',
+        content:
+          'Use a 1200×630 JPEG or PNG (1.91:1 aspect ratio) under 5 MB, referenced by an absolute HTTPS URL in og:image. That single image renders crisply everywhere: full-width on X with twitter:card set to summary_large_image, large cards on Facebook and LinkedIn, and inline embeds on Slack and Discord. Keep critical text away from the edges — messaging apps crop more aggressively than feeds.',
+      },
+    ],
+    faq: [
+      {
+        question: 'Why does this tool need a server when the other tools run client-side?',
+        answer:
+          'Browsers enforce the same-origin policy: JavaScript on one site cannot read HTML from another site unless that site explicitly allows it with CORS headers, which virtually none do. A Jamdesk server fetches the page exactly the way X or Slack would, parses the tags, and returns them. The URL and parsed metadata are never stored or logged.',
+      },
+      {
+        question: 'Why does my page show no image on X?',
+        answer:
+          'The two most common causes are a missing twitter:card tag (X needs it to choose a card layout) and a relative og:image path — the Open Graph spec requires an absolute URL. The validator flags both, along with images that fail to load or exceed X’s 5 MB limit.',
+      },
+      {
+        question: 'What size should my og:image be?',
+        answer:
+          'Use 1200×630 pixels (1.91:1) as a JPEG or PNG under 5 MB. Facebook ignores images smaller than 200×200, and images below 1200×630 render as low-resolution or thumbnail cards on X and LinkedIn.',
+      },
+      {
+        question: 'The preview here differs from what the platform actually shows. Why?',
+        answer:
+          'Platforms cache scraped metadata aggressively — sometimes for weeks. If you recently changed your tags, the platform may still show the old version. Use the platform’s own refresh tool (Facebook Sharing Debugger, LinkedIn Post Inspector, or X Card Validator) to force a re-scrape. This tool always fetches the live page.',
+      },
+    ],
+  },
 }

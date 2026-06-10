@@ -9,6 +9,7 @@ import {
   yamlValidatorSample,
   jsonYamlSample,
   tableSample,
+  ogPreviewSample,
 } from '../lib/samples'
 
 const sampleMap: Record<string, string> = {
@@ -20,6 +21,7 @@ const sampleMap: Record<string, string> = {
   'yaml-validator': yamlValidatorSample,
   'json-yaml-converter': jsonYamlSample,
   'markdown-table-generator': tableSample,
+  'opengraph-preview': ogPreviewSample,
 }
 
 describe('sample content', () => {
@@ -53,7 +55,9 @@ describe('sample content', () => {
   })
 
   it('all samples are non-trivial (>100 chars)', () => {
-    for (const sample of Object.values(sampleMap)) {
+    for (const [slug, sample] of Object.entries(sampleMap)) {
+      // The OG preview sample is a URL, not document content
+      if (slug === 'opengraph-preview') continue
       expect(sample.length).toBeGreaterThan(100)
     }
   })

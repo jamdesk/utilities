@@ -11,17 +11,19 @@ export function OpenSourceNote({ heading, tool }: OpenSourceNoteProps) {
   const resolvedHeading = heading ?? (tool ? 'About this tool' : 'About these tools')
   const subject = tool ? tool.seoSubject : `${ORG_NAME} Utilities`
   const isVerb = tool ? 'is' : 'are'
-  const runsVerb = tool ? 'runs' : 'run'
+  const privacySentence = tool
+    ? tool.serverSide
+      ? 'The URL you enter is fetched by a Jamdesk server (browsers block reading other sites directly), parsed for metadata, and discarded — nothing is stored or logged.'
+      : 'It runs entirely in your browser. Your input is never uploaded, stored, or logged — you can verify this by opening the network tab in your browser developer tools while the tool runs.'
+    : 'They run in your browser wherever possible — your input is never uploaded, stored, or logged. Tools that must fetch other websites (like the OpenGraph Preview) do so through a Jamdesk server that stores nothing.'
   return (
     <>
       <h2 className="mb-4 font-heading text-2xl font-bold text-foreground [text-wrap:balance]">
         {resolvedHeading}
       </h2>
       <p className="leading-relaxed text-muted-foreground">
-        {subject} {isVerb} free and open source, and {runsVerb} entirely in your
-        browser. Your input is never uploaded, stored, or logged — you can verify
-        this by opening the network tab in your browser developer tools while the
-        tool runs. The full source code is on{' '}
+        {subject} {isVerb} free and open source. {privacySentence} The full
+        source code is on{' '}
         <a
           href={REPO_URL}
           className="text-primary hover:underline"

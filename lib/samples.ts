@@ -292,3 +292,6 @@ For a complete list of changes, see the [changelog](/changelog).
   Need help? Visit our [support page](/support).
 </Callout>
 `
+
+/** Default URL for the OpenGraph Preview tool — a page with complete social metadata */
+export const ogPreviewSample = 'https://www.jamdesk.com'

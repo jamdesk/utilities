@@ -9,6 +9,8 @@ export interface Tool {
   seoSubject: string
   ctaText: string
   ctaDescription: string
+  /** True when the tool calls a Jamdesk API route instead of running fully client-side. Drives the hero badge and OpenSourceNote copy. */
+  serverSide?: boolean
 }
 
 export const tools: Tool[] = [
@@ -113,6 +115,20 @@ export const tools: Tool[] = [
     ctaText: 'Tables look great in Jamdesk docs',
     ctaDescription:
       'Jamdesk renders Markdown tables with responsive styling and dark mode support.',
+  },
+  {
+    slug: 'opengraph-preview',
+    name: 'OpenGraph Preview',
+    description: 'Preview and validate social share cards for any URL',
+    icon: '🔗',
+    seoTitle: 'OpenGraph Preview — Free Social Card Checker & Validator | Jamdesk',
+    seoDescription:
+      'Preview how any URL looks when shared on X, Facebook, LinkedIn, Slack, Discord, WhatsApp, iMessage, and Google. Validates Open Graph tags, checks image dimensions, and explains how to fix every issue. Free and open source.',
+    seoSubject: 'The OpenGraph Preview tool',
+    ctaText: 'Docs with perfect social cards',
+    ctaDescription:
+      'Jamdesk generates Open Graph metadata and social images for every docs page automatically.',
+    serverSide: true,
   },
 ]
 

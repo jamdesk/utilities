@@ -38,7 +38,7 @@ export default async function ToolPage({
           >
             Open source
           </a>
-          {' '}&middot; Client-side
+          {' '}&middot; {tool.serverSide ? 'Server-assisted' : 'Client-side'}
         </span>
         <h1 className="mb-1 font-heading text-xl font-bold tracking-tight text-foreground [text-wrap:balance] sm:mb-3 sm:text-4xl">
           {tool.name}

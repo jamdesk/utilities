@@ -36,6 +36,10 @@ Strips JSX from MDX and gives you standard Markdown. Import and export statement
 
 Useful when migrating away from MDX, publishing to Markdown-only platforms, or diffing content without JSX noise.
 
+### OpenGraph Preview
+
+Preview and validate how any URL renders when shared on X, Facebook, LinkedIn, Slack, Discord, WhatsApp, iMessage, and Google — with tag-level validation, image dimension checks, and fix hints. Uses a small server endpoint (`/api/og-preview`) because browsers block cross-site reads.
+
 ---
 
 ## How It Works
