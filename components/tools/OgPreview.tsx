@@ -1,11 +1,10 @@
 'use client'
 
-import { useCallback, useEffect, useState, type ComponentType } from 'react'
+import { useCallback, useEffect, useMemo, useState, type ComponentType } from 'react'
 import { lintOgResult } from '@/lib/og-lint'
 import { resolvePlatform, type PlatformId, type PlatformPreview } from '@/lib/og-platforms'
 import type { OgPreviewResult } from '@/lib/og-types'
 import { ogPreviewSample } from '@/lib/samples'
-import { PreviewFrame } from './og-preview/PreviewFrame'
 import { LintPanel } from './og-preview/LintPanel'
 import { RawTagsTable } from './og-preview/RawTagsTable'
 import { XCard } from './og-preview/XCard'
@@ -36,6 +35,17 @@ export function OgPreview() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [result, setResult] = useState<OgPreviewResult | null>(null)
+
+  // Keystrokes in the URL input re-render this component — don't recompute
+  // the lint pass and 8 platform resolutions on every one.
+  const findings = useMemo(() => (result ? lintOgResult(result) : []), [result])
+  const previews = useMemo(
+    () =>
+      result
+        ? PLATFORMS.map((entry) => ({ ...entry, preview: resolvePlatform(entry.id, result) }))
+        : [],
+    [result]
+  )
 
   const runPreview = useCallback(async (target: string) => {
     const trimmed = target.trim()
@@ -107,7 +117,7 @@ export function OgPreview() {
 
       {error && (
         <div
-          className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
+          className="rounded-lg border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive"
           role="alert"
         >
           {error}
@@ -116,12 +126,13 @@ export function OgPreview() {
 
       {result && (
         <>
-          <LintPanel findings={lintOgResult(result)} />
+          <LintPanel findings={findings} />
           <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
-            {PLATFORMS.map(({ id, label, Card }) => (
-              <PreviewFrame key={id} label={label}>
-                <Card p={resolvePlatform(id, result)} />
-              </PreviewFrame>
+            {previews.map(({ id, label, Card, preview }) => (
+              <div key={id}>
+                <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">{label}</h3>
+                <Card p={preview} />
+              </div>
             ))}
           </div>
           <details>

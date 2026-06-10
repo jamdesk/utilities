@@ -1,8 +1,9 @@
 import type { LintFinding } from '@/lib/og-lint'
 
 const SEVERITY_STYLES: Record<LintFinding['severity'], { badge: string; label: string }> = {
-  error: { badge: 'bg-red-100 text-red-700', label: 'Error' },
-  warning: { badge: 'bg-amber-100 text-amber-700', label: 'Warning' },
+  error: { badge: 'bg-destructive/20 text-destructive', label: 'Error' },
+  warning: { badge: 'bg-warning/20 text-warning-dark', label: 'Warning' },
+  // No info token exists in the theme — sky-* stays hardcoded.
   info: { badge: 'bg-sky-100 text-sky-700', label: 'Info' },
 }
 
@@ -11,7 +12,7 @@ const SEVERITY_ORDER: Record<LintFinding['severity'], number> = { error: 0, warn
 export function LintPanel({ findings }: { findings: LintFinding[] }) {
   if (findings.length === 0) {
     return (
-      <div className="rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800">
+      <div className="rounded-lg border border-success/30 bg-success/10 px-4 py-3 text-sm text-success">
         ✓ No issues found — this page&apos;s social metadata looks complete.
       </div>
     )

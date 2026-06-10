@@ -1,7 +1,12 @@
 import { imageSize } from 'image-size'
 import { parseHead, resolveUrl } from '@/lib/og-parse'
 import { validateTargetUrl } from '@/lib/og-url-guard'
-import type { ImageCheck, OgPreviewResult } from '@/lib/og-types'
+import {
+  ogImageCandidate,
+  twitterImageCandidate,
+  type ImageCheck,
+  type OgPreviewResult,
+} from '@/lib/og-types'
 
 const USER_AGENT =
   'JamdeskOGPreview/1.0 (+https://www.jamdesk.com/utilities/opengraph-preview)'
@@ -11,7 +16,12 @@ const FETCH_TIMEOUT_MS = 8000
 const TOTAL_TIMEOUT_MS = 25_000
 const MAX_REDIRECTS = 5
 const MAX_HTML_BYTES = 1024 * 1024
-const MAX_IMAGE_BYTES = 10 * 1024 * 1024
+// image-size only needs the header bytes to read dimensions, and the byte
+// count prefers content-length anyway — reading a full 10 MB per image was
+// the dominant memory/time cost. Images larger than this served WITHOUT a
+// content-length header will under-report bytes; acceptable, since CDNs
+// virtually always send it.
+const IMAGE_SNIFF_BYTES = 512 * 1024
 
 /** User-presentable fetch failure — the route maps these to 422 responses. */
 export class OgFetchError extends Error {}
@@ -43,11 +53,7 @@ export async function fetchPreview(inputUrl: string): Promise<OgPreviewResult> {
   }
   const meta = parseHead(html, finalUrl.toString())
 
-  // `||` (not `??`) so an empty-string tag doesn't mask a valid fallback
-  const candidates = [
-    meta.og['image:secure_url'] || meta.og['image'],
-    meta.twitter['image'] || meta.twitter['image:src'],
-  ]
+  const candidates = [ogImageCandidate(meta), twitterImageCandidate(meta)]
   const imageUrls = [
     ...new Set(
       candidates.flatMap((c) => {
@@ -64,7 +70,6 @@ export async function fetchPreview(inputUrl: string): Promise<OgPreviewResult> {
   )
 
   return {
-    inputUrl,
     finalUrl: finalUrl.toString(),
     status: response.status,
     meta,
@@ -140,7 +145,7 @@ async function checkImage(url: string, deadline: number): Promise<ImageCheck> {
   const contentType = (response.headers.get('content-type') ?? '').split(';')[0]
   let body: Uint8Array
   try {
-    body = await readCapped(response, MAX_IMAGE_BYTES)
+    body = await readCapped(response, IMAGE_SNIFF_BYTES)
   } catch {
     return { url, ok: false, status: response.status, error: 'Image could not be read' }
   }
@@ -153,7 +158,7 @@ async function checkImage(url: string, deadline: number): Promise<ImageCheck> {
   } catch {
     // unknown format — dimensions stay undefined, lint flags the content type
   }
-  // Prefer the declared content-length so images beyond MAX_IMAGE_BYTES
+  // Prefer the declared content-length so images beyond IMAGE_SNIFF_BYTES
   // report their true size rather than the capped read length — but never
   // less than what was actually read (an under-declared header must not
   // shrink the size the lint evaluates).

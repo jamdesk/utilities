@@ -16,7 +16,6 @@ function makeResult(overrides: {
   images?: Record<string, ImageCheck>
 }): OgPreviewResult {
   return {
-    inputUrl: 'https://example.com/page',
     finalUrl: 'https://example.com/page',
     status: 200,
     meta: {

@@ -1,4 +1,4 @@
-import type { OgPreviewResult } from '@/lib/og-types'
+import { ogImageCandidate, twitterImageCandidate, type OgPreviewResult } from '@/lib/og-types'
 
 export type PlatformId =
   | 'x'
@@ -34,6 +34,7 @@ export function resolvePlatform(platform: PlatformId, result: OgPreviewResult): 
   const { og, twitter, title, description, themeColor, faviconUrl } = result.meta
   const domain = new URL(result.finalUrl).hostname
 
+  // Local equivalent of og-parse's resolveUrl — importing og-parse here would pull htmlparser2 into the client bundle.
   const toAbsolute = (raw?: string): string | undefined => {
     if (!raw) return undefined
     try {
@@ -51,9 +52,8 @@ export function resolvePlatform(platform: PlatformId, result: OgPreviewResult): 
     return abs
   }
 
-  // `||` (not `??`) so an empty-string tag doesn't mask a valid fallback
-  const ogImage = usableImage(og['image:secure_url'] || og['image'])
-  const twitterImage = usableImage(twitter['image'] || twitter['image:src']) ?? ogImage
+  const ogImage = usableImage(ogImageCandidate(result.meta))
+  const twitterImage = usableImage(twitterImageCandidate(result.meta)) ?? ogImage
 
   const base: PlatformPreview = {
     title: og.title ?? title,

@@ -1,5 +1,5 @@
 import type { PlatformPreview } from '@/lib/og-platforms'
-import { ImagePlaceholder } from './ImagePlaceholder'
+import { CardImage } from './CardImage'
 
 export function FacebookCard({ p }: { p: PlatformPreview }) {
   return (
@@ -7,13 +7,7 @@ export function FacebookCard({ p }: { p: PlatformPreview }) {
       className="overflow-hidden rounded-lg border border-[#dadde1] bg-white"
       style={{ fontFamily: 'Helvetica, Arial, sans-serif' }}
     >
-      <div className="aspect-[1.91/1] bg-[#f0f2f5]">
-        {p.imageUrl ? (
-          <img src={p.imageUrl} alt="" className="h-full w-full object-cover" />
-        ) : (
-          <ImagePlaceholder />
-        )}
-      </div>
+      <CardImage src={p.imageUrl} className="aspect-[1.91/1] bg-[#f0f2f5]" />
       <div className="border-t border-[#dadde1] bg-[#f0f2f5] px-3 py-2.5">
         <p className="truncate text-[13px] uppercase text-[#606770]">{p.domain}</p>
         <p className="mt-0.5 line-clamp-2 text-[17px] font-semibold leading-snug text-[#1d2129]">

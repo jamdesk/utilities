@@ -21,7 +21,6 @@ function makeResult(overrides: {
   images?: Record<string, ImageCheck>
 }): OgPreviewResult {
   return {
-    inputUrl: 'https://example.com/',
     finalUrl: 'https://example.com/',
     status: 200,
     meta: {
@@ -35,6 +34,13 @@ function makeResult(overrides: {
     images: overrides.images ?? {},
   }
 }
+
+/** A result whose only og tag is an image, deep-checked as GOOD_IMAGE with `over` applied. */
+const withImage = (over: Partial<ImageCheck>) =>
+  makeResult({
+    og: { image: 'https://example.com/og.png' },
+    images: { 'https://example.com/og.png': { ...GOOD_IMAGE, ...over } },
+  })
 
 const COMPLETE = makeResult({
   title: 'Title',
@@ -97,32 +103,17 @@ describe('lintOgResult', () => {
   })
 
   it('errors when the image deep-check failed', () => {
-    const r = makeResult({
-      og: { image: 'https://example.com/og.png' },
-      images: { 'https://example.com/og.png': { url: 'https://example.com/og.png', ok: false, status: 404, error: 'Image request failed (404)' } },
-    })
+    const r = withImage({ ok: false, status: 404, error: 'Image request failed (404)' })
     expect(ids(r)).toContain('image-unreachable')
   })
 
   it('errors on images below 200×200 and warns below 1200×630', () => {
-    const tiny = makeResult({
-      og: { image: 'https://example.com/og.png' },
-      images: { 'https://example.com/og.png': { ...GOOD_IMAGE, width: 100, height: 100 } },
-    })
-    expect(ids(tiny)).toContain('image-too-small')
-    const small = makeResult({
-      og: { image: 'https://example.com/og.png' },
-      images: { 'https://example.com/og.png': { ...GOOD_IMAGE, width: 800, height: 419 } },
-    })
-    expect(ids(small)).toContain('image-small')
+    expect(ids(withImage({ width: 100, height: 100 }))).toContain('image-too-small')
+    expect(ids(withImage({ width: 800, height: 419 }))).toContain('image-small')
   })
 
   it('warns on bad aspect ratio', () => {
-    const square = makeResult({
-      og: { image: 'https://example.com/og.png' },
-      images: { 'https://example.com/og.png': { ...GOOD_IMAGE, width: 1200, height: 1200 } },
-    })
-    expect(ids(square)).toContain('image-aspect')
+    expect(ids(withImage({ width: 1200, height: 1200 }))).toContain('image-aspect')
   })
 
   it('warns when declared og:image:width mismatches actual', () => {
@@ -134,23 +125,13 @@ describe('lintOgResult', () => {
   })
 
   it('warns on oversized image files', () => {
-    const r = makeResult({
-      og: { image: 'https://example.com/og.png' },
-      images: { 'https://example.com/og.png': { ...GOOD_IMAGE, bytes: 6 * 1024 * 1024 } },
-    })
-    expect(ids(r)).toContain('image-too-large')
+    expect(ids(withImage({ bytes: 6 * 1024 * 1024 }))).toContain('image-too-large')
   })
 
   it('warns on webp format, errors on non-image content type', () => {
-    const webp = makeResult({
-      og: { image: 'https://example.com/og.png' },
-      images: { 'https://example.com/og.png': { ...GOOD_IMAGE, contentType: 'image/webp' } },
-    })
+    const webp = withImage({ contentType: 'image/webp' })
     expect(lintOgResult(webp).find((f) => f.id === 'image-format')?.severity).toBe('warning')
-    const html = makeResult({
-      og: { image: 'https://example.com/og.png' },
-      images: { 'https://example.com/og.png': { ...GOOD_IMAGE, contentType: 'text/html' } },
-    })
+    const html = withImage({ contentType: 'text/html' })
     expect(lintOgResult(html).find((f) => f.id === 'image-format')?.severity).toBe('error')
   })
 
@@ -201,11 +182,7 @@ describe('lintOgResult', () => {
   })
 
   it('does not flag 1200×628 (exact 1.91:1) as small', () => {
-    const r = makeResult({
-      og: { image: 'https://example.com/og.png' },
-      images: { 'https://example.com/og.png': { ...GOOD_IMAGE, width: 1200, height: 628 } },
-    })
-    expect(ids(r)).not.toContain('image-small')
+    expect(ids(withImage({ width: 1200, height: 628 }))).not.toContain('image-small')
   })
 
   it('detects insecure image regardless of scheme case', () => {

@@ -1,4 +1,4 @@
-import type { OgPreviewResult } from '@/lib/og-types'
+import { ogImageCandidate, twitterImageCandidate, type OgPreviewResult } from '@/lib/og-types'
 
 export type LintSeverity = 'error' | 'warning' | 'info'
 
@@ -47,9 +47,8 @@ export function lintOgResult(result: OgPreviewResult): LintFinding[] {
     }
   }
 
-  // `||` (not `??`) so an empty-string tag doesn't mask a valid fallback
-  const ogImage = og['image:secure_url'] || og['image']
-  const rawImage = ogImage || twitter['image'] || twitter['image:src']
+  const ogImage = ogImageCandidate(result.meta)
+  const rawImage = ogImage || twitterImageCandidate(result.meta)
   if (!rawImage) {
     add('error', 'missing-og-image', 'Missing og:image',
       'Most platforms render a text-only card — or no card at all — without an image.')

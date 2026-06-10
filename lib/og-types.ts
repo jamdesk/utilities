@@ -2,6 +2,7 @@
  * Shared types for the OpenGraph Preview tool — used by the API route
  * (server) and the preview UI (client). Keep this file dependency-free
  * so importing it never drags server code into the client bundle.
+ * Also holds tiny shared dependency-free helpers used by both sides.
  */
 
 export interface RawTag {
@@ -43,10 +44,23 @@ export interface ImageCheck {
 }
 
 export interface OgPreviewResult {
-  inputUrl: string
   finalUrl: string
   status: number
   meta: ParsedMeta
   /** Deep-checks keyed by absolute image URL (og:image, twitter:image) */
   images: Record<string, ImageCheck>
+}
+
+// `||` (not `??`) so an empty-string tag doesn't mask a valid fallback.
+// These chains decide which images get deep-checked (server), linted, and
+// rendered (client) — keep them in one place so the three can't drift.
+
+/** The image og:* consumers (Facebook, LinkedIn, Slack, …) would use. */
+export function ogImageCandidate(meta: ParsedMeta): string | undefined {
+  return meta.og['image:secure_url'] || meta.og['image'] || undefined
+}
+
+/** The image twitter:* consumers (X) would use, before their og fallback. */
+export function twitterImageCandidate(meta: ParsedMeta): string | undefined {
+  return meta.twitter['image'] || meta.twitter['image:src'] || undefined
 }

@@ -4,7 +4,6 @@ import { OgPreview } from '@/components/tools/OgPreview'
 import type { OgPreviewResult } from '@/lib/og-types'
 
 const fakeResult: OgPreviewResult = {
-  inputUrl: 'https://example.com/',
   finalUrl: 'https://example.com/',
   status: 200,
   meta: {
