@@ -1,6 +1,6 @@
 import { imageSize } from 'image-size'
 import { parseHead, resolveUrl } from '@/lib/og-parse'
-import { validateTargetUrl } from '@/lib/og-url-guard'
+import { validateResolvedHost, validateTargetUrl } from '@/lib/og-url-guard'
 import {
   ogImageCandidate,
   twitterImageCandidate,
@@ -104,6 +104,10 @@ async function guardedFetch(
   for (let hop = 0; hop <= MAX_REDIRECTS; hop++) {
     const remaining = deadline - Date.now()
     if (remaining <= 0) throw new OgFetchError('Timed out fetching the URL')
+    // DNS layer of the SSRF guard: a public-looking hostname must not
+    // resolve to a private address (covers the initial URL and every hop)
+    const resolved = await validateResolvedHost(current.hostname)
+    if (!resolved.ok) throw new OgFetchError(resolved.error)
     let response: Response
     try {
       response = await fetch(current.toString(), {

@@ -1,9 +1,13 @@
 /**
- * SSRF guard for the OG preview endpoint. Blocks obviously-internal
- * targets via hostname and IP-literal checks — same posture as the docs
- * proxy's /api/og (the DNS-rebinding residual is a deliberate accept).
- * Re-run on every redirect hop, not just the initial URL.
+ * SSRF guard for the OG preview endpoint, two layers re-run on every
+ * redirect hop: validateTargetUrl (sync hostname/IP-literal checks) and
+ * validateResolvedHost (DNS lookup, rejects names that resolve to private
+ * addresses). fetch() re-resolves the name afterwards, so a fast-rebinding
+ * TOCTOU window remains — accepted; closing it needs IP pinning via a
+ * custom dispatcher.
  */
+
+import { lookup } from 'node:dns/promises'
 
 const BLOCKED_HOSTNAME_SUFFIXES = ['.localhost', '.local', '.internal', '.home.arpa']
 
@@ -31,6 +35,28 @@ export function validateTargetUrl(raw: string): UrlGuardResult {
     return { ok: false, error: 'Local and internal addresses are not allowed' }
   }
   return { ok: true, url }
+}
+
+export type HostResolutionResult = { ok: true } | { ok: false; error: string }
+
+/**
+ * Resolve a hostname and reject it when ANY returned address is private —
+ * blocks DNS records statically pointed at internal ranges. Server-only
+ * (node:dns); do not import from client code.
+ */
+export async function validateResolvedHost(hostname: string): Promise<HostResolutionResult> {
+  const bare =
+    hostname.startsWith('[') && hostname.endsWith(']') ? hostname.slice(1, -1) : hostname
+  let addresses: { address: string }[]
+  try {
+    addresses = await lookup(bare, { all: true })
+  } catch {
+    return { ok: false, error: 'Could not resolve the host' }
+  }
+  if (addresses.some(({ address }) => isPrivateIp(address))) {
+    return { ok: false, error: 'Local and internal addresses are not allowed' }
+  }
+  return { ok: true }
 }
 
 function isPrivateIp(host: string): boolean {

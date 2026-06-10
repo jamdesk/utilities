@@ -1,5 +1,13 @@
-import { describe, it, expect } from 'vitest'
-import { validateTargetUrl } from '../lib/og-url-guard'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
+
+vi.mock('node:dns/promises', () => {
+  const lookup = vi.fn()
+  // Node builtin interop: vitest requires the default export on the mock too
+  return { default: { lookup }, lookup }
+})
+
+import { lookup } from 'node:dns/promises'
+import { validateResolvedHost, validateTargetUrl } from '../lib/og-url-guard'
 
 describe('validateTargetUrl', () => {
   const blocked = [
@@ -57,5 +65,42 @@ describe('validateTargetUrl', () => {
     const result = validateTargetUrl('https://example.com/path')
     if (!result.ok) throw new Error('expected ok')
     expect(result.url.hostname).toBe('example.com')
+  })
+})
+
+describe('validateResolvedHost', () => {
+  beforeEach(() => {
+    vi.mocked(lookup).mockReset()
+  })
+
+  it('allows hosts resolving only to public addresses', async () => {
+    vi.mocked(lookup).mockResolvedValue([{ address: '93.184.216.34', family: 4 }] as never)
+    expect((await validateResolvedHost('example.com')).ok).toBe(true)
+  })
+
+  it('blocks hosts where ANY address is private (rebinding via mixed records)', async () => {
+    vi.mocked(lookup).mockResolvedValue([
+      { address: '93.184.216.34', family: 4 },
+      { address: '10.0.0.5', family: 4 },
+    ] as never)
+    const result = await validateResolvedHost('rebind.attacker.example')
+    expect(result.ok).toBe(false)
+  })
+
+  it('blocks hosts resolving to IPv6 unique-local addresses', async () => {
+    vi.mocked(lookup).mockResolvedValue([{ address: 'fd00::1', family: 6 }] as never)
+    expect((await validateResolvedHost('v6.attacker.example')).ok).toBe(false)
+  })
+
+  it('blocks hosts resolving to the cloud metadata address', async () => {
+    vi.mocked(lookup).mockResolvedValue([{ address: '169.254.169.254', family: 4 }] as never)
+    expect((await validateResolvedHost('metadata.attacker.example')).ok).toBe(false)
+  })
+
+  it('errors on unresolvable hosts', async () => {
+    vi.mocked(lookup).mockRejectedValue(new Error('ENOTFOUND'))
+    const result = await validateResolvedHost('does-not-exist.example')
+    expect(result.ok).toBe(false)
+    if (!result.ok) expect(result.error).toMatch(/resolve/i)
   })
 })

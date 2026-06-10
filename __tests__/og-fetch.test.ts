@@ -1,4 +1,14 @@
 import { describe, it, expect, vi, afterEach } from 'vitest'
+
+// The guard's DNS layer must not hit real DNS in tests — resolve every
+// hostname to a public address unless a test overrides it.
+vi.mock('node:dns/promises', () => {
+  const lookup = vi.fn().mockResolvedValue([{ address: '93.184.216.34', family: 4 }])
+  // Node builtin interop: vitest requires the default export on the mock too
+  return { default: { lookup }, lookup }
+})
+
+import { lookup } from 'node:dns/promises'
 import { fetchPreview, OgFetchError } from '../lib/og-fetch'
 
 // 1×1 transparent PNG
@@ -30,6 +40,14 @@ describe('fetchPreview', () => {
     const spy = vi.fn()
     vi.stubGlobal('fetch', spy)
     await expect(fetchPreview('http://127.0.0.1/x')).rejects.toThrow(OgFetchError)
+    expect(spy).not.toHaveBeenCalled()
+  })
+
+  it('rejects hosts whose DNS resolves to a private address (rebinding)', async () => {
+    vi.mocked(lookup).mockResolvedValueOnce([{ address: '10.0.0.5', family: 4 }] as never)
+    const spy = vi.fn()
+    vi.stubGlobal('fetch', spy)
+    await expect(fetchPreview('https://rebind.example/')).rejects.toThrow(/not allowed/i)
     expect(spy).not.toHaveBeenCalled()
   })
 
