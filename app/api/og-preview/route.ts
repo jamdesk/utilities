@@ -2,7 +2,8 @@ import { NextRequest, NextResponse } from 'next/server'
 import { fetchPreview, OgFetchError } from '@/lib/og-fetch'
 
 export const dynamic = 'force-dynamic'
-// Page fetch (8s) + image fetches (8s, parallel) can exceed Vercel's default
+// The fetch layer enforces a 25s total budget (TOTAL_TIMEOUT_MS in og-fetch),
+// kept below this Vercel limit so timeouts return JSON instead of a 504
 export const maxDuration = 30
 
 export async function GET(request: NextRequest) {

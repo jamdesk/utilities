@@ -98,4 +98,52 @@ describe('fetchPreview', () => {
     expect(check.ok).toBe(false)
     expect(check.status).toBe(404)
   })
+
+  it('resolves the preview when the image body stream errors mid-read', async () => {
+    const erroringBody = new ReadableStream({
+      pull() {
+        throw new Error('stream broke')
+      },
+    })
+    const mock = vi.fn().mockImplementation((url: string) => {
+      if (url === 'https://example.com/page') return Promise.resolve(htmlResponse(HTML))
+      return Promise.resolve(
+        new Response(erroringBody, { status: 200, headers: { 'content-type': 'image/png' } })
+      )
+    })
+    vi.stubGlobal('fetch', mock)
+    const result = await fetchPreview('https://example.com/page')
+    const check = result.images['https://example.com/og.png']
+    expect(check.ok).toBe(false)
+    expect(check.error).toMatch(/could not be read/i)
+  })
+
+  it('rejects redirect chains longer than 5 hops', async () => {
+    let hop = 0
+    const mock = vi.fn().mockImplementation(() =>
+      Promise.resolve(
+        new Response(null, {
+          status: 302,
+          headers: { location: `https://example.com/${++hop}` },
+        })
+      )
+    )
+    vi.stubGlobal('fetch', mock)
+    await expect(fetchPreview('https://example.com/')).rejects.toThrow(/too many redirects/i)
+  })
+
+  it('prefers the content-length header for the reported image bytes', async () => {
+    const mock = vi.fn().mockImplementation((url: string) => {
+      if (url === 'https://example.com/page') return Promise.resolve(htmlResponse(HTML))
+      return Promise.resolve(
+        new Response(PNG_1X1, {
+          status: 200,
+          headers: { 'content-type': 'image/png', 'content-length': '52428800' },
+        })
+      )
+    })
+    vi.stubGlobal('fetch', mock)
+    const result = await fetchPreview('https://example.com/page')
+    expect(result.images['https://example.com/og.png'].bytes).toBe(52428800)
+  })
 })
