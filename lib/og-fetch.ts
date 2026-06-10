@@ -133,6 +133,7 @@ async function checkImage(url: string, deadline: number): Promise<ImageCheck> {
     return { url, ok: false, error: err instanceof Error ? err.message : 'Image fetch failed' }
   }
   if (!response.ok) {
+    response.body?.cancel().catch(() => {})
     return { url, ok: false, status: response.status, error: `Image request failed (${response.status})` }
   }
   const contentType = (response.headers.get('content-type') ?? '').split(';')[0]
@@ -152,10 +153,15 @@ async function checkImage(url: string, deadline: number): Promise<ImageCheck> {
     // unknown format — dimensions stay undefined, lint flags the content type
   }
   // Prefer the declared content-length so images beyond MAX_IMAGE_BYTES
-  // report their true size rather than the capped read length.
+  // report their true size rather than the capped read length — but never
+  // less than what was actually read (an under-declared header must not
+  // shrink the size the lint evaluates).
   const lengthHeader = response.headers.get('content-length')
   const declaredBytes = lengthHeader ? Number(lengthHeader) : NaN
-  const bytes = Number.isFinite(declaredBytes) && declaredBytes > 0 ? declaredBytes : body.byteLength
+  const bytes =
+    Number.isFinite(declaredBytes) && declaredBytes > 0
+      ? Math.max(declaredBytes, body.byteLength)
+      : body.byteLength
   return { url, ok: true, status: response.status, contentType, bytes, width, height }
 }
 
