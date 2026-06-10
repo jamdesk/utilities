@@ -61,6 +61,12 @@ const tools = [
     description: 'Convert CSV or TSV to Markdown tables',
     icon: '\uD83D\uDCCA', // 📊
   },
+  {
+    slug: 'opengraph-preview',
+    name: 'OpenGraph Preview',
+    description: 'Preview and validate social share cards for any URL',
+    icon: '\uD83D\uDD17', // 🔗
+  },
 ]
 
 const outDir = join(process.cwd(), 'public', 'og')

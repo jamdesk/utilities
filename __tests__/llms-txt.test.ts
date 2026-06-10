@@ -10,6 +10,6 @@ describe('llms.txt', () => {
     expect(body).toContain(REPO_URL)
     expect(body).toContain(LICENSE_URL)
     expect(body).toContain(ORG_URL)
-    expect(body).toContain('All tools run entirely in the user\'s browser')
+    expect(body).toContain("Tools run in the user's browser wherever possible")
   })
 })

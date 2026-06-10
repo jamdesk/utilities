@@ -4,7 +4,7 @@
 [![Next.js 16](https://img.shields.io/badge/Next.js-16-black?logo=next.js)](https://nextjs.org)
 [![Website](https://img.shields.io/badge/jamdesk.com%2Futilities-live-brightgreen)](https://www.jamdesk.com/utilities)
 
-Free, open-source MDX tools that run entirely in your browser. No server, no uploads, no accounts. Paste your MDX, get results.
+Free, open-source MDX tools that run in your browser wherever possible. No uploads, no accounts. Paste your MDX, get results. (The OpenGraph Preview is the exception: it fetches the URL you enter through a small server endpoint, since browsers block cross-site reads — nothing is stored or logged.)
 
 **[jamdesk.com/utilities](https://www.jamdesk.com/utilities)**
 

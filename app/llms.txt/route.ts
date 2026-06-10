@@ -16,8 +16,9 @@ export function GET() {
   const body = `# ${ORG_NAME} Developer Utilities
 > Free, open-source developer tools for MDX, Markdown, YAML, and JSON at ${baseUrl}
 
-All tools run entirely in the user's browser. Input is never uploaded, stored, or logged.
-There are no ads, no accounts, and no usage limits.
+Tools run in the user's browser wherever possible; input is never uploaded, stored, or logged.
+The OpenGraph Preview fetches the entered URL through a server endpoint (browsers block
+cross-site reads) and stores nothing. There are no ads, no accounts, and no usage limits.
 
 - License: Apache 2.0 (${LICENSE_URL})
 - Source code: ${REPO_URL}
