@@ -8,7 +8,9 @@ describe('validateTargetUrl', () => {
     'file:///etc/passwd',
     'https://example.com:8080/',
     'http://localhost/',
+    'http://localhost./',
     'http://sub.localhost/',
+    'https://foo.internal./',
     'https://foo.local/',
     'https://router.internal/',
     'https://printer.home.arpa/',
@@ -25,7 +27,11 @@ describe('validateTargetUrl', () => {
     'http://[fc00::1]/',
     'http://[fd12::1]/',
     'http://[fe80::1]/',
+    'http://[febf::1]/',
     'http://[::ffff:127.0.0.1]/',
+    'http://2130706433/',
+    'http://0x7f000001/',
+    'http://127.1/',
   ]
   const allowed = [
     'https://example.com/',

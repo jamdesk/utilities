@@ -22,7 +22,7 @@ export function validateTargetUrl(raw: string): UrlGuardResult {
   if (url.port && url.port !== '80' && url.port !== '443') {
     return { ok: false, error: 'Non-standard ports are not supported' }
   }
-  const host = url.hostname.toLowerCase()
+  const host = url.hostname.toLowerCase().replace(/\.$/, '')
   if (
     host === 'localhost' ||
     BLOCKED_HOSTNAME_SUFFIXES.some((suffix) => host.endsWith(suffix)) ||
@@ -44,7 +44,7 @@ function isPrivateIp(host: string): boolean {
       bare === '::1' ||
       bare.startsWith('fc') ||
       bare.startsWith('fd') ||
-      bare.startsWith('fe80') ||
+      ['fe8', 'fe9', 'fea', 'feb'].some((p) => bare.startsWith(p)) ||
       bare.startsWith('::ffff:')
     )
   }
