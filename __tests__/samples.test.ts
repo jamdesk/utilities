@@ -10,6 +10,7 @@ import {
   jsonYamlSample,
   tableSample,
   ogPreviewSample,
+  mermaidSample,
 } from '../lib/samples'
 
 const sampleMap: Record<string, string> = {
@@ -21,6 +22,7 @@ const sampleMap: Record<string, string> = {
   'yaml-validator': yamlValidatorSample,
   'json-yaml-converter': jsonYamlSample,
   'markdown-table-generator': tableSample,
+  'mermaid-editor': mermaidSample,
   'opengraph-preview': ogPreviewSample,
 }
 

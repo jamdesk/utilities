@@ -338,6 +338,50 @@ export const toolSeoContent: Record<string, ToolSeoContent> = {
       },
     ],
   },
+  'mermaid-editor': {
+    howToTitle: 'How to Edit Mermaid Diagrams Online',
+    howToContent:
+      'Type or paste Mermaid syntax into the editor and the preview renders the diagram instantly. The editor supports every Mermaid diagram type: flowcharts, sequence diagrams, timelines, pie charts, Gantt charts, class diagrams, state diagrams, and entity relationship diagrams. Syntax errors show inline with the parser message, and the last valid diagram stays visible while you fix them. When the diagram looks right, copy the Mermaid source into any tool that renders Mermaid — GitHub, GitLab, Notion, or a documentation platform.',
+    detailSections: [
+      {
+        heading: 'Mermaid timeline example',
+        content:
+          'A timeline diagram starts with the timeline keyword, an optional title, and one line per period with events separated by colons. For example: timeline / title Product Launch Timeline / 2024 : Research : First prototype / 2025 : Private beta : Public beta / 2026 : GA launch. Each year (or any label) becomes a column, and each colon-separated entry becomes an event in that period. Load the built-in sample to see a rendered timeline you can edit.',
+      },
+      {
+        heading: 'Mermaid pie chart example',
+        content:
+          'A pie chart begins with pie title followed by the chart name, then one quoted label and value per line. For example: pie title Browser Market Share / "Chrome" : 65 / "Safari" : 19 / "Firefox" : 9 / "Other" : 7. Values are relative — Mermaid computes the percentages, so they do not need to add up to 100.',
+      },
+      {
+        heading: 'Flowcharts, sequence diagrams, and more',
+        content:
+          'Flowcharts use flowchart TD (top-down) or flowchart LR (left-right) with nodes and arrows like A[Start] --> B{Decision}. Sequence diagrams use sequenceDiagram with participant declarations and message arrows. The editor renders whatever the Mermaid parser accepts, so every diagram type in the Mermaid documentation works here, with strict security mode sanitizing labels.',
+      },
+    ],
+    faq: [
+      {
+        question: 'How do I make a timeline diagram in Mermaid?',
+        answer:
+          'Start the diagram with the timeline keyword, add an optional title line, then write one line per time period in the form 2025 : First event : Second event. Each period becomes a column with its events stacked beneath it. The editor ships with a timeline sample — click Load Sample to start from a working example.',
+      },
+      {
+        question: 'How do I make a pie chart in Mermaid?',
+        answer:
+          'Begin with pie title Your Chart Name, then list one entry per line as a quoted label, a colon, and a number — for example "Chrome" : 65. Mermaid calculates the slice percentages from the values automatically.',
+      },
+      {
+        question: 'Why does my Mermaid diagram show a syntax error?',
+        answer:
+          'The editor runs the official Mermaid parser and surfaces its error message, which usually names the unexpected token and line. Common causes: a missing diagram-type keyword on the first line, unclosed brackets in node labels, or special characters that need quoting. The last valid diagram stays visible while you fix the error.',
+      },
+      {
+        question: 'Can I use these diagrams in my documentation?',
+        answer:
+          'Yes. Copy the Mermaid source into any platform that renders Mermaid code blocks — GitHub, GitLab, Notion, Obsidian, or a docs platform. Jamdesk renders mermaid fenced code blocks as SVG at build time, so the same source works in your docs unchanged.',
+      },
+    ],
+  },
   'opengraph-preview': {
     howToTitle: 'How to Preview Open Graph Tags',
     howToContent:

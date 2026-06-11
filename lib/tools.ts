@@ -117,6 +117,19 @@ export const tools: Tool[] = [
       'Jamdesk renders Markdown tables with responsive styling and dark mode support.',
   },
   {
+    slug: 'mermaid-editor',
+    name: 'Mermaid Editor',
+    description: 'Edit and preview Mermaid diagrams live',
+    icon: '📈',
+    seoTitle: 'Mermaid Editor — Free Online Mermaid Live Preview | Jamdesk',
+    seoDescription:
+      'Edit Mermaid diagrams online with live preview. Flowcharts, timelines, pie charts, sequence diagrams. Free, open source, client-side.',
+    seoSubject: 'The Mermaid Editor',
+    ctaText: 'Mermaid renders natively in Jamdesk docs',
+    ctaDescription:
+      'Jamdesk builds Mermaid code blocks into SVG diagrams at build time.',
+  },
+  {
     slug: 'opengraph-preview',
     name: 'OpenGraph Preview',
     description: 'Preview and validate social share cards for any URL',
