@@ -27,6 +27,9 @@ export function MermaidEditor() {
     const timer = setTimeout(() => {
       getEngine()
         .then(async (engine) => {
+          // Validate first: mermaid.parse gives the clean parser message (the
+          // tool's advertised error behavior); renderMermaid's throw can be a
+          // render-stage error.
           const validation = await engine.validateMermaid(input)
           if (!validation.valid) throw new Error(validation.error)
           return engine.renderMermaid(input)
@@ -91,7 +94,13 @@ export function MermaidPreview({ svg, error }: { svg: string | null; error: stri
             <p className="mt-1 whitespace-pre-wrap text-sm text-[#6b6b78]">{error}</p>
           </div>
         )}
-        <div ref={containerRef} className="flex justify-center [&_svg]:max-w-full" />
+        {!svg && !error ? (
+          <div className="flex h-full items-center justify-center text-sm text-[#6b6b78]">
+            Enter Mermaid syntax to preview
+          </div>
+        ) : (
+          <div ref={containerRef} className="flex justify-center [&_svg]:max-w-full" />
+        )}
       </div>
     </div>
   )

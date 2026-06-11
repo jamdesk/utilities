@@ -21,7 +21,7 @@ vi.mock('@/components/editor/InputPanel', () => ({
 import { MermaidEditor, MermaidPreview } from '@/components/tools/MermaidEditor'
 
 describe('MermaidEditor', () => {
-  it('renders the editor and a preview panel with the diagram for the default sample', async () => {
+  it('renders the preview header and the engine-rendered diagram for the default sample', async () => {
     render(<MermaidEditor />)
     expect(screen.getByText('Preview')).toBeTruthy()
     await waitFor(() => {
@@ -42,9 +42,10 @@ describe('MermaidPreview', () => {
     expect(document.querySelector('[data-testid="diagram"]')).toBeTruthy()
   })
 
-  it('renders empty preview without error when there is nothing to show', () => {
+  it('renders the empty-state hint without error when there is nothing to show', () => {
     render(<MermaidPreview svg={null} error={null} />)
     expect(screen.getByText('Preview')).toBeTruthy()
+    expect(screen.getByText('Enter Mermaid syntax to preview')).toBeTruthy()
     expect(screen.queryByText('Diagram Error')).toBeNull()
   })
 })
