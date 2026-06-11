@@ -33,13 +33,30 @@ export async function validateMermaid(code: string): Promise<ValidationResult> {
   }
 }
 
+// DOMPurify deliberately does not sanitize CSS. Mermaid's own theming
+// <style> block must survive, so instead of forbidding style we strip the
+// network-capable constructs: @import rules and any url() that is not a
+// local fragment reference like url(#marker).
+const NETWORK_CSS = /@import[^;{}]*;?|url\(\s*(?!['"]?#)[^)]*\)/gi
+
+function stripNetworkCss(css: string): string {
+  return css.replace(NETWORK_CSS, (m) => (m.startsWith('@import') ? '' : 'none'))
+}
+
 /** Second sanitization layer over mermaid's own. Exported for direct testing. */
 export function sanitizeSvg(svg: string): string {
-  return DOMPurify.sanitize(svg, {
+  const clean = DOMPurify.sanitize(svg, {
     USE_PROFILES: { svg: true, svgFilters: true },
     // foreignObject embeds arbitrary HTML inside SVG — the classic vector.
     FORBID_TAGS: ['foreignObject'],
   })
+  // DOMPurify has already parsed and re-serialized the DOM at this point, so
+  // a </style> smuggled inside a CSS string cannot break out — the serialized
+  // text is the real text node. Attributes are double-quoted with internal
+  // quotes entity-escaped, so [^"]* is safe.
+  return clean
+    .replace(/(<style[^>]*>)([\s\S]*?)(<\/style>)/gi, (_m, open, css, close) => `${open}${stripNetworkCss(css)}${close}`)
+    .replace(/style="([^"]*)"/gi, (_m, css) => `style="${stripNetworkCss(css)}"`)
 }
 
 let renderSeq = 0

