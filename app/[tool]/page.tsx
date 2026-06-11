@@ -51,15 +51,6 @@ export default async function ToolPage({
         <ToolEditor slug={slug} />
       </section>
 
-      {/* Conversion CTA */}
-      <section className="mx-auto max-w-4xl px-6 pb-12">
-        <ConversionCta
-          text={tool.ctaText}
-          description={tool.ctaDescription}
-          toolSlug={tool.slug}
-        />
-      </section>
-
       {/* How-to section */}
       {seoContent && (
         <section className="mx-auto max-w-3xl px-6 pb-12">
@@ -113,6 +104,16 @@ export default async function ToolPage({
       {/* Open source / client-side note */}
       <section className="mx-auto max-w-3xl px-6 pb-12">
         <OpenSourceNote tool={tool} />
+      </section>
+
+      {/* Conversion CTA — after the informational content so the page leads
+          with the tool, not a pitch */}
+      <section className="mx-auto max-w-4xl px-6 pb-12">
+        <ConversionCta
+          text={tool.ctaText}
+          description={tool.ctaDescription}
+          toolSlug={tool.slug}
+        />
       </section>
 
       {/* Related tools */}
