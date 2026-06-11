@@ -98,4 +98,12 @@ describe('svg sanitization (reflected-XSS guard — input arrives via URL hash)'
     const clean = sanitizeSvg(dirty)
     expect(clean).toContain('url( #grad)')
   })
+
+  it('strips feImage (external-href network beacon allowed by the svgFilters profile)', () => {
+    const dirty = '<svg><filter id="f"><feImage href="http://evil.example/x.png"/></filter><circle r="5"/></svg>'
+    const clean = sanitizeSvg(dirty)
+    expect(clean).not.toContain('feImage')
+    expect(clean).not.toContain('evil.example')
+    expect(clean).toContain('<circle')
+  })
 })

@@ -48,7 +48,9 @@ export function sanitizeSvg(svg: string): string {
   const clean = DOMPurify.sanitize(svg, {
     USE_PROFILES: { svg: true, svgFilters: true },
     // foreignObject embeds arbitrary HTML inside SVG — the classic vector.
-    FORBID_TAGS: ['foreignObject'],
+    // feImage loads an external href at render time (network beacon) — the
+    // svgFilters profile allows it, but mermaid never emits it, so forbid it.
+    FORBID_TAGS: ['foreignObject', 'feImage'],
   })
   // DOMPurify has already parsed and re-serialized the DOM at this point, so
   // a </style> smuggled inside a CSS string cannot break out — the serialized
