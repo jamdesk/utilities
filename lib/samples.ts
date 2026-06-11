@@ -295,3 +295,14 @@ For a complete list of changes, see the [changelog](/changelog).
 
 /** Default URL for the OpenGraph Preview tool — a page with complete social metadata */
 export const ogPreviewSample = 'https://www.jamdesk.com'
+
+/** Timeline diagram — the most-searched Mermaid example type */
+export const mermaidSample = `timeline
+    title Product Launch Timeline
+    2024 : Research
+         : First prototype
+    2025 : Private beta
+         : Public beta
+    2026 : GA launch
+         : v2 roadmap
+`
