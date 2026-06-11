@@ -49,8 +49,11 @@ interface ToolEditorProps {
 }
 
 export function ToolEditor({ slug }: ToolEditorProps) {
+  // The editor tools need a tall panel up front; the OG preview starts as a
+  // single input row and grows once results arrive.
+  const minHeight = slug === 'opengraph-preview' ? '' : 'min-h-[400px] '
   return (
-    <div className="flex min-h-[400px] flex-col overflow-hidden rounded-xl border border-border bg-card shadow-[0_2px_16px_rgba(0,0,0,0.06)]">
+    <div className={`flex ${minHeight}flex-col overflow-hidden rounded-xl border border-border bg-card shadow-[0_2px_16px_rgba(0,0,0,0.06)]`}>
       {slug === 'mdx-formatter' && <MdxFormatter />}
       {slug === 'mdx-validator' && <MdxValidator />}
       {slug === 'mdx-viewer' && <MdxViewer />}
