@@ -1,6 +1,8 @@
 interface DetailSection {
   heading: string
   content: string
+  /** Optional external reference rendered as a link beneath the content (e.g. official docs). */
+  link?: { href: string; label: string }
 }
 
 interface ToolSeoContent {
@@ -341,8 +343,17 @@ export const toolSeoContent: Record<string, ToolSeoContent> = {
   'mermaid-editor': {
     howToTitle: 'How to Edit Mermaid Diagrams Online',
     howToContent:
-      'Type or paste Mermaid syntax into the editor and the preview renders the diagram instantly. The editor supports every Mermaid diagram type: flowcharts, sequence diagrams, timelines, pie charts, Gantt charts, class diagrams, state diagrams, and entity relationship diagrams. Syntax errors show inline with the parser message, and the last valid diagram stays visible while you fix them. When the diagram looks right, copy the Mermaid source into any tool that renders Mermaid — GitHub, GitLab, Notion, or a documentation platform.',
+      'Type or paste Mermaid syntax into the editor and the preview renders the diagram instantly. The editor supports every Mermaid diagram type: flowcharts, sequence diagrams, timelines, pie charts, Gantt charts, class diagrams, state diagrams, and entity relationship diagrams. Syntax errors show inline with the parser message, and the last valid diagram stays visible while you fix them. When the diagram looks right, copy the Mermaid source into any tool that renders Mermaid: GitHub, GitLab, Notion, or a documentation platform.',
     detailSections: [
+      {
+        heading: 'What are Mermaid diagrams?',
+        content:
+          'Mermaid is a text-based diagramming syntax. You describe a diagram in plain words (A --> B means "A points to B"), and a renderer turns that into a flowchart, sequence diagram, timeline, or any of a dozen other types. Because the source is just text, it lives in a code block next to your prose, versions cleanly in Git, and updates with a one-line edit instead of a round-trip through a drawing app. That\'s why you find Mermaid in GitHub issues, project READMEs, and most modern documentation tools. This editor runs the same Mermaid library those tools use, so whatever previews here renders the same way once you paste it back.',
+        link: {
+          href: 'https://mermaid.js.org/',
+          label: 'Official Mermaid documentation',
+        },
+      },
       {
         heading: 'Mermaid timeline example',
         content:
@@ -351,24 +362,29 @@ export const toolSeoContent: Record<string, ToolSeoContent> = {
       {
         heading: 'Mermaid pie chart example',
         content:
-          'A pie chart begins with pie title followed by the chart name, then one quoted label and value per line. For example: pie title Browser Market Share / "Chrome" : 65 / "Safari" : 19 / "Firefox" : 9 / "Other" : 7. Values are relative — Mermaid computes the percentages, so they do not need to add up to 100.',
+          'A pie chart begins with pie title followed by the chart name, then one quoted label and value per line. For example: pie title Browser Market Share / "Chrome" : 65 / "Safari" : 19 / "Firefox" : 9 / "Other" : 7. Values are relative, so Mermaid computes the percentages and they don\'t need to add up to 100.',
       },
       {
         heading: 'Flowcharts, sequence diagrams, and more',
         content:
-          'Flowcharts use flowchart TD (top-down) or flowchart LR (left-right) with nodes and arrows like A[Start] --> B{Decision}. Sequence diagrams use sequenceDiagram with participant declarations and message arrows. The editor renders whatever the Mermaid parser accepts, so every diagram type in the Mermaid documentation works here, with strict security mode sanitizing labels.',
+          'Flowcharts use flowchart TD (top-down) or flowchart LR (left-right) with nodes and arrows like A[Start] --> B{Decision}. Sequence diagrams use sequenceDiagram with participant declarations and message arrows. The editor renders whatever the Mermaid parser accepts, so every diagram type in the Mermaid documentation works here. It runs Mermaid in strict security mode and sanitizes the rendered SVG, so a pasted diagram can\'t smuggle in a script.',
       },
     ],
     faq: [
       {
+        question: 'What is Mermaid?',
+        answer:
+          'Mermaid is an open-source JavaScript library that turns text definitions into diagrams: flowcharts, sequence diagrams, timelines, pie charts, Gantt charts, and more. You write a few lines of its plain-text syntax and Mermaid renders an SVG. GitHub, GitLab, and many documentation platforms render Mermaid code blocks automatically, so the same source works in an issue, a README, or your docs.',
+      },
+      {
         question: 'How do I make a timeline diagram in Mermaid?',
         answer:
-          'Start the diagram with the timeline keyword, add an optional title line, then write one line per time period in the form 2025 : First event : Second event. Each period becomes a column with its events stacked beneath it. The editor ships with a timeline sample — click Load Sample to start from a working example.',
+          'Start the diagram with the timeline keyword, add an optional title line, then write one line per time period in the form 2025 : First event : Second event. Each period becomes a column with its events stacked beneath it. The editor ships with a timeline sample. Click Load Sample to start from a working example.',
       },
       {
         question: 'How do I make a pie chart in Mermaid?',
         answer:
-          'Begin with pie title Your Chart Name, then list one entry per line as a quoted label, a colon, and a number — for example "Chrome" : 65. Mermaid calculates the slice percentages from the values automatically.',
+          'Begin with pie title Your Chart Name, then list one entry per line as a quoted label, a colon, and a number, like "Chrome" : 65. Mermaid calculates the slice percentages from the values automatically.',
       },
       {
         question: 'Why does my Mermaid diagram show a syntax error?',

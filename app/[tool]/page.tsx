@@ -83,6 +83,18 @@ export default async function ToolPage({
               <p className="leading-relaxed text-muted-foreground">
                 {section.content}
               </p>
+              {section.link && (
+                <p className="mt-2 text-sm">
+                  <a
+                    href={section.link.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-primary underline-offset-2 hover:underline"
+                  >
+                    {section.link.label} ↗
+                  </a>
+                </p>
+              )}
             </div>
           ))}
         </section>
