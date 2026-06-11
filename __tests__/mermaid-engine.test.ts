@@ -81,5 +81,21 @@ describe('svg sanitization (reflected-XSS guard — input arrives via URL hash)'
     const dirty = '<svg style="background:url(http://evil.example/leak)"><rect width="5"/></svg>'
     const clean = sanitizeSvg(dirty)
     expect(clean).not.toContain('evil.example')
+    expect(clean).toContain('style="background:none"')
+    expect(clean).toContain('<rect')
+  })
+
+  it('strips uppercase @IMPORT without leaving residue', () => {
+    const dirty = '<svg><style>@IMPORT url("https://evil.example/x.css"); .a{fill:red}</style></svg>'
+    const clean = sanitizeSvg(dirty)
+    expect(clean).not.toContain('evil.example')
+    expect(clean).not.toContain('none')
+    expect(clean).toContain('fill:red')
+  })
+
+  it('keeps whitespace-padded local fragment refs', () => {
+    const dirty = '<svg><style>.y{fill:url( #grad)}</style></svg>'
+    const clean = sanitizeSvg(dirty)
+    expect(clean).toContain('url( #grad)')
   })
 })

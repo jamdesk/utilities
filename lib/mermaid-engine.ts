@@ -37,10 +37,10 @@ export async function validateMermaid(code: string): Promise<ValidationResult> {
 // <style> block must survive, so instead of forbidding style we strip the
 // network-capable constructs: @import rules and any url() that is not a
 // local fragment reference like url(#marker).
-const NETWORK_CSS = /@import[^;{}]*;?|url\(\s*(?!['"]?#)[^)]*\)/gi
+const NETWORK_CSS = /@import[^;{}]*;?|url\((?!\s*['"]?\s*#)[^)]*\)/gi
 
 function stripNetworkCss(css: string): string {
-  return css.replace(NETWORK_CSS, (m) => (m.startsWith('@import') ? '' : 'none'))
+  return css.replace(NETWORK_CSS, (m) => (m.toLowerCase().startsWith('@import') ? '' : 'none'))
 }
 
 /** Second sanitization layer over mermaid's own. Exported for direct testing. */
