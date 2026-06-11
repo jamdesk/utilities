@@ -11,8 +11,12 @@ import DOMPurify from 'dompurify'
 let initialized = false
 function ensureInit() {
   if (initialized) return
-  // strict mode also disables htmlLabels, so no foreignObject is needed and
-  // we can forbid it outright in sanitization below.
+  // securityLevel 'strict' makes mermaid DOMPurify-sanitize label HTML
+  // internally. NOTE: it does NOT disable htmlLabels — mermaid v11 renders
+  // flowchart (and most) node labels as HTML inside <foreignObject> regardless
+  // of securityLevel, and ignores htmlLabels:false. So sanitizeSvg below must
+  // preserve foreignObject (sanitizing its HTML) rather than forbid it; doing
+  // the latter silently deleted every label (empty shapes only).
   mermaid.initialize({ startOnLoad: false, securityLevel: 'strict', theme: 'dark' })
   initialized = true
 }
@@ -43,22 +47,70 @@ function stripNetworkCss(css: string): string {
   return css.replace(NETWORK_CSS, (m) => (m.toLowerCase().startsWith('@import') ? '' : 'none'))
 }
 
-/** Second sanitization layer over mermaid's own. Exported for direct testing. */
+/**
+ * Second sanitization layer over mermaid's own (defense-in-depth: input can
+ * arrive via the share-URL hash, and strict mode has a CVE history).
+ * Exported for direct testing.
+ *
+ * Mermaid v11 emits node labels as HTML inside <foreignObject>, so a naive
+ * single-pass DOMPurify call is impossible here: DOMPurify's SVG profile
+ * empties foreignObject (the SVG↔HTML namespace boundary), deleting every
+ * label. We therefore sanitize in two passes:
+ *
+ *   1. LABELS — allowlist-sanitize each <foreignObject>'s inner HTML with the
+ *      HTML profile (where DOMPurify works correctly), preserving the styled
+ *      div/span.nodeLabel/p markup while stripping scripts/handlers.
+ *   2. SKELETON — scrub the surrounding SVG: drop <script>/<feImage>, strip
+ *      every on* handler, drop any href/xlink:href that is not a local #ref
+ *      (kills javascript:/external/data: in one rule — strict-mode mermaid only
+ *      uses internal #refs), and neutralize network-capable CSS.
+ *
+ * XSS (script execution) is fully closed. A residual low-severity vector
+ * remains — a markdown image label can still load an external <img> (a
+ * beacon) — but that only reveals the victim opened a link the attacker
+ * already sent them, and forbidding <img> would break legitimate image labels.
+ */
 export function sanitizeSvg(svg: string): string {
-  const clean = DOMPurify.sanitize(svg, {
-    USE_PROFILES: { svg: true, svgFilters: true },
-    // foreignObject embeds arbitrary HTML inside SVG — the classic vector.
-    // feImage loads an external href at render time (network beacon) — the
-    // svgFilters profile allows it, but mermaid never emits it, so forbid it.
-    FORBID_TAGS: ['foreignObject', 'feImage'],
+  // Parse as an HTML fragment — matches how the component injects the result
+  // (innerHTML) and never throws on imperfect markup (unlike image/svg+xml).
+  const tpl = document.createElement('template')
+  tpl.innerHTML = svg
+  const root = tpl.content.querySelector('svg')
+  if (!root) return ''
+
+  // Pass 1: foreignObject HTML labels — allowlist sanitize.
+  root.querySelectorAll('foreignObject').forEach((fo) => {
+    fo.innerHTML = DOMPurify.sanitize(fo.innerHTML, {
+      USE_PROFILES: { html: true },
+      FORBID_TAGS: ['script', 'iframe', 'object', 'embed', 'form'],
+      FORBID_ATTR: ['onerror', 'onload', 'onclick', 'onmouseover'],
+    })
   })
-  // DOMPurify has already parsed and re-serialized the DOM at this point, so
-  // a </style> smuggled inside a CSS string cannot break out — the serialized
-  // text is the real text node. Attributes are double-quoted with internal
-  // quotes entity-escaped, so [^"]* is safe.
-  return clean
-    .replace(/(<style[^>]*>)([\s\S]*?)(<\/style>)/gi, (_m, open, css, close) => `${open}${stripNetworkCss(css)}${close}`)
-    .replace(/style="([^"]*)"/gi, (_m, css) => `style="${stripNetworkCss(css)}"`)
+
+  // Pass 2: SVG skeleton scrub. feImage loads an external href at render time
+  // (network beacon); <script> never appears in mermaid output.
+  root.querySelectorAll('script, feImage, feimage').forEach((n) => n.remove())
+  // querySelectorAll('*') excludes the root element itself, so include it —
+  // a malicious on*/href/style attribute on the <svg> root must be scrubbed too.
+  ;[root, ...root.querySelectorAll('*')].forEach((el) => {
+    for (const attr of [...el.attributes]) {
+      const name = attr.name.toLowerCase()
+      if (name.startsWith('on')) {
+        el.removeAttribute(attr.name)
+      } else if (name === 'href' || name === 'xlink:href') {
+        // strict-mode mermaid only emits local fragment refs (url(#marker),
+        // <use href="#...">). Anything else is injected — drop it.
+        if (!attr.value.trim().startsWith('#')) el.removeAttribute(attr.name)
+      } else if (name === 'style') {
+        el.setAttribute('style', stripNetworkCss(attr.value))
+      }
+    }
+  })
+  root.querySelectorAll('style').forEach((styleEl) => {
+    styleEl.textContent = stripNetworkCss(styleEl.textContent || '')
+  })
+
+  return root.outerHTML
 }
 
 let renderSeq = 0

@@ -50,11 +50,36 @@ describe('svg sanitization (reflected-XSS guard — input arrives via URL hash)'
     expect(clean).toContain('<text>ok</text>')
   })
 
-  it('strips foreignObject (HTML-in-SVG vector)', () => {
-    const dirty = '<svg><foreignObject><img src=x onerror=alert(1)></foreignObject><circle r="5"/></svg>'
-    const clean = sanitizeSvg(dirty)
-    expect(clean).not.toContain('foreignObject')
-    expect(clean).toContain('<circle')
+  // Mermaid v11 renders node labels as HTML inside <foreignObject> and ignores
+  // htmlLabels:false, so the sanitizer MUST preserve foreignObject (sanitizing
+  // its HTML) — forbidding it outright deletes every label (regression guard:
+  // the shipped tool rendered empty shapes for ~3 months until this was found).
+  it('preserves foreignObject label markup (text + nodeLabel class)', () => {
+    // Mirrors real mermaid v11 flowchart-node output.
+    const labelSvg =
+      '<svg xmlns="http://www.w3.org/2000/svg"><g class="node">' +
+      '<rect class="basic label-container" width="120" height="40"></rect>' +
+      '<g class="label"><foreignObject width="100" height="24">' +
+      '<div xmlns="http://www.w3.org/1999/xhtml" style="display: table-cell; white-space: nowrap; text-align: center;">' +
+      '<span class="nodeLabel"><p>User Request</p></span></div>' +
+      '</foreignObject></g></g></svg>'
+    const clean = sanitizeSvg(labelSvg)
+    expect(clean).toContain('User Request')
+    expect(clean).toContain('foreignObject')
+    expect(clean).toContain('nodeLabel')
+  })
+
+  it('sanitizes XSS inside a foreignObject label but keeps the text', () => {
+    const hostile =
+      '<svg xmlns="http://www.w3.org/2000/svg"><g class="node"><foreignObject>' +
+      '<div xmlns="http://www.w3.org/1999/xhtml"><span class="nodeLabel">' +
+      '<p>Safe Label<img src="x" onerror="alert(1)" /><script>alert(2)<\/script></p>' +
+      '</span></div></foreignObject></g></svg>'
+    const clean = sanitizeSvg(hostile)
+    expect(clean).toContain('Safe Label')
+    expect(clean).not.toContain('onerror')
+    expect(clean).not.toContain('<script')
+    expect(clean).not.toContain('alert(2)')
   })
 
   it('strips javascript: hrefs from anchors', () => {
