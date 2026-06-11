@@ -8,17 +8,31 @@
 import mermaid from 'mermaid'
 import DOMPurify from 'dompurify'
 
-let initialized = false
-function ensureInit() {
-  if (initialized) return
+/** Preview theme. Maps to a mermaid built-in: dark bg vs the light 'default'. */
+export type PreviewTheme = 'dark' | 'light'
+const MERMAID_THEME: Record<PreviewTheme, 'dark' | 'default'> = {
+  dark: 'dark',
+  light: 'default',
+}
+
+// Tracks the theme mermaid is currently initialized with (null = never). Theme
+// is global state in mermaid, so switching means re-initializing before render.
+let currentTheme: PreviewTheme | null = null
+function applyConfig(theme: PreviewTheme) {
   // securityLevel 'strict' makes mermaid DOMPurify-sanitize label HTML
   // internally. NOTE: it does NOT disable htmlLabels — mermaid v11 renders
   // flowchart (and most) node labels as HTML inside <foreignObject> regardless
   // of securityLevel, and ignores htmlLabels:false. So sanitizeSvg below must
   // preserve foreignObject (sanitizing its HTML) rather than forbid it; doing
   // the latter silently deleted every label (empty shapes only).
-  mermaid.initialize({ startOnLoad: false, securityLevel: 'strict', theme: 'dark' })
-  initialized = true
+  mermaid.initialize({ startOnLoad: false, securityLevel: 'strict', theme: MERMAID_THEME[theme] })
+  currentTheme = theme
+}
+// Parser-only callers (validateMermaid) are theme-agnostic: initialize once if
+// nothing has been configured yet, but never override a theme already chosen
+// for rendering.
+function ensureInit() {
+  if (currentTheme === null) applyConfig('dark')
 }
 
 export type ValidationResult = { valid: true } | { valid: false; error: string }
@@ -115,8 +129,8 @@ export function sanitizeSvg(svg: string): string {
 
 let renderSeq = 0
 /** Browser-only: parse + render to a SANITIZED SVG string. Throws on invalid input. */
-export async function renderMermaid(code: string): Promise<string> {
-  ensureInit()
+export async function renderMermaid(code: string, theme: PreviewTheme = 'dark'): Promise<string> {
+  if (currentTheme !== theme) applyConfig(theme)
   renderSeq += 1
   const { svg } = await mermaid.render(`jd-mermaid-${renderSeq}`, code)
   return sanitizeSvg(svg)

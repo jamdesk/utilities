@@ -1,8 +1,9 @@
-import { describe, it, expect, vi, afterEach } from 'vitest'
-import { render, screen, waitFor, cleanup } from '@testing-library/react'
+import { describe, it, expect, vi, afterEach, beforeEach } from 'vitest'
+import { render, screen, waitFor, cleanup, fireEvent } from '@testing-library/react'
 
 afterEach(() => {
   cleanup()
+  localStorage.clear()
 })
 
 // The real engine renders SVG via browser APIs jsdom lacks — mock it so the
@@ -19,6 +20,12 @@ vi.mock('@/components/editor/InputPanel', () => ({
 }))
 
 import { MermaidEditor, MermaidPreview } from '@/components/tools/MermaidEditor'
+import { renderMermaid } from '@/lib/mermaid-engine'
+
+beforeEach(() => {
+  vi.mocked(renderMermaid).mockClear()
+  localStorage.clear()
+})
 
 describe('MermaidEditor', () => {
   it('renders the preview header and the engine-rendered diagram for the default sample', async () => {
@@ -27,6 +34,28 @@ describe('MermaidEditor', () => {
     await waitFor(() => {
       expect(document.querySelector('[data-testid="diagram"]')).toBeTruthy()
     })
+  })
+
+  it('toggles the preview theme and re-renders the diagram in the new theme', async () => {
+    render(<MermaidEditor />)
+    // Defaults to dark: the toggle offers a switch to light, and the first
+    // render passes the dark theme to the engine.
+    const toggle = await screen.findByRole('button', { name: /switch preview to light mode/i })
+    await waitFor(() => expect(renderMermaid).toHaveBeenCalledWith(expect.any(String), 'dark'))
+
+    fireEvent.click(toggle)
+
+    // The toggle flips, and the diagram re-renders in light.
+    expect(screen.getByRole('button', { name: /switch preview to dark mode/i })).toBeTruthy()
+    await waitFor(() => expect(renderMermaid).toHaveBeenCalledWith(expect.any(String), 'light'))
+  })
+
+  it('restores the saved preview theme on mount', async () => {
+    localStorage.setItem('jd-mermaid-preview-theme', 'light')
+    render(<MermaidEditor />)
+    // Restored from storage → the toggle offers a switch back to dark.
+    expect(await screen.findByRole('button', { name: /switch preview to dark mode/i })).toBeTruthy()
+    await waitFor(() => expect(renderMermaid).toHaveBeenCalledWith(expect.any(String), 'light'))
   })
 })
 

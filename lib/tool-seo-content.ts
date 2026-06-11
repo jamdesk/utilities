@@ -368,6 +368,10 @@ export const toolSeoContent: Record<string, ToolSeoContent> = {
         heading: 'Flowcharts, sequence diagrams, and more',
         content:
           'Flowcharts use flowchart TD (top-down) or flowchart LR (left-right) with nodes and arrows like A[Start] --> B{Decision}. Sequence diagrams use sequenceDiagram with participant declarations and message arrows. The editor renders whatever the Mermaid parser accepts, so every diagram type in the Mermaid documentation works here. It runs Mermaid in strict security mode and sanitizes the rendered SVG, so a pasted diagram can\'t smuggle in a script.',
+        link: {
+          href: 'https://jamdesk.com/docs/components/mermaid',
+          label: 'More Mermaid examples in the Jamdesk docs',
+        },
       },
     ],
     faq: [
