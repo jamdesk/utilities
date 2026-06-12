@@ -9,17 +9,17 @@ import { REPO_URL } from '@/lib/site'
 export const metadata: Metadata = {
   title: {
     absolute:
-      'Free MDX & Developer Utilities | Jamdesk',
+      'Free Developer Utilities — MDX, Markdown, Mermaid, YAML | Jamdesk',
   },
   description:
-    'Free, open-source developer tools for MDX, Markdown, YAML, and JSON. Format, validate, convert, and preview — all client-side, no data leaves your browser.',
+    'Free, open-source tools for documentation work: format and validate MDX, convert Markdown, edit Mermaid diagrams live, check YAML and JSON, and preview social share cards.',
   alternates: {
     canonical: 'https://www.jamdesk.com/utilities',
   },
   openGraph: {
-    title: 'Free MDX & Developer Utilities | Jamdesk',
+    title: 'Free Developer Utilities — MDX, Markdown, Mermaid, YAML | Jamdesk',
     description:
-      'Free, open-source developer tools for MDX, Markdown, YAML, and JSON. Format, validate, convert, and preview — all client-side.',
+      'Free, open-source tools for documentation work: format and validate MDX, convert Markdown, edit Mermaid diagrams live, check YAML and JSON, and preview social share cards.',
     url: 'https://www.jamdesk.com/utilities',
     siteName: 'Jamdesk',
     type: 'website',
@@ -34,38 +34,43 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Free MDX & Developer Utilities | Jamdesk',
+    title: 'Free Developer Utilities — MDX, Markdown, Mermaid, YAML | Jamdesk',
     description:
-      'Free, open-source developer tools for MDX, Markdown, YAML, and JSON. Format, validate, convert, and preview — all client-side.',
+      'Free, open-source tools for documentation work: format and validate MDX, convert Markdown, edit Mermaid diagrams live, check YAML and JSON, and preview social share cards.',
     images: ['https://www.jamdesk.com/utilities/og/hub.png'],
   },
 }
 
 const FAQ_ITEMS = [
   {
+    question: 'What can I do with these utilities?',
+    answer:
+      'Format, validate, preview, and convert MDX and Markdown. Validate YAML and convert between JSON and YAML. Turn CSV or spreadsheet data into Markdown tables. Edit Mermaid diagrams with a live preview. Check how any URL looks when shared on X, LinkedIn, Slack, Discord, and other platforms.',
+  },
+  {
+    question: 'Are these tools free?',
+    answer:
+      'Yes, all Jamdesk Utilities are completely free to use. The project is open source under the Apache 2.0 license, so you can also inspect the source code and contribute on GitHub.',
+  },
+  {
+    question: 'Is my data safe?',
+    answer:
+      'Almost everything runs entirely in your browser: your content is never sent to a server, never stored, and never logged. The one exception is the OpenGraph Preview, which fetches the URL you enter through a Jamdesk server because browsers block reading other sites directly. That response is parsed and discarded, never stored.',
+  },
+  {
+    question: 'Can I use these tools offline?',
+    answer:
+      'Mostly, yes. Once the page has loaded, the client-side tools keep working without an internet connection. The OpenGraph Preview is the exception since it has to fetch the URL you want to check.',
+  },
+  {
     question: 'What is MDX?',
     answer:
       'MDX is a format that combines Markdown with JSX. It lets you write content using familiar Markdown syntax while embedding React components directly in your documents. MDX is widely used for documentation sites, blogs, and content-driven applications.',
   },
   {
-    question: 'Are these tools free?',
-    answer:
-      'Yes, all MDX Utilities are completely free to use. The project is open source under the Apache 2.0 license, so you can also inspect the source code and contribute on GitHub.',
-  },
-  {
-    question: 'Is my data safe?',
-    answer:
-      'All processing happens entirely in your browser. Your MDX content is never sent to a server, never stored, and never logged. You can verify this by inspecting the network tab in your browser developer tools.',
-  },
-  {
-    question: 'Can I use these tools offline?',
-    answer:
-      'Once the page has loaded, the tools work without an internet connection since all processing is client-side. However, you need an initial page load to download the JavaScript.',
-  },
-  {
     question: 'Are the tools open source?',
     answer:
-      'Yes. MDX Utilities is open source under the Apache 2.0 license. You can view the source code, report issues, and contribute at github.com/jamdesk/utilities.',
+      'Yes. Jamdesk Utilities is open source under the Apache 2.0 license. You can view the source code, report issues, and contribute at github.com/jamdesk/utilities.',
   },
 ]
 
@@ -80,7 +85,7 @@ export default function Home() {
           Developer Utilities
         </h1>
         <p className="mb-6 text-lg text-muted-foreground">
-          Free, open source tools for documentation
+          Free, open source tools for MDX, Markdown, diagrams, and config files
         </p>
         <span className="inline-block rounded-full border border-border bg-card px-4 py-1.5 text-xs text-muted-foreground">
           Client-side &middot; No ads &middot;{' '}
@@ -115,6 +120,37 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Workflow overview */}
+      <section className="mx-auto max-w-3xl px-6 pb-12">
+        <h2 className="mb-4 font-heading text-2xl font-bold text-foreground [text-wrap:balance]">
+          Tools for the whole docs workflow
+        </h2>
+        <p className="leading-relaxed text-muted-foreground">
+          Writing the words is the easy part of documentation. The slow parts
+          are the chores around it: a table pasted from a spreadsheet that
+          needs to become Markdown, a frontmatter block that won&apos;t parse,
+          a diagram that needs three more boxes, a published page that looks
+          wrong when someone shares it in Slack. Each utility here handles one
+          of those chores. The MDX and Markdown tools format, validate,
+          preview, and convert your content. The YAML and JSON tools catch
+          config errors and convert between formats. The Mermaid Editor
+          renders diagrams as you type, the table generator turns CSV or
+          spreadsheet data into clean Markdown, and the OpenGraph Preview
+          shows how any URL will look on X, LinkedIn, Slack, and a half dozen
+          other platforms.
+          {' '}
+          <a
+            href="https://www.jamdesk.com/docs/quickstart"
+            className="text-primary hover:underline"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Get started with Jamdesk
+          </a>{' '}
+          if you want the finished docs site too.
+        </p>
+      </section>
+
       {/* What is MDX? */}
       <section className="mx-auto max-w-3xl px-6 pb-12">
         <h2 className="mb-4 font-heading text-2xl font-bold text-foreground [text-wrap:balance]">
@@ -138,35 +174,6 @@ export default function Home() {
             rel="noopener noreferrer"
           >
             See how Jamdesk uses MDX components
-          </a>.
-        </p>
-      </section>
-
-      {/* Why use MDX for documentation? */}
-      <section className="mx-auto max-w-3xl px-6 pb-12">
-        <h2 className="mb-4 font-heading text-2xl font-bold text-foreground [text-wrap:balance]">
-          Why use MDX for documentation?
-        </h2>
-        <p className="leading-relaxed text-muted-foreground">
-          Documentation written in MDX stays readable as source files while
-          producing rich, interactive output. Authors write in Markdown they
-          already know, and engineers define reusable components for API
-          references, configuration tables, or live code examples. Version
-          control works naturally since MDX is plain text. Frontmatter gives you
-          structured metadata for titles, descriptions, and navigation without a
-          separate CMS. Because MDX compiles to React, you get type checking,
-          component composition, and the full npm ecosystem. Teams that adopt MDX
-          for docs find that content stays closer to the codebase, updates ship
-          faster, and the gap between writing and publishing narrows
-          significantly.
-          {' '}
-          <a
-            href="https://www.jamdesk.com/docs/quickstart"
-            className="text-primary hover:underline"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Get started with Jamdesk
           </a>.
         </p>
       </section>

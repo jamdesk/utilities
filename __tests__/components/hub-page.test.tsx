@@ -73,7 +73,7 @@ describe('hub page', () => {
     // "What is MDX?" appears both as h2 and FAQ question
     expect(screen.getAllByText('What is MDX?').length).toBeGreaterThanOrEqual(1)
     expect(
-      screen.getByText('Why use MDX for documentation?')
+      screen.getByText('Tools for the whole docs workflow')
     ).toBeDefined()
     expect(
       screen.getByText('Frequently Asked Questions')

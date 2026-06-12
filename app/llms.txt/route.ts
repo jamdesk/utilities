@@ -14,7 +14,7 @@ export function GET() {
     .join('\n\n')
 
   const body = `# ${ORG_NAME} Developer Utilities
-> Free, open-source developer tools for MDX, Markdown, YAML, and JSON at ${baseUrl}
+> Free, open-source developer tools for MDX, Markdown, YAML, JSON, Mermaid diagrams, and Open Graph social cards at ${baseUrl}
 
 Tools run in the user's browser wherever possible; input is never uploaded, stored, or logged.
 The OpenGraph Preview fetches the entered URL through a server endpoint (browsers block
