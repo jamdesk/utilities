@@ -45,7 +45,7 @@ const FAQ_ITEMS = [
   {
     question: 'What can I do with these utilities?',
     answer:
-      'Format, validate, preview, and convert MDX and Markdown. Validate YAML and convert between JSON and YAML. Turn CSV or spreadsheet data into Markdown tables. Edit Mermaid diagrams with a live preview. Check how any URL looks when shared on X, LinkedIn, Slack, Discord, and other platforms.',
+      'Format, validate, preview, and convert MDX and Markdown. Validate YAML and convert between JSON and YAML. Turn CSV or spreadsheet data into Markdown tables. Edit Mermaid diagrams with a live preview. Check the social preview for any URL: how its share card looks on X, LinkedIn, Slack, Discord, and other platforms.',
   },
   {
     question: 'Are these tools free?',
@@ -85,7 +85,8 @@ export default function Home() {
           Developer Utilities
         </h1>
         <p className="mb-6 text-lg text-muted-foreground">
-          Free, open source tools for MDX, Markdown, diagrams, and config files
+          Free, open source tools for MDX, Markdown, diagrams, config files,
+          and social previews
         </p>
         <span className="inline-block rounded-full border border-border bg-card px-4 py-1.5 text-xs text-muted-foreground">
           Client-side &middot; No ads &middot;{' '}
@@ -136,8 +137,8 @@ export default function Home() {
           config errors and convert between formats. The Mermaid Editor
           renders diagrams as you type, the table generator turns CSV or
           spreadsheet data into clean Markdown, and the OpenGraph Preview
-          shows how any URL will look on X, LinkedIn, Slack, and a half dozen
-          other platforms.
+          shows the social preview for any URL: how its share card will look
+          on X, LinkedIn, Slack, and a half dozen other platforms.
           {' '}
           <a
             href="https://www.jamdesk.com/docs/quickstart"
