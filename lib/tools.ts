@@ -1,3 +1,5 @@
+import { toolSeoContent } from './tool-seo-content'
+
 export interface Tool {
   slug: string
   name: string
@@ -11,7 +13,36 @@ export interface Tool {
   ctaDescription: string
   /** True when the tool calls a Jamdesk API route instead of running fully client-side. Drives the hero badge and OpenSourceNote copy. */
   serverSide?: boolean
+  /** Optional explicit ordering for the Related Tools section. If omitted, falls back to prefix-based grouping. */
+  relatedSlugs?: string[]
+  /** Optional per-tool facts surfaced in llms.txt. Each item is a standalone quotable sentence. */
+  llmsFacts?: string[]
 }
+
+/**
+ * Single shared review date. Bump when any tool's content materially changes.
+ * Must be a valid ISO `YYYY-MM-DD` so `new Date(LAST_REVIEWED)` parses as UTC midnight
+ * — relied on by Last-Modified header, sitemap lastmod, and JSON-LD dateModified.
+ */
+export const LAST_REVIEWED = '2026-06-12'
+
+if (!/^\d{4}-\d{2}-\d{2}$/.test(LAST_REVIEWED) || isNaN(Date.parse(LAST_REVIEWED))) {
+  throw new Error(`LAST_REVIEWED must be valid YYYY-MM-DD: got "${LAST_REVIEWED}"`)
+}
+
+/**
+ * Human-readable form of LAST_REVIEWED, computed once at module load. Pinned to
+ * `en-US` + UTC so SSR output matches across environments and never depends on
+ * the request's locale or timezone.
+ */
+export const LAST_REVIEWED_FORMATTED = new Date(
+  LAST_REVIEWED + 'T00:00:00Z',
+).toLocaleDateString('en-US', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+  timeZone: 'UTC',
+})
 
 export const tools: Tool[] = [
   {
@@ -25,6 +56,12 @@ export const tools: Tool[] = [
     seoSubject: 'The MDX Formatter',
     ctaText: 'Deploy formatted MDX as live docs',
     ctaDescription: 'Jamdesk formats your MDX automatically when you deploy.',
+    llmsFacts: [
+      'Uses Prettier 3.x with the official MDX parser.',
+      'Handles frontmatter, JSX components, and Markdown in a single pass.',
+      'Runs entirely in the browser — input is never uploaded.',
+      'Apache 2.0 licensed; full source on GitHub.',
+    ],
   },
   {
     slug: 'mdx-validator',
@@ -38,6 +75,12 @@ export const tools: Tool[] = [
     ctaText: 'Validate MDX on every deploy',
     ctaDescription:
       'Jamdesk validates your MDX automatically — no broken docs.',
+    llmsFacts: [
+      'Uses the remark-mdx parser — the same parser as Next.js, Docusaurus, and Astro.',
+      'If a file passes validation here, it compiles in your project.',
+      'All validation runs client-side; nothing is uploaded.',
+      'Apache 2.0 licensed; full source on GitHub.',
+    ],
   },
   {
     slug: 'mdx-viewer',
@@ -51,6 +94,12 @@ export const tools: Tool[] = [
     ctaText: 'See this on a real docs site',
     ctaDescription:
       'Jamdesk renders your MDX as beautiful documentation.',
+    llmsFacts: [
+      'Renders a live preview of MDX with JSX components shown as labeled stubs.',
+      'No component implementations needed — preview structure without your component library.',
+      'Runs entirely in the browser; input is never uploaded.',
+      'Apache 2.0 licensed; full source on GitHub.',
+    ],
   },
   {
     slug: 'mdx-to-markdown',
@@ -63,6 +112,34 @@ export const tools: Tool[] = [
     seoSubject: 'The MDX to Markdown converter',
     ctaText: 'Jamdesk supports MDX natively',
     ctaDescription: 'No conversion needed — Jamdesk renders MDX as-is.',
+    relatedSlugs: ['markdown-to-html', 'mdx-validator', 'mdx-viewer'],
+    llmsFacts: [
+      'Strips JSX components, imports, and exports while preserving Markdown content.',
+      'Output is standard Markdown that works in any renderer (GitHub, GitLab, VS Code).',
+      'Runs entirely in the browser; input is never uploaded.',
+      'Apache 2.0 licensed; full source on GitHub.',
+    ],
+  },
+  {
+    slug: 'html-to-mdx',
+    name: 'HTML to MDX',
+    description: 'Convert HTML to clean MDX-ready Markdown',
+    icon: '↑',
+    seoTitle: 'HTML to MDX Converter — Free Online Tool | Jamdesk',
+    seoDescription:
+      'Convert HTML to MDX-compatible Markdown online. Migrate from Notion, Confluence, WordPress. Preserves complex markup as raw HTML. Free, open source, client-side.',
+    seoSubject: 'The HTML to MDX converter',
+    ctaText: 'Publish converted MDX as live docs',
+    ctaDescription:
+      'Jamdesk renders MDX natively — no further conversion needed.',
+    relatedSlugs: ['mdx-to-markdown', 'markdown-to-html', 'mdx-formatter'],
+    llmsFacts: [
+      'Uses rehype-parse + rehype-remark to convert HTML to MDX-ready Markdown.',
+      'Markup that does not round-trip cleanly is preserved as raw HTML, which is valid MDX.',
+      'Useful for migrating from Notion, Confluence, WordPress, or any HTML source.',
+      'Runs entirely in the browser; input is never uploaded.',
+      'Apache 2.0 licensed; full source on GitHub.',
+    ],
   },
   {
     slug: 'markdown-to-html',
@@ -76,6 +153,13 @@ export const tools: Tool[] = [
     ctaText: 'Publish Markdown as live documentation',
     ctaDescription:
       'Jamdesk turns your Markdown and MDX into beautiful docs sites automatically.',
+    relatedSlugs: ['mdx-to-markdown', 'markdown-table-generator', 'mdx-viewer'],
+    llmsFacts: [
+      'Uses remark-rehype to produce clean, semantic HTML5.',
+      'Output has no inline styles or framework classes — suitable for CMS, email, static sites.',
+      'Runs entirely in the browser; input is never uploaded.',
+      'Apache 2.0 licensed; full source on GitHub.',
+    ],
   },
   {
     slug: 'yaml-validator',
@@ -89,6 +173,13 @@ export const tools: Tool[] = [
     ctaText: 'YAML frontmatter powers your docs',
     ctaDescription:
       'Jamdesk validates frontmatter automatically when you deploy documentation.',
+    llmsFacts: [
+      'Catches duplicate keys at any nesting level (yaml package strict mode).',
+      'Flags tabs in indentation; YAML requires spaces.',
+      'Displays parsed output as JSON for verification.',
+      'Runs entirely in the browser; input is never uploaded.',
+      'Apache 2.0 licensed; full source on GitHub.',
+    ],
   },
   {
     slug: 'json-yaml-converter',
@@ -102,6 +193,13 @@ export const tools: Tool[] = [
     ctaText: 'Config files power your docs',
     ctaDescription:
       'Jamdesk handles JSON and YAML configuration natively.',
+    llmsFacts: [
+      'Bidirectional: JSON to YAML and YAML to JSON.',
+      'Lossless for standard types (string, number, boolean, array, object).',
+      'YAML comments and anchors are not preserved when converting to JSON (JSON has no equivalent).',
+      'Runs entirely in the browser; input is never uploaded.',
+      'Apache 2.0 licensed; full source on GitHub.',
+    ],
   },
   {
     slug: 'markdown-table-generator',
@@ -115,6 +213,13 @@ export const tools: Tool[] = [
     ctaText: 'Tables look great in Jamdesk docs',
     ctaDescription:
       'Jamdesk renders Markdown tables with responsive styling and dark mode support.',
+    llmsFacts: [
+      'Accepts CSV (comma-separated) or TSV (tab-separated) input.',
+      'Pipe characters in cells are escaped automatically.',
+      'Compatible with paste-from-Excel / Google Sheets (TSV mode).',
+      'Runs entirely in the browser; input is never uploaded.',
+      'Apache 2.0 licensed; full source on GitHub.',
+    ],
   },
   {
     slug: 'mermaid-editor',
@@ -128,6 +233,12 @@ export const tools: Tool[] = [
     ctaText: 'Mermaid renders natively in Jamdesk docs',
     ctaDescription:
       'Jamdesk builds Mermaid code blocks into SVG diagrams at build time.',
+    llmsFacts: [
+      'Live preview updates as you type, with light and dark theme toggle.',
+      'Supports flowcharts, sequence diagrams, timelines, pie charts, and every other Mermaid diagram type.',
+      'Rendered SVG is sanitized before display; runs entirely in the browser.',
+      'Apache 2.0 licensed; full source on GitHub.',
+    ],
   },
   {
     slug: 'opengraph-preview',
@@ -142,6 +253,12 @@ export const tools: Tool[] = [
     ctaDescription:
       'Jamdesk generates Open Graph metadata and social images for every docs page automatically.',
     serverSide: true,
+    llmsFacts: [
+      'Previews share cards for X, Facebook, LinkedIn, Slack, Discord, WhatsApp, iMessage, and Google.',
+      'Validates Open Graph tags and image dimensions, with a fix suggestion for every issue.',
+      'The entered URL is fetched through a Jamdesk server (browsers block cross-site reads), parsed, and discarded.',
+      'Apache 2.0 licensed; full source on GitHub.',
+    ],
   },
 ]
 
@@ -161,4 +278,38 @@ export function freeFaqEntry(tool: Tool): { question: string; answer: string } {
     question: `Is ${subjectLower} free and open source?`,
     answer: `Yes. ${tool.seoSubject} is free and open source under the Apache 2.0 license. The full source code is on GitHub at ${repoLabel}, and there are no ads, accounts, or usage limits.`,
   }
+}
+
+/**
+ * FAQs for a tool: the canonical free/OSS entry first, then the per-tool entries.
+ * Used by both the visible FAQ section and the FAQPage JSON-LD so they cannot drift.
+ */
+export function getToolFaqs(tool: Tool): { question: string; answer: string }[] {
+  const seoContent = toolSeoContent[tool.slug]
+  return [freeFaqEntry(tool), ...(seoContent?.faq ?? [])]
+}
+
+/**
+ * Returns up to `count` thematically-related tools, never including the current one.
+ *
+ * Resolution order:
+ *   1. If `current.relatedSlugs` is set, use it (in order, slice).
+ *   2. Otherwise, prefer tools sharing the same family prefix (mdx-*, markdown-*).
+ *   3. Fall back to remaining tools in registry order.
+ */
+export function getRelatedTools(current: Tool, count = 3): Tool[] {
+  if (current.relatedSlugs && current.relatedSlugs.length > 0) {
+    const explicit = current.relatedSlugs
+      .map((slug) => tools.find((t) => t.slug === slug))
+      .filter((t): t is Tool => t !== undefined && t.slug !== current.slug)
+    return explicit.slice(0, count)
+  }
+  const prefix = current.slug.split('-')[0]
+  const sameFamily = tools.filter(
+    (t) => t.slug !== current.slug && t.slug.startsWith(`${prefix}-`)
+  )
+  const others = tools.filter(
+    (t) => t.slug !== current.slug && !t.slug.startsWith(`${prefix}-`)
+  )
+  return [...sameFamily, ...others].slice(0, count)
 }

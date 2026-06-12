@@ -1,4 +1,5 @@
-import { tools } from '@/lib/tools'
+import { tools, LAST_REVIEWED } from '@/lib/tools'
+import { guides } from '@/lib/guides'
 import { REPO_URL, LICENSE_URL, ORG_NAME, ORG_URL } from '@/lib/site'
 
 export const dynamic = 'force-static'
@@ -7,9 +8,22 @@ export function GET() {
   const baseUrl = 'https://www.jamdesk.com/utilities'
 
   const toolLines = tools
+    .map((tool) => {
+      const facts = (tool.llmsFacts ?? []).map((f) => `  - ${f}`).join('\n')
+      return `### ${tool.name}
+URL: ${baseUrl}/${tool.slug}
+${tool.seoDescription}
+
+Facts:
+${facts}`
+    })
+    .join('\n\n')
+
+  const guideLines = guides
     .map(
-      (tool) =>
-        `- ${tool.name}: ${baseUrl}/${tool.slug}\n  ${tool.seoDescription.split('.')[0]}.`
+      (g) => `### ${g.name}
+URL: ${baseUrl}/${g.slug}
+${g.description}`,
     )
     .join('\n\n')
 
@@ -28,6 +42,10 @@ cross-site reads) and stores nothing. There are no ads, no accounts, and no usag
 
 ${toolLines}
 
+## Guides
+
+${guideLines}
+
 ## About
 ${ORG_NAME} is a documentation platform. Learn more at ${ORG_URL}
 `
@@ -36,6 +54,7 @@ ${ORG_NAME} is a documentation platform. Learn more at ${ORG_URL}
     headers: {
       'Content-Type': 'text/plain; charset=utf-8',
       'Cache-Control': 'public, max-age=86400, s-maxage=86400',
+      'Last-Modified': new Date(LAST_REVIEWED).toUTCString(),
     },
   })
 }

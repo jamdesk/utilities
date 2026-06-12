@@ -306,3 +306,23 @@ export const mermaidSample = `timeline
     2026 : GA launch
          : v2 roadmap
 `
+
+export const htmlToMdxSample = `<article>
+  <h1>Hello, MDX</h1>
+  <p>This is a <strong>sample</strong> HTML document with a <a href="https://mdxjs.com">link to mdxjs.com</a>.</p>
+  <ul>
+    <li>Bullet one</li>
+    <li>Bullet two</li>
+    <li>Bullet three</li>
+  </ul>
+  <pre><code class="language-typescript">function hello(name: string) {
+  return \`Hi, \${name}\`
+}</code></pre>
+  <table>
+    <thead><tr><th>Format</th><th>Output</th></tr></thead>
+    <tbody>
+      <tr><td>Markdown</td><td>HTML</td></tr>
+      <tr><td>MDX</td><td>JS module</td></tr>
+    </tbody>
+  </table>
+</article>`

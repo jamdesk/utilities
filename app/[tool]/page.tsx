@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { tools, getToolBySlug, freeFaqEntry } from '@/lib/tools'
+import { getToolBySlug, getToolFaqs, LAST_REVIEWED, getRelatedTools } from '@/lib/tools'
 import { toolSeoContent } from '@/lib/tool-seo-content'
 import { FaqSection } from '@/components/seo/FaqSection'
 import { ConversionCta } from '@/components/seo/ConversionCta'
@@ -21,7 +21,7 @@ export default async function ToolPage({
   }
 
   const seoContent = toolSeoContent[tool.slug]
-  const relatedTools = tools.filter((t) => t.slug !== tool.slug)
+  const relatedTools = getRelatedTools(tool)
 
   return (
     <>
@@ -44,6 +44,19 @@ export default async function ToolPage({
           {tool.name}
         </h1>
         <p className="text-sm text-muted-foreground sm:text-lg">{tool.description}</p>
+        {(tool.slug.startsWith('mdx-') || tool.slug.startsWith('markdown-') || tool.slug.endsWith('-mdx')) && (
+          <p className="mt-2 text-xs text-muted-foreground">
+            New to MDX? Read{' '}
+            <Link href="/mdx-vs-markdown" className="text-primary underline-offset-2 hover:underline">
+              MDX vs Markdown
+            </Link>{' '}
+            or browse the{' '}
+            <Link href="/mdx-cheatsheet" className="text-primary underline-offset-2 hover:underline">
+              MDX cheatsheet
+            </Link>
+            .
+          </p>
+        )}
       </section>
 
       {/* Editor — wider container, tighter padding on mobile */}
@@ -91,19 +104,23 @@ export default async function ToolPage({
         </section>
       )}
 
-      {/* FAQ — appends a tool-specific free/open-source entry */}
+      {/* FAQ — leads with the tool-specific free/open-source entry to prime AI extraction */}
       {seoContent && (
         <section className="mx-auto max-w-3xl px-6 pb-12">
           <h2 className="mb-6 font-heading text-2xl font-bold text-foreground">
             Frequently Asked Questions
           </h2>
-          <FaqSection items={[...seoContent.faq, freeFaqEntry(tool)]} />
+          <FaqSection items={getToolFaqs(tool)} />
         </section>
       )}
 
       {/* Open source / client-side note */}
       <section className="mx-auto max-w-3xl px-6 pb-12">
         <OpenSourceNote tool={tool} />
+        <p className="mt-4 text-xs text-muted-foreground">
+          Maintained by Jamdesk &middot; Last reviewed{' '}
+          <time dateTime={LAST_REVIEWED}>{LAST_REVIEWED}</time>
+        </p>
       </section>
 
       {/* Conversion CTA — after the informational content so the page leads
@@ -117,7 +134,7 @@ export default async function ToolPage({
       </section>
 
       {/* Related tools */}
-      <section className="mx-auto max-w-4xl px-6 pb-16">
+      <section className="mx-auto max-w-4xl px-6 pb-12">
         <h2 className="mb-6 font-heading text-2xl font-bold text-foreground">
           Related Tools
         </h2>
@@ -136,6 +153,16 @@ export default async function ToolPage({
             </Link>
           ))}
         </div>
+      </section>
+
+      {/* Conversion CTA — placed at end so the page leads with content,
+          not a pitch */}
+      <section className="mx-auto max-w-4xl px-6 pb-16">
+        <ConversionCta
+          text={tool.ctaText}
+          description={tool.ctaDescription}
+          toolSlug={tool.slug}
+        />
       </section>
     </>
   )

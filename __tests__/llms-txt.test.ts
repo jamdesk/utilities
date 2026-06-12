@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { GET } from '../app/llms.txt/route'
 import { REPO_URL, LICENSE_URL, ORG_URL } from '../lib/site'
+import { LAST_REVIEWED } from '../lib/tools'
 
 describe('llms.txt', () => {
   it('returns plain text with the canonical license, repo, and org URLs', async () => {
@@ -11,5 +12,37 @@ describe('llms.txt', () => {
     expect(body).toContain(LICENSE_URL)
     expect(body).toContain(ORG_URL)
     expect(body).toContain("Tools run in the user's browser wherever possible")
+  })
+})
+
+describe('llms.txt route — facts', () => {
+  it('includes per-tool facts as bullet sub-items', async () => {
+    const res = GET()
+    const body = await res.text()
+    expect(body).toContain('MDX Formatter')
+    expect(body).toContain('Uses Prettier 3.x with the official MDX parser.')
+    expect(body).toContain('remark-mdx parser')
+  })
+
+  it('includes the privacy claim as a header-level fact', async () => {
+    const res = GET()
+    const body = await res.text()
+    // Qualified, not absolute: the OpenGraph Preview fetches through a server.
+    expect(body).toContain("Tools run in the user's browser wherever possible")
+    expect(body).toContain('The OpenGraph Preview fetches the entered URL through a server endpoint')
+  })
+
+  it('emits text/plain content-type', () => {
+    const res = GET()
+    expect(res.headers.get('Content-Type')).toContain('text/plain')
+  })
+
+  it('emits Last-Modified header keyed to LAST_REVIEWED', async () => {
+    const res = GET()
+    const lm = res.headers.get('Last-Modified')
+    expect(lm).toBeTruthy()
+    expect(new Date(lm!).toISOString().slice(0, 10)).toBe(
+      new Date(LAST_REVIEWED).toISOString().slice(0, 10)
+    )
   })
 })

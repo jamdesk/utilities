@@ -177,6 +177,24 @@ export default function Home() {
             See how Jamdesk uses MDX components
           </a>.
         </p>
+        <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+          Need the syntax for a specific MDX feature? The{' '}
+          <Link
+            href="/mdx-cheatsheet"
+            className="text-primary hover:underline"
+          >
+            MDX Cheatsheet
+          </Link>{' '}
+          covers Markdown basics, MDX additions, and the blank-line gotcha. Not
+          sure which format to pick?{' '}
+          <Link
+            href="/mdx-vs-markdown"
+            className="text-primary hover:underline"
+          >
+            MDX vs Markdown
+          </Link>{' '}
+          walks through the trade-offs.
+        </p>
       </section>
 
       {/* Open source / client-side note */}

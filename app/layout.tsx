@@ -7,6 +7,10 @@ import { CommandPalette } from '@/components/command-palette/CommandPalette'
 import './globals.css'
 
 export const metadata: Metadata = {
+  // Resolves auto-generated OG image URLs (opengraph-image.tsx) against the
+  // canonical host. Without this, Next.js falls back to VERCEL_URL and leaks
+  // the jamdesk-utilities.vercel.app subdomain to social crawlers.
+  metadataBase: new URL('https://www.jamdesk.com'),
   title: {
     template: '%s | Jamdesk Utilities',
     default: 'Developer Utilities — Free Online Tools | Jamdesk',

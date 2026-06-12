@@ -10,7 +10,16 @@ import satori from 'satori'
 import { Resvg } from '@resvg/resvg-js'
 import { writeFileSync, mkdirSync, readFileSync } from 'fs'
 import { join } from 'path'
-import { tools } from '../lib/tools'
+import { tools as toolRegistry } from '../lib/tools'
+
+// Project to the subset the OG generator needs. Relative import (not the @/
+// alias) so tsx can resolve without a tsconfig path-aliases pass.
+const tools = toolRegistry.map((t) => ({
+  slug: t.slug,
+  name: t.name,
+  description: t.description,
+  icon: t.icon,
+}))
 
 const outDir = join(process.cwd(), 'public', 'og')
 mkdirSync(outDir, { recursive: true })
@@ -40,11 +49,32 @@ function loadFont(): ArrayBuffer {
   )
 }
 
+// Shared satori → PNG pipeline. Each generator below owns its own child tree
+// (preserved exactly to keep PNG output byte-for-byte the same); this helper
+// only collapses the identical width/height/fonts/Resvg invocation.
+async function renderToPng(
+  rootNode: Parameters<typeof satori>[0],
+  fontData: ArrayBuffer,
+) {
+  const svg = await satori(rootNode, {
+    width: 1200,
+    height: 630,
+    fonts: [
+      { name: 'System', data: fontData, weight: 400, style: 'normal' as const },
+      { name: 'System', data: fontData, weight: 700, style: 'normal' as const },
+    ],
+  })
+  const resvg = new Resvg(svg, {
+    fitTo: { mode: 'width' as const, value: 1200 },
+  })
+  return resvg.render().asPng()
+}
+
 async function generateOgImage(
   tool: (typeof tools)[number],
   fontData: ArrayBuffer
 ) {
-  const svg = await satori(
+  return renderToPng(
     {
       type: 'div',
       props: {
@@ -105,7 +135,7 @@ async function generateOgImage(
                 fontSize: '20px',
                 color: '#8fa8b3',
               },
-              children: 'Free \u00B7 Open Source \u00B7 Client-side',
+              children: 'Free · Open Source · Client-side',
             },
           },
           // Bottom accent bar
@@ -140,34 +170,115 @@ async function generateOgImage(
         ],
       },
     },
-    {
-      width: 1200,
-      height: 630,
-      fonts: [
-        {
-          name: 'System',
-          data: fontData,
-          weight: 400,
-          style: 'normal' as const,
-        },
-        {
-          name: 'System',
-          data: fontData,
-          weight: 700,
-          style: 'normal' as const,
-        },
-      ],
-    }
+    fontData,
   )
+}
 
-  const resvg = new Resvg(svg, {
-    fitTo: { mode: 'width' as const, value: 1200 },
-  })
-  return resvg.render().asPng()
+// Additional non-tool pages that want their own OG image. Each entry produces
+// public/og/<slug>.png. Keep the layout-side OG_IMAGE references in sync.
+const contentPages = [
+  {
+    slug: 'mdx-cheatsheet',
+    name: 'MDX Cheatsheet',
+    description: 'Syntax reference with copy-paste examples',
+  },
+  {
+    slug: 'mdx-vs-markdown',
+    name: 'MDX vs Markdown',
+    description: 'Differences, trade-offs, and a decision tree',
+  },
+] as const
+
+async function generateContentPageImage(
+  page: (typeof contentPages)[number],
+  fontData: ArrayBuffer,
+) {
+  return renderToPng(
+    {
+      type: 'div',
+      props: {
+        style: {
+          width: '100%',
+          height: '100%',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          alignItems: 'flex-start',
+          backgroundColor: '#faf8f5',
+          padding: '80px',
+          position: 'relative',
+        },
+        children: [
+          {
+            type: 'div',
+            props: {
+              style: {
+                fontSize: '64px',
+                fontWeight: 700,
+                color: '#1b3139',
+                marginBottom: '16px',
+                lineHeight: 1.1,
+              },
+              children: page.name,
+            },
+          },
+          {
+            type: 'div',
+            props: {
+              style: {
+                fontSize: '28px',
+                color: '#5a6f77',
+                marginBottom: '32px',
+              },
+              children: page.description,
+            },
+          },
+          {
+            type: 'div',
+            props: {
+              style: {
+                fontSize: '20px',
+                color: '#8fa8b3',
+              },
+              children: 'Free · Open Source · Client-side',
+            },
+          },
+          {
+            type: 'div',
+            props: {
+              style: {
+                position: 'absolute',
+                bottom: '0',
+                left: '0',
+                right: '0',
+                height: '6px',
+                backgroundColor: '#ff3621',
+              },
+            },
+          },
+          {
+            type: 'div',
+            props: {
+              style: {
+                position: 'absolute',
+                bottom: '32px',
+                right: '80px',
+                fontSize: '24px',
+                color: '#8fa8b3',
+                fontWeight: 600,
+              },
+              children: 'Jamdesk Utilities',
+            },
+          },
+        ],
+      },
+    },
+    fontData,
+  )
 }
 
 async function generateHubImage(fontData: ArrayBuffer) {
-  const svg = await satori(
+  return renderToPng(
     {
       type: 'div',
       props: {
@@ -215,7 +326,7 @@ async function generateHubImage(fontData: ArrayBuffer) {
                 fontSize: '20px',
                 color: '#8fa8b3',
               },
-              children: 'Format \u00B7 Validate \u00B7 Preview \u00B7 Convert',
+              children: 'Format · Validate · Preview · Convert',
             },
           },
           {
@@ -248,30 +359,8 @@ async function generateHubImage(fontData: ArrayBuffer) {
         ],
       },
     },
-    {
-      width: 1200,
-      height: 630,
-      fonts: [
-        {
-          name: 'System',
-          data: fontData,
-          weight: 400,
-          style: 'normal' as const,
-        },
-        {
-          name: 'System',
-          data: fontData,
-          weight: 700,
-          style: 'normal' as const,
-        },
-      ],
-    }
+    fontData,
   )
-
-  const resvg = new Resvg(svg, {
-    fitTo: { mode: 'width' as const, value: 1200 },
-  })
-  return resvg.render().asPng()
 }
 
 async function main() {
@@ -291,11 +380,24 @@ async function main() {
     console.log(`  Generated: public/og/${tool.slug}.png`)
   }
 
-  console.log(`Done. ${tools.length + 1} OG images generated.`)
+  // Generate per-content-page images (mdx-cheatsheet, mdx-vs-markdown)
+  for (const page of contentPages) {
+    const png = await generateContentPageImage(page, fontData)
+    writeFileSync(join(outDir, `${page.slug}.png`), png)
+    console.log(`  Generated: public/og/${page.slug}.png`)
+  }
+
+  console.log(`Done. ${tools.length + 1 + contentPages.length} OG images generated.`)
 }
 
 main().catch((err) => {
-  console.warn('OG image generation skipped:', err.message ?? err)
-  console.warn('This is non-fatal — OG images can be generated locally with: npx tsx scripts/generate-og.ts')
-  // Exit 0 so Vercel builds succeed even without system fonts
+  // We deliberately don't fail the build — Vercel builders may not ship the
+  // TTF fonts we probe for, and OG images are non-critical for first paint.
+  // But surface the failure loudly enough that someone reads it in build logs.
+  console.error('========================================')
+  console.error('!!! OG image generation FAILED')
+  console.error(err?.stack || err?.message || err)
+  console.error('public/og/*.png will not be regenerated this build.')
+  console.error('Reproduce locally: npx tsx scripts/generate-og.ts')
+  console.error('========================================')
 })

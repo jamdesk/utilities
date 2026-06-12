@@ -1,6 +1,7 @@
 'use client'
 
 import dynamic from 'next/dynamic'
+import type { ComponentType } from 'react'
 
 const MdxFormatter = dynamic(
   () => import('@/components/tools/MdxFormatter').then((m) => m.MdxFormatter),
@@ -21,6 +22,10 @@ const MdxToMarkdown = dynamic(
 )
 const MdToHtml = dynamic(
   () => import('@/components/tools/MdToHtml').then((m) => m.MdToHtml),
+  { ssr: false }
+)
+const HtmlToMdx = dynamic(
+  () => import('@/components/tools/HtmlToMdx').then((m) => m.HtmlToMdx),
   { ssr: false }
 )
 const YamlValidator = dynamic(
@@ -48,6 +53,20 @@ const MermaidEditor = dynamic(
   { ssr: false }
 )
 
+const COMPONENTS: Record<string, ComponentType> = {
+  'mdx-formatter': MdxFormatter,
+  'mdx-validator': MdxValidator,
+  'mdx-viewer': MdxViewer,
+  'mdx-to-markdown': MdxToMarkdown,
+  'markdown-to-html': MdToHtml,
+  'html-to-mdx': HtmlToMdx,
+  'yaml-validator': YamlValidator,
+  'json-yaml-converter': JsonYamlConverter,
+  'markdown-table-generator': TableGenerator,
+  'opengraph-preview': OgPreview,
+  'mermaid-editor': MermaidEditor,
+}
+
 interface ToolEditorProps {
   slug: string
 }
@@ -56,18 +75,10 @@ export function ToolEditor({ slug }: ToolEditorProps) {
   // The editor tools need a tall panel up front; the OG preview starts as a
   // single input row and grows once results arrive.
   const minHeight = slug === 'opengraph-preview' ? '' : 'min-h-[400px] '
+  const Component = COMPONENTS[slug]
   return (
     <div className={`flex ${minHeight}flex-col overflow-hidden rounded-xl border border-border bg-card shadow-[0_2px_16px_rgba(0,0,0,0.06)]`}>
-      {slug === 'mdx-formatter' && <MdxFormatter />}
-      {slug === 'mdx-validator' && <MdxValidator />}
-      {slug === 'mdx-viewer' && <MdxViewer />}
-      {slug === 'mdx-to-markdown' && <MdxToMarkdown />}
-      {slug === 'markdown-to-html' && <MdToHtml />}
-      {slug === 'yaml-validator' && <YamlValidator />}
-      {slug === 'json-yaml-converter' && <JsonYamlConverter />}
-      {slug === 'markdown-table-generator' && <TableGenerator />}
-      {slug === 'opengraph-preview' && <OgPreview />}
-      {slug === 'mermaid-editor' && <MermaidEditor />}
+      {Component ? <Component /> : null}
     </div>
   )
 }

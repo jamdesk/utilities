@@ -4,6 +4,7 @@ import { useEffect, useState, useCallback } from 'react'
 import { Command } from 'cmdk'
 import { useRouter } from 'next/navigation'
 import { tools } from '@/lib/tools'
+import { guides as GUIDES } from '@/lib/guides'
 
 export function CommandPalette() {
   const [open, setOpen] = useState(false)
@@ -85,6 +86,27 @@ export function CommandPalette() {
                     <div className="font-medium">{tool.name}</div>
                     <div className="text-xs text-muted-foreground">
                       {tool.description}
+                    </div>
+                  </div>
+                </Command.Item>
+              ))}
+            </Command.Group>
+            <Command.Group heading="Guides" className="[&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:py-1.5 [&_[cmdk-group-heading]]:text-xs [&_[cmdk-group-heading]]:font-medium [&_[cmdk-group-heading]]:text-text-muted">
+              {GUIDES.map((guide) => (
+                <Command.Item
+                  key={guide.slug}
+                  value={guide.name}
+                  keywords={[guide.slug, guide.description]}
+                  onSelect={() => handleSelect(guide.slug)}
+                  className="flex cursor-pointer items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-foreground transition-colors data-[selected=true]:bg-[#ff3621]/10 data-[selected=true]:text-primary"
+                >
+                  <span className="text-base" aria-hidden="true">
+                    {guide.icon}
+                  </span>
+                  <div className="min-w-0 flex-1">
+                    <div className="font-medium">{guide.name}</div>
+                    <div className="text-xs text-muted-foreground">
+                      {guide.description}
                     </div>
                   </div>
                 </Command.Item>

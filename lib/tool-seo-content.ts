@@ -184,6 +184,55 @@ export const toolSeoContent: Record<string, ToolSeoContent> = {
       },
     ],
   },
+  'html-to-mdx': {
+    howToTitle: 'How to Convert HTML to MDX',
+    howToContent:
+      'Paste HTML into the editor and the converter produces MDX-compatible Markdown. Headings, paragraphs, lists, links, and code blocks become standard Markdown. Tables, complex nested markup, and unknown elements are preserved as raw HTML — which is valid MDX. The output is ready to paste into a Next.js, Docusaurus, or Astro MDX file.',
+    detailSections: [
+      {
+        heading: 'What gets converted',
+        content:
+          'Standard HTML elements with Markdown equivalents are converted: h1 through h6, p, strong, em, code, pre, a, ul, ol, li, blockquote, hr, img. Code blocks preserve language hints from class="language-*" attributes. Simple tables become Markdown tables; complex tables (with rowspan or colspan) stay as raw HTML.',
+      },
+      {
+        heading: 'Migration use cases',
+        content:
+          'Use this converter when migrating content from a CMS that exports HTML — Notion, Confluence, WordPress, Ghost, or static-site exports. The output drops cleanly into any MDX-based docs platform (Next.js, Docusaurus, Astro, Gatsby) without further processing.',
+      },
+      {
+        heading: 'Why preserve raw HTML',
+        content:
+          'MDX accepts raw HTML inline. When markup cannot be expressed in Markdown (complex tables, custom elements, embedded iframes), the converter leaves the original HTML in place rather than dropping data. Content survives the conversion — only executable markup is removed for safety (see below).',
+      },
+      {
+        heading: 'What is removed for safety',
+        content:
+          'Executable HTML is stripped: <script> blocks, <style> blocks, and inline event handlers like onclick or onload. MDX compiles to a React component tree that runs in your app, so passing arbitrary scripts through would be an XSS footgun for anyone migrating content from a CMS. Visible content (text, links, images, structure) is always preserved.',
+      },
+    ],
+    faq: [
+      {
+        question: 'What HTML elements does it convert?',
+        answer:
+          'Standard elements with Markdown equivalents: headings, paragraphs, bold, italic, links, lists, code blocks, blockquotes, horizontal rules, and images. Tables convert when simple; complex tables stay as raw HTML.',
+      },
+      {
+        question: 'Is any content dropped during conversion?',
+        answer:
+          'Visible content is preserved — markup that cannot be expressed in Markdown stays as raw HTML, which is valid MDX. The only things stripped are executable elements: <script> tags, <style> tags, and inline event handlers like onclick. This prevents XSS when migrating HTML into an MDX docs site.',
+      },
+      {
+        question: 'Can I convert content from Notion or Confluence?',
+        answer:
+          'Yes. Export from Notion or Confluence as HTML (or copy as HTML), paste into the editor, and the output is ready for any MDX-based site.',
+      },
+      {
+        question: 'Does it preserve syntax highlighting hints?',
+        answer:
+          'Yes. <code class="language-typescript"> and similar attributes are converted to fenced code blocks with the matching language tag.',
+      },
+    ],
+  },
   'yaml-validator': {
     howToTitle: 'How to Validate YAML',
     howToContent:

@@ -1,14 +1,32 @@
-import type { Tool } from '@/lib/tools'
+import { type Tool, LAST_REVIEWED } from '@/lib/tools'
 import { REPO_URL, LICENSE_URL, ORG_NAME, ORG_URL } from '@/lib/site'
+import { JsonLd } from './JsonLd'
 
 type JsonLdScriptProps =
   | { type: 'collection'; tools: Tool[] }
-  | { type: 'tool'; tool: Tool; howTo?: { title: string; content: string } }
+  | {
+      type: 'tool'
+      tool: Tool
+      howTo?: { title: string; content: string }
+      faqs?: { question: string; answer: string }[]
+    }
 
 const CREATOR = {
   '@type': 'Organization',
   name: ORG_NAME,
   url: ORG_URL,
+}
+
+const WEBAPP_BASE = {
+  applicationCategory: 'DeveloperApplication',
+  isAccessibleForFree: true,
+  browserRequirements: 'Requires JavaScript',
+  operatingSystem: 'Any',
+  license: LICENSE_URL,
+  creator: CREATOR,
+  author: CREATOR,
+  dateModified: LAST_REVIEWED,
+  sameAs: [REPO_URL],
 }
 
 function buildCollectionSchema(tools: Tool[]) {
@@ -32,31 +50,19 @@ function buildCollectionSchema(tools: Tool[]) {
       name: tool.name,
       description: tool.seoDescription,
       url: `https://www.jamdesk.com/utilities/${tool.slug}`,
-      applicationCategory: 'DeveloperApplication',
-      isAccessibleForFree: true,
-      browserRequirements: 'Requires JavaScript',
-      operatingSystem: 'Any',
-      license: LICENSE_URL,
-      creator: CREATOR,
-      sameAs: [REPO_URL],
+      ...WEBAPP_BASE,
     })),
   }
 }
 
-function buildToolSchema(tool: Tool) {
+export function buildToolSchema(tool: Tool) {
   return {
     '@context': 'https://schema.org',
     '@type': 'WebApplication',
     name: tool.name,
     description: tool.seoDescription,
     url: `https://www.jamdesk.com/utilities/${tool.slug}`,
-    applicationCategory: 'DeveloperApplication',
-    isAccessibleForFree: true,
-    browserRequirements: 'Requires JavaScript',
-    operatingSystem: 'Any',
-    license: LICENSE_URL,
-    creator: CREATOR,
-    sameAs: [REPO_URL],
+    ...WEBAPP_BASE,
     offers: {
       '@type': 'Offer',
       price: '0',
@@ -65,17 +71,23 @@ function buildToolSchema(tool: Tool) {
   }
 }
 
-function buildHowToSchema(tool: Tool, howTo: { title: string; content: string }) {
-  const inputDescription = tool.slug.startsWith('mdx')
-    ? 'Paste your MDX content into the input editor, or upload an .mdx file'
-    : tool.slug === 'yaml-validator'
-      ? 'Paste your YAML content into the input editor'
-      : tool.slug === 'json-yaml-converter'
-        ? 'Paste your JSON or YAML content into the input editor'
-        : tool.slug === 'markdown-table-generator'
-          ? 'Paste your CSV or TSV data into the input editor'
-          : 'Paste your content into the input editor, or upload a file'
+function getInputDescription(slug: string): string {
+  if (slug.startsWith('mdx')) {
+    return 'Paste your MDX content into the input editor, or upload an .mdx file'
+  }
+  switch (slug) {
+    case 'yaml-validator':
+      return 'Paste your YAML content into the input editor'
+    case 'json-yaml-converter':
+      return 'Paste your JSON or YAML content into the input editor'
+    case 'markdown-table-generator':
+      return 'Paste your CSV or TSV data into the input editor'
+    default:
+      return 'Paste your content into the input editor, or upload a file'
+  }
+}
 
+function buildHowToSchema(tool: Tool, howTo: { title: string; content: string }) {
   return {
     '@context': 'https://schema.org',
     '@type': 'HowTo',
@@ -90,7 +102,7 @@ function buildHowToSchema(tool: Tool, howTo: { title: string; content: string })
       {
         '@type': 'HowToStep',
         name: 'Add your content',
-        text: inputDescription,
+        text: getInputDescription(tool.slug),
       },
       {
         '@type': 'HowToStep',
@@ -132,8 +144,50 @@ function buildBreadcrumbSchema(tool: Tool) {
   }
 }
 
+export function buildArticleSchema(props: {
+  headline: string
+  description: string
+  url: string
+}) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: props.headline,
+    description: props.description,
+    url: props.url,
+    mainEntityOfPage: { '@type': 'WebPage', '@id': props.url },
+    inLanguage: 'en',
+    author: CREATOR,
+    publisher: CREATOR,
+    // datePublished is required for Google's Article rich-result eligibility.
+    // We don't track first-publish separately, so both fields surface LAST_REVIEWED.
+    datePublished: LAST_REVIEWED,
+    dateModified: LAST_REVIEWED,
+    license: LICENSE_URL,
+    isPartOf: { '@type': 'WebSite', name: 'Jamdesk', url: 'https://www.jamdesk.com' },
+  }
+}
+
+export function buildFaqSchema(
+  faqs: readonly { question: string; answer: string }[]
+) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faqs.map((faq) => ({
+      '@type': 'Question',
+      name: faq.question,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: faq.answer,
+      },
+    })),
+  }
+}
+
 /**
- * Renders structured data for search engines.
+ * Renders structured data for search engines. Delegates each schema to
+ * <JsonLd> so the `</script>` escape lives in exactly one place.
  * Content is safe — built from our own static tool registry, not user input.
  */
 export function JsonLdScript(props: JsonLdScriptProps) {
@@ -144,16 +198,13 @@ export function JsonLdScript(props: JsonLdScriptProps) {
           buildToolSchema(props.tool),
           buildBreadcrumbSchema(props.tool),
           ...(props.howTo ? [buildHowToSchema(props.tool, props.howTo)] : []),
+          ...(props.faqs?.length ? [buildFaqSchema(props.faqs)] : []),
         ]
 
   return (
     <>
       {schemas.map((schema, i) => (
-        <script
-          key={i}
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
-        />
+        <JsonLd key={i} data={schema} />
       ))}
     </>
   )
