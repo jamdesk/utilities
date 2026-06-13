@@ -19,8 +19,16 @@ vi.mock('@/components/editor/InputPanel', () => ({
   InputPanel: () => <div data-testid="input-panel" />,
 }))
 
+// Export actions delegate to the shared clipboard/download/analytics helpers —
+// mock them so the test asserts the wiring, not browser file/clipboard APIs.
+vi.mock('@/lib/clipboard', () => ({ copyToClipboard: vi.fn(async () => true) }))
+vi.mock('@/lib/download', () => ({ downloadAsFile: vi.fn() }))
+vi.mock('@/lib/analytics', () => ({ trackEvent: vi.fn() }))
+
 import { MermaidEditor, MermaidPreview } from '@/components/tools/MermaidEditor'
 import { renderMermaid } from '@/lib/mermaid-engine'
+import { copyToClipboard } from '@/lib/clipboard'
+import { downloadAsFile } from '@/lib/download'
 
 beforeEach(() => {
   vi.mocked(renderMermaid).mockClear()
@@ -76,5 +84,42 @@ describe('MermaidPreview', () => {
     expect(screen.getByText('Preview')).toBeTruthy()
     expect(screen.getByText('Enter Mermaid syntax to preview')).toBeTruthy()
     expect(screen.queryByText('Diagram Error')).toBeNull()
+  })
+
+  it('offers Copy SVG and Download SVG actions once a diagram exists', () => {
+    render(<MermaidPreview svg='<svg data-testid="diagram"></svg>' error={null} />)
+    expect(screen.getByRole('button', { name: /copy svg/i })).toBeTruthy()
+    expect(screen.getByRole('button', { name: /download svg/i })).toBeTruthy()
+  })
+
+  it('hides the export actions when there is no diagram to export', () => {
+    render(<MermaidPreview svg={null} error={null} />)
+    expect(screen.queryByRole('button', { name: /copy svg/i })).toBeNull()
+    expect(screen.queryByRole('button', { name: /download svg/i })).toBeNull()
+  })
+
+  it('keeps export available on error while a last-good diagram is retained', () => {
+    render(
+      <MermaidPreview svg='<svg data-testid="diagram"></svg>' error="Syntax error at line 2" />
+    )
+    expect(screen.getByRole('button', { name: /copy svg/i })).toBeTruthy()
+    expect(screen.getByRole('button', { name: /download svg/i })).toBeTruthy()
+  })
+
+  it('copies the SVG markup to the clipboard and confirms with a Copied! state', async () => {
+    render(<MermaidPreview svg='<svg id="x"></svg>' error={null} />)
+    fireEvent.click(screen.getByRole('button', { name: /copy svg/i }))
+    await waitFor(() => expect(copyToClipboard).toHaveBeenCalledWith('<svg id="x"></svg>'))
+    expect(await screen.findByText('Copied!')).toBeTruthy()
+  })
+
+  it('downloads the SVG as an image/svg+xml file named diagram.svg', () => {
+    render(<MermaidPreview svg='<svg id="y"></svg>' error={null} />)
+    fireEvent.click(screen.getByRole('button', { name: /download svg/i }))
+    expect(downloadAsFile).toHaveBeenCalledWith(
+      '<svg id="y"></svg>',
+      'diagram.svg',
+      'image/svg+xml;charset=utf-8'
+    )
   })
 })

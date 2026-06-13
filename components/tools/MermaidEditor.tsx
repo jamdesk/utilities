@@ -1,10 +1,13 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { InputPanel } from '@/components/editor/InputPanel'
 import { ToolLayout } from '@/components/tools/ToolLayout'
 import { useToolInput } from '@/lib/use-tool-input'
 import { useLazyModule } from '@/lib/use-lazy-module'
+import { copyToClipboard } from '@/lib/clipboard'
+import { downloadAsFile } from '@/lib/download'
+import { trackEvent } from '@/lib/analytics'
 import { mermaidSample } from '@/lib/samples'
 import type { PreviewTheme } from '@/lib/mermaid-engine'
 
@@ -110,6 +113,7 @@ export function MermaidPreview({
 }) {
   const containerRef = useRef<HTMLDivElement>(null)
   const isLight = theme === 'light'
+  const [copied, setCopied] = useState(false)
 
   // Inject via ref: the svg prop is ALWAYS DOMPurify-sanitized by
   // renderMermaid (input can arrive from the URL hash — attacker-
@@ -119,6 +123,33 @@ export function MermaidPreview({
       containerRef.current.innerHTML = svg ?? ''
     }
   }, [svg])
+
+  // Export the rendered SVG as-is (vector, lossless). PNG is intentionally not
+  // offered here: mermaid v11 renders labels inside <foreignObject>, which
+  // browsers refuse to rasterize when drawing an SVG to <canvas> — the labels
+  // would come out blank. PNG would need a server-side headless-Chrome render.
+  const handleCopy = useCallback(async () => {
+    if (!svg) return
+    if (await copyToClipboard(svg)) {
+      setCopied(true)
+      trackEvent('Copy', { tool: 'Mermaid Editor', format: 'svg' })
+      setTimeout(() => setCopied(false), 2000)
+    }
+  }, [svg])
+
+  const handleDownload = useCallback(() => {
+    if (!svg) return
+    downloadAsFile(svg, 'diagram.svg', 'image/svg+xml;charset=utf-8')
+    trackEvent('Download', { tool: 'Mermaid Editor', format: 'svg' })
+  }, [svg])
+
+  // Mirror the theme toggle's compact, theme-aware styling so the export
+  // actions sit consistently beside it in the preview header.
+  const headerBtnClass = `flex cursor-pointer items-center gap-1.5 rounded-md px-2 py-1 text-xs font-medium transition-colors ${
+    isLight
+      ? 'text-[#3a3a44] hover:bg-black/5'
+      : 'text-[#a0a0aa] hover:bg-white/10 hover:text-[#e0e0e4]'
+  }`
 
   return (
     <div className="flex h-full flex-col" aria-live="polite">
@@ -130,22 +161,44 @@ export function MermaidPreview({
         <span className={`text-xs font-medium sm:text-sm ${isLight ? 'text-[#3a3a44]' : 'text-[#e0e0e4]'}`}>
           Preview
         </span>
-        {onToggleTheme && (
-          <button
-            type="button"
-            onClick={onToggleTheme}
-            aria-label={isLight ? 'Switch preview to dark mode' : 'Switch preview to light mode'}
-            title={isLight ? 'Switch to dark preview' : 'Switch to light preview'}
-            className={`flex cursor-pointer items-center gap-1.5 rounded-md px-2 py-1 text-xs font-medium transition-colors ${
-              isLight
-                ? 'text-[#3a3a44] hover:bg-black/5'
-                : 'text-[#a0a0aa] hover:bg-white/10 hover:text-[#e0e0e4]'
-            }`}
-          >
-            {isLight ? <MoonIcon /> : <SunIcon />}
-            <span className="hidden sm:inline">{isLight ? 'Dark' : 'Light'}</span>
-          </button>
-        )}
+        <div className="flex items-center gap-0.5 sm:gap-1.5">
+          {svg && (
+            <>
+              <button
+                type="button"
+                onClick={handleCopy}
+                aria-label="Copy SVG"
+                title="Copy SVG markup to clipboard"
+                className={headerBtnClass}
+              >
+                {copied ? <CheckIcon /> : <CopyIcon />}
+                <span className="hidden sm:inline">{copied ? 'Copied!' : 'Copy SVG'}</span>
+              </button>
+              <button
+                type="button"
+                onClick={handleDownload}
+                aria-label="Download SVG"
+                title="Download diagram as an SVG file"
+                className={headerBtnClass}
+              >
+                <DownloadIcon />
+                <span className="hidden sm:inline">Download SVG</span>
+              </button>
+            </>
+          )}
+          {onToggleTheme && (
+            <button
+              type="button"
+              onClick={onToggleTheme}
+              aria-label={isLight ? 'Switch preview to dark mode' : 'Switch preview to light mode'}
+              title={isLight ? 'Switch to dark preview' : 'Switch to light preview'}
+              className={headerBtnClass}
+            >
+              {isLight ? <MoonIcon /> : <SunIcon />}
+              <span className="hidden sm:inline">{isLight ? 'Dark' : 'Light'}</span>
+            </button>
+          )}
+        </div>
       </div>
       <div className={`flex-1 overflow-auto p-4 ${isLight ? 'bg-white' : 'bg-[#1a1725]'}`}>
         {error && (
@@ -207,6 +260,63 @@ function MoonIcon() {
       aria-hidden="true"
     >
       <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+    </svg>
+  )
+}
+
+function CopyIcon() {
+  return (
+    <svg
+      width="14"
+      height="14"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+    </svg>
+  )
+}
+
+function DownloadIcon() {
+  return (
+    <svg
+      width="14"
+      height="14"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+      <polyline points="7 10 12 15 17 10" />
+      <line x1="12" y1="15" x2="12" y2="3" />
+    </svg>
+  )
+}
+
+function CheckIcon() {
+  return (
+    <svg
+      width="14"
+      height="14"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <polyline points="20 6 9 17 4 12" />
     </svg>
   )
 }
