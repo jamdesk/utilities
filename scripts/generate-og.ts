@@ -270,7 +270,8 @@ async function generateOgImage(
 
 // Additional non-tool pages that want their own OG image. Each entry produces
 // public/og/<slug>.png. Keep the layout-side OG_IMAGE references in sync.
-const contentPages = [
+// Exported so the card-text coverage test can assert these names/descriptions too.
+export const contentPages = [
   {
     slug: 'mdx-cheatsheet',
     name: 'MDX Cheatsheet',

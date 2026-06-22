@@ -7,6 +7,7 @@ import {
   loadEmojiFont,
   SUPPORTED_ICON_CODEPOINTS,
   SUPPORTED_TEXT_CODEPOINTS,
+  contentPages,
 } from '../scripts/generate-og'
 
 const FONT_DIR = join(process.cwd(), 'scripts', 'fonts')
@@ -71,24 +72,26 @@ describe('icon coverage', () => {
 })
 
 describe('card text coverage', () => {
-  // The cards render tool.name + tool.description (not just the icon). A non-ASCII
-  // glyph in a name/description that Inter can't render is a tofu box in a 64px
-  // headline that NO icon test would catch. Assert every non-ASCII codepoint in
-  // card text is renderable (in Inter via SUPPORTED_TEXT_CODEPOINTS, or via the
-  // icon/SVG paths). ASCII always renders in Inter.
+  // The cards render name + description for BOTH tools and content pages (not
+  // just the icon). A non-ASCII glyph that Inter can't render is a tofu box in a
+  // 64px headline that NO icon test would catch. Assert every non-ASCII codepoint
+  // in card text is renderable (in Inter via SUPPORTED_TEXT_CODEPOINTS, or via the
+  // icon/SVG paths). ASCII always renders in Inter. (The static subtitle chrome,
+  // e.g. "Free · Open Source · Client-side", is gated at acquisition by the Task 1
+  // Inter cmap check rather than re-asserted here.)
   const renderable = new Set<number>([
     ...SUPPORTED_ICON_CODEPOINTS,
     ...SUPPORTED_TEXT_CODEPOINTS,
   ])
-  it('every non-ASCII codepoint in a tool name/description is renderable', () => {
-    for (const tool of tools) {
-      for (const [field, value] of [['name', tool.name], ['description', tool.description]] as const) {
+  it('every non-ASCII codepoint in a card name/description is renderable', () => {
+    for (const card of [...tools, ...contentPages]) {
+      for (const [field, value] of [['name', card.name], ['description', card.description]] as const) {
         for (const ch of value) {
           const cp = ch.codePointAt(0)!
           if (cp < 0x80) continue
           expect(
             renderable.has(cp),
-            `tool "${tool.slug}" ${field} "${value}" has unsupported codepoint ` +
+            `card "${card.slug}" ${field} "${value}" has unsupported codepoint ` +
               `U+${cp.toString(16).toUpperCase()} — verify Inter (or the emoji/SVG path) ` +
               `renders it, then add it to SUPPORTED_TEXT_CODEPOINTS`,
           ).toBe(true)
