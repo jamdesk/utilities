@@ -127,7 +127,7 @@ export const tools: Tool[] = [
     icon: '↑',
     seoTitle: 'HTML to MDX Converter — Free Online Tool | Jamdesk',
     seoDescription:
-      'Convert HTML to MDX-compatible Markdown online. Migrate from Notion, Confluence, WordPress. Preserves complex markup as raw HTML. Free, open source, client-side.',
+      'Convert HTML to MDX-compatible Markdown online. Migrate from Notion, Confluence, WordPress. Preserves markup as raw HTML. Free, open source, client-side.',
     seoSubject: 'The HTML to MDX converter',
     ctaText: 'Publish converted MDX as live docs',
     ctaDescription:
@@ -247,7 +247,7 @@ export const tools: Tool[] = [
     icon: '🔗',
     seoTitle: 'OpenGraph Preview — Free Social Card Checker & Validator | Jamdesk',
     seoDescription:
-      'Preview how any URL looks when shared on X, Facebook, LinkedIn, Slack, Discord, WhatsApp, iMessage, and Google. Validates Open Graph tags, checks image dimensions, and explains how to fix every issue. Free and open source.',
+      'Preview how any URL looks when shared on X, LinkedIn, Slack, Discord, and more. Validate Open Graph tags, check image dimensions, and fix issues. Free.',
     seoSubject: 'The OpenGraph Preview tool',
     ctaText: 'Docs with perfect social cards',
     ctaDescription:

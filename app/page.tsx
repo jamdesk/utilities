@@ -12,14 +12,14 @@ export const metadata: Metadata = {
       'Free Developer Utilities — MDX, Markdown, Mermaid, YAML | Jamdesk',
   },
   description:
-    'Free, open-source tools for documentation work: format and validate MDX, convert Markdown, edit Mermaid diagrams live, check YAML and JSON, and preview social share cards.',
+    'Free, open-source tools for documentation work: format and validate MDX, convert Markdown, edit Mermaid diagrams, and check YAML, JSON, and social cards.',
   alternates: {
     canonical: 'https://www.jamdesk.com/utilities',
   },
   openGraph: {
     title: 'Free Developer Utilities — MDX, Markdown, Mermaid, YAML | Jamdesk',
     description:
-      'Free, open-source tools for documentation work: format and validate MDX, convert Markdown, edit Mermaid diagrams live, check YAML and JSON, and preview social share cards.',
+      'Free, open-source tools for documentation work: format and validate MDX, convert Markdown, edit Mermaid diagrams, and check YAML, JSON, and social cards.',
     url: 'https://www.jamdesk.com/utilities',
     siteName: 'Jamdesk',
     type: 'website',
@@ -36,7 +36,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Free Developer Utilities — MDX, Markdown, Mermaid, YAML | Jamdesk',
     description:
-      'Free, open-source tools for documentation work: format and validate MDX, convert Markdown, edit Mermaid diagrams live, check YAML and JSON, and preview social share cards.',
+      'Free, open-source tools for documentation work: format and validate MDX, convert Markdown, edit Mermaid diagrams, and check YAML, JSON, and social cards.',
     images: ['https://www.jamdesk.com/utilities/og/hub.png'],
   },
 }
