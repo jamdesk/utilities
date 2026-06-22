@@ -8,7 +8,7 @@
 
 import satori from 'satori'
 import { Resvg } from '@resvg/resvg-js'
-import { writeFileSync, mkdirSync, readFileSync } from 'fs'
+import { writeFileSync, mkdirSync, readFileSync, existsSync } from 'fs'
 import { join } from 'path'
 import { tools as toolRegistry } from '../lib/tools'
 
@@ -24,8 +24,11 @@ const tools = toolRegistry.map((t) => ({
 const outDir = join(process.cwd(), 'public', 'og')
 mkdirSync(outDir, { recursive: true })
 
-// Load a system font for rendering — needs a .ttf file (not .ttc)
-function loadFont(): ArrayBuffer {
+// Load a system font for rendering — needs a .ttf file (not .ttc).
+// Returns null when no font is available rather than throwing: that's the
+// expected case on Vercel's Amazon Linux build image (ships none of these
+// paths), where the committed public/og/*.png are authoritative instead.
+function loadFont(): ArrayBuffer | null {
   // Try common system font paths (TTF only — TTC not supported by opentype.js)
   const candidates = [
     '/Library/Fonts/Arial Unicode.ttf',
@@ -44,9 +47,7 @@ function loadFont(): ArrayBuffer {
     }
   }
 
-  throw new Error(
-    'No system font found. Install a TTF font or provide one explicitly.'
-  )
+  return null
 }
 
 // Shared satori → PNG pipeline. Each generator below owns its own child tree
@@ -363,10 +364,48 @@ async function generateHubImage(fontData: ArrayBuffer) {
   )
 }
 
+// All slugs we expect to find a committed public/og/<slug>.png for.
+function expectedOgSlugs(): string[] {
+  return [
+    'hub',
+    ...tools.map((t) => t.slug),
+    ...contentPages.map((p) => p.slug),
+  ]
+}
+
 async function main() {
   console.log('Generating OG images...')
 
   const fontData = loadFont()
+
+  // No system font — expected on Vercel's Amazon Linux builder. The committed
+  // public/og/*.png are the deliverable there (see .gitignore), so skip
+  // regeneration cleanly. But still flag loudly if a committed image is
+  // actually missing, since that page would otherwise ship with no OG image —
+  // a real problem the previous "always FAILED" handler couldn't distinguish.
+  if (!fontData) {
+    const missing = expectedOgSlugs().filter(
+      (slug) => !existsSync(join(outDir, `${slug}.png`)),
+    )
+    if (missing.length === 0) {
+      console.log(
+        'ℹ No system TTF font on this build image — keeping the committed ' +
+          'public/og/*.png. After changing a tool name/description, regenerate ' +
+          'locally with: npx tsx scripts/generate-og.ts',
+      )
+      return
+    }
+    console.warn('========================================')
+    console.warn(
+      `⚠ No system font AND committed OG image(s) missing: ${missing.join(', ')}`,
+    )
+    console.warn(
+      '  Those pages will ship with no OG image. Regenerate on a machine with ' +
+        'a TTF font (e.g. macOS): npx tsx scripts/generate-og.ts',
+    )
+    console.warn('========================================')
+    return
+  }
 
   // Generate hub image
   const hubPng = await generateHubImage(fontData)
