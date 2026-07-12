@@ -138,7 +138,7 @@ export async function formatMdx(
     }
 
     // Pre-process: sort frontmatter if requested
-    let processed = options?.sortFrontmatter ? sortFrontmatterKeys(input) : input
+    const processed = options?.sortFrontmatter ? sortFrontmatterKeys(input) : input
 
     // Normalize markdown indentation before Prettier (which only formats JSX/imports)
     const normalized = normalizeMarkdownIndentation(processed)

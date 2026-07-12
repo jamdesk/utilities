@@ -3,12 +3,12 @@ import { trackEvent } from '../lib/analytics'
 
 describe('trackEvent', () => {
   beforeEach(() => {
-    delete (window as any).plausible
+    delete window.plausible
   })
 
   it('calls plausible when available', () => {
     const mock = vi.fn()
-    ;(window as any).plausible = mock
+    ;window.plausible = mock
     trackEvent('Copy', { tool: 'mdx-formatter' })
     expect(mock).toHaveBeenCalledWith('Copy', { props: { tool: 'mdx-formatter' } })
   })
@@ -19,7 +19,7 @@ describe('trackEvent', () => {
 
   it('passes undefined props when none provided', () => {
     const mock = vi.fn()
-    ;(window as any).plausible = mock
+    ;window.plausible = mock
     trackEvent('PageView')
     expect(mock).toHaveBeenCalledWith('PageView', { props: undefined })
   })
